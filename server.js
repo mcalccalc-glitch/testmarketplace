@@ -329,9 +329,19 @@ app.get('/api/admin/archived-messages', (req, res) => {
 });
 
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  const publicPath = path.join(__dirname, 'public', 'index.html');
+  const rootPath = path.join(__dirname, 'index.html');
+
+  if (fs.existsSync(publicPath)) {
+    res.sendFile(publicPath);
+  } else if (fs.existsSync(rootPath)) {
+    res.sendFile(rootPath);
+  } else {
+    res.status(404).send('ملف index.html غير موجود، تأكد من رفعه على GitHub');
+  }
 });
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+app.listen(PORT, () => {
+  console.log(`\n✓ السيرفر يعمل بنجاح على: http://localhost:${PORT}`);
+  console.log(`✓ تم تفعيل حسابات الأدمن الثلاثة (admin1@souq.jo, admin2@souq.jo, admin3@souq.jo)\n`);
 });
