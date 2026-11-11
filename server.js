@@ -1,7 +1,11 @@
+
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
+
+let nodemailer = null;
+try { nodemailer = require('nodemailer'); } catch (e) {}
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -12,6 +16,17 @@ app.use(express.json({ limit: '20mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(__dirname));
 
+// الحصول على تاريخ اليوم بدقة بتوقيت الأردن (YYYY-MM-DD)
+function getJordanTodayStr() {
+  return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Amman' }).format(new Date());
+}
+
+// الحصول على الوقت الحالي بتوقيت الأردن
+function getJordanTimeStr() {
+  return new Date().toLocaleTimeString('ar-EG', { timeZone: 'Asia/Amman', hour: '2-digit', minute: '2-digit' });
+}
+
+// قراءة وإنشاء قاعدة البيانات
 function getDB() {
   const initialAdmins = [
     {
@@ -58,7 +73,7 @@ function getDB() {
       notifications: [],
       archivedMessages: [],
       emailAlertsLogs: [],
-      alertActivationRequests: [] // طلبات تفعيل التنبيهات للسوبر أدمن
+      alertActivationRequests: []
     };
     fs.writeFileSync(DB_FILE, JSON.stringify(initialData, null, 2), 'utf8');
     return initialData;
@@ -81,6 +96,25 @@ function saveDB(data) {
   fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2), 'utf8');
 }
 
+// إرسال إيميل حقيقي عبر SMTP إذا تم ضبط متغيرات البيئة على السيرفر
+async function sendRealEmailIfConfigured(toEmail, subject, htmlContent) {
+  if (!nodemailer || !process.env.SMTP_USER || !process.env.SMTP_PASS) return;
+  try {
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS }
+    });
+    await transporter.sendMail({
+      from: `"سوق الطلب المعكوس - الأردن" <${process.env.SMTP_USER}>`,
+      to: toEmail,
+      subject: subject,
+      html: htmlContent
+    });
+  } catch (e) {
+    console.error('فشل إرسال الإيميل الخارجي:', e.message);
+  }
+}
+
 // ---------------- API المستخدمين ----------------
 app.post('/api/register', (req, res) => {
   const db = getDB();
@@ -89,7 +123,6 @@ app.post('/api/register', (req, res) => {
   if (db.users.find(u => u.email.toLowerCase() === email.toLowerCase())) {
     return res.status(400).json({ success: false, message: 'البريد الإلكتروني مسجل مسبقاً.' });
   }
-
   if (phone && db.users.find(u => u.phone === phone)) {
     return res.status(400).json({ success: false, message: 'رقم الهاتف مسجل مسبقاً.' });
   }
@@ -105,8 +138,9 @@ app.post('/api/register', (req, res) => {
     avatar: avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=4f46e5&color=fff`,
     authProvider: authProvider || 'local',
     alertCategories: [],
-    alertStatus: 'none', // none, pending, active, expired, rejected
-    alertExpiry: null
+    alertStatus: 'none', // none, pending, active, rejected
+    alertStartDate: null,
+    alertEndDate: null
   };
 
   db.users.push(newUser);
@@ -133,8 +167,7 @@ app.get('/api/users', (req, res) => {
   res.json(getDB().users);
 });
 
-// ---------------- API نظام التنبيهات الموقوت بموافقة السوبر أدمن ----------------
-// المستخدم (عميل أو تاجر) يختار الأقسام ويرسل طلب تفعيل للسوبر أدمن
+// ---------------- API إدارة التنبيهات (من تاريخ إلى تاريخ) ----------------
 app.post('/api/alerts/request-activation', (req, res) => {
   const db = getDB();
   const { userId, categories } = req.body;
@@ -143,9 +176,8 @@ app.post('/api/alerts/request-activation', (req, res) => {
   if (!user) return res.status(404).json({ success: false, message: 'المستخدم غير موجود' });
 
   user.alertCategories = categories || [];
-  user.alertStatus = 'pending'; // قيد موافقة السوبر أدمن
+  user.alertStatus = 'pending';
 
-  // إنشاء أو تحديث سجل الطلب في قائمة السوبر أدمن
   const existingReqIndex = db.alertActivationRequests.findIndex(r => r.userId === userId);
   const reqObj = {
     id: Date.now(),
@@ -157,6 +189,8 @@ app.post('/api/alerts/request-activation', (req, res) => {
     userCity: user.city,
     categories: user.alertCategories,
     status: 'pending',
+    startDate: user.alertStartDate || getJordanTodayStr(),
+    endDate: user.alertEndDate || '',
     requestedAt: new Date().toISOString()
   };
 
@@ -166,55 +200,62 @@ app.post('/api/alerts/request-activation', (req, res) => {
     db.alertActivationRequests.unshift(reqObj);
   }
 
-  // إرسال إشعار فوري للسوبر أدمن
-  const timeNow = new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+  // إشعار للسوبر أدمن في لوحة الإدارة
   db.notifications.unshift({
     id: Date.now() + 1,
     userId: 991, // السوبر أدمن
+    type: 'admin_alert_request',
     title: 'طلب تفعيل تنبيهات جديد 🔔',
-    text: `طلب المستخدم (${user.name} - ${user.role === 'merchant' ? 'تاجر' : 'عميل'}) تفعيل ميزة التنبيهات لـ ${categories.length} أقسام.`,
-    time: timeNow
+    text: `المستخدم (${user.name}) طلب تفعيل التنبيهات لـ ${categories.length} أقسام. افتح تبويب إدارة التنبيهات للموافقة.`,
+    time: getJordanTimeStr()
   });
 
   saveDB(db);
   res.json({ success: true, user });
 });
 
-// جلب طلبات التفعيل للسوبر أدمن
 app.get('/api/admin/alert-activation-requests', (req, res) => {
   const db = getDB();
   res.json(db.alertActivationRequests || []);
 });
 
-// السوبر أدمن فقط يفعل الخاصية بالتقويم لمدة محدودة أو يرفضها
 app.post('/api/admin/handle-alert-activation', (req, res) => {
   const db = getDB();
-  const { adminEmail, targetUserId, action, expiryDate } = req.body;
+  const { adminEmail, targetUserId, action, startDate, endDate } = req.body;
 
   if (adminEmail !== 'admin1@souq.jo') {
-    return res.status(403).json({ success: false, message: 'خاص بالسوبر أدمن فقط!' });
+    return res.status(403).json({ success: false, message: 'هذه الصلاحية مخصصة للسوبر أدمن فقط (admin1@souq.jo)!' });
   }
 
   const user = db.users.find(u => u.id === targetUserId);
   const reqItem = db.alertActivationRequests.find(r => r.userId === targetUserId);
-  const timeNow = new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+  const timeNow = getJordanTimeStr();
 
   if (action === 'approve') {
+    if (!startDate || !endDate) {
+      return res.status(400).json({ success: false, message: 'يجب تحديد الفترة (من تاريخ إلى تاريخ)!' });
+    }
+    if (startDate > endDate) {
+      return res.status(400).json({ success: false, message: 'تاريخ البداية لا يمكن أن يكون بعد تاريخ الانتهاء!' });
+    }
+
     if (user) {
       user.alertStatus = 'active';
-      user.alertExpiry = expiryDate;
+      user.alertStartDate = startDate;
+      user.alertEndDate = endDate;
     }
     if (reqItem) {
       reqItem.status = 'active';
-      reqItem.expiryDate = expiryDate;
+      reqItem.startDate = startDate;
+      reqItem.endDate = endDate;
     }
 
-    // إشعار للمستخدم بأن الخدمة فُعلت له
     db.notifications.unshift({
       id: Date.now(),
       userId: targetUserId,
-      title: 'تم تفعيل خدمة التنبيهات بالبريد 🎉',
-      text: `وافق السوبر أدمن على طلبك. ميزة التنبيهات بالبريد الإلكتروني مفعلة لك حتى تاريخ: ${expiryDate}`,
+      type: 'alert_approved',
+      title: 'تمت الموافقة وتفعيل التنبيهات 🎉',
+      text: `وافق السوبر أدمن على تفعيل تنبيهات البريد لك من تاريخ (${startDate}) إلى تاريخ (${endDate}).`,
       time: timeNow
     });
   } else {
@@ -224,8 +265,9 @@ app.post('/api/admin/handle-alert-activation', (req, res) => {
     db.notifications.unshift({
       id: Date.now(),
       userId: targetUserId,
+      type: 'alert_rejected',
       title: 'تحديث بخصوص طلب التنبيهات',
-      text: 'نعتذر، لم تتم الموافقة على تفعيل ميزة التنبيهات حالياً.',
+      text: 'لم يتم اعتماد طلب تفعيل التنبيهات من الإدارة.',
       time: timeNow
     });
   }
@@ -234,7 +276,14 @@ app.post('/api/admin/handle-alert-activation', (req, res) => {
   res.json({ success: true });
 });
 
-// ---------------- API طلبات الشراء ونظام التنبيهات الفوري ----------------
+// جلب سجل الإيميلات الواردة لمستخدم معين
+app.get('/api/user/email-alerts', (req, res) => {
+  const db = getDB();
+  const { userId } = req.query;
+  res.json((db.emailAlertsLogs || []).filter(log => log.toUserId == userId));
+});
+
+// ---------------- API طلبات الشراء وإرسال التنبيهات ----------------
 app.get('/api/requests', (req, res) => {
   const db = getDB();
   const activeRequests = db.requests.filter(r => !r.isDeleted);
@@ -244,7 +293,7 @@ app.get('/api/requests', (req, res) => {
   res.json(activeRequests);
 });
 
-app.post('/api/requests', (req, res) => {
+app.post('/api/requests', async (req, res) => {
   const db = getDB();
   const newReq = {
     id: Date.now(),
@@ -259,45 +308,62 @@ app.post('/api/requests', (req, res) => {
   };
   db.requests.unshift(newReq);
 
-  // إرسال تنبيهات الإيميل لأي مستخدم (عميل أو تاجر) وافق له السوبر أدمن والاشتراك سارٍ
-  const now = new Date();
+  // التحقق من المستخدمين المؤهلين لاستلام التنبيه في الفترة الزمنية المحددة (من تاريخ إلى تاريخ)
+  const todayStr = getJordanTodayStr();
   const eligibleUsers = db.users.filter(u => 
-    u.id !== newReq.customerId && // لا ننبه صاحب الطلب
+    u.id !== newReq.customerId &&
     u.alertStatus === 'active' &&
-    u.alertExpiry &&
-    new Date(u.alertExpiry) >= now &&
+    u.alertStartDate && u.alertEndDate &&
+    todayStr >= u.alertStartDate &&
+    todayStr <= u.alertEndDate &&
     u.alertCategories &&
     u.alertCategories.includes(newReq.category)
   );
 
-  eligibleUsers.forEach(u => {
+  for (const u of eligibleUsers) {
     const alertRecord = {
-      id: Date.now() + Math.floor(Math.random() * 1000),
+      id: Date.now() + Math.floor(Math.random() * 10000),
+      toUserId: u.id,
       toEmail: u.email,
       toName: u.name,
       toRole: u.role,
       category: newReq.category,
       requestTitle: newReq.title,
       budget: `${newReq.budgetMin} - ${newReq.budgetMax} د.أ`,
+      city: newReq.customerCity,
+      notes: newReq.notes || 'لا توجد تفاصيل إضافية',
       image: newReq.image || null,
-      sentAt: new Date().toISOString()
+      sentAt: `${todayStr} (${getJordanTimeStr()})`
     };
     db.emailAlertsLogs.unshift(alertRecord);
 
     db.notifications.unshift({
-      id: Date.now() + Math.floor(Math.random() * 1000),
+      id: Date.now() + Math.floor(Math.random() * 10000),
       userId: u.id,
-      title: `تنبيه إيميل جديد في قسم [${newReq.category}] 📧`,
+      type: 'email_alert',
+      title: `إيميل تنبيه جديد في قسم [${newReq.category}] 📧`,
       text: `طلب جديد: ${newReq.title} بميزانية (${newReq.budgetMin} - ${newReq.budgetMax} د.أ)`,
-      time: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })
+      time: getJordanTimeStr()
     });
-  });
+
+    // إرسال إيميل خارجي إن وُجدت إعدادات SMTP
+    const emailHtml = `
+      <div dir="rtl" style="font-family: Arial, sans-serif; padding: 20px; border: 1px solid #ddd; border-radius: 10px;">
+        <h2 style="color: #312e81;">تنبيه طلب جديد في قسم: ${newReq.category}</h2>
+        <p><strong>المنتج المطلوب:</strong> ${newReq.title}</p>
+        <p><strong>الميزانية المقترحة:</strong> ${newReq.budgetMin} - ${newReq.budgetMax} د.أ</p>
+        <p><strong>المحافظة:</strong> ${newReq.customerCity}</p>
+        <p><strong>التفاصيل:</strong> ${newReq.notes || 'لا توجد تفاصيل'}</p>
+        ${newReq.image ? `<p><img src="${newReq.image}" style="max-width:250px; border-radius:8px;" /></p>` : ''}
+      </div>
+    `;
+    sendRealEmailIfConfigured(u.email, `طلب جديد في قسم ${newReq.category}: ${newReq.title}`, emailHtml);
+  }
 
   saveDB(db);
   res.json({ success: true, id: newReq.id });
 });
 
-// اعتماد التاجر مع خيار التوصيل
 app.post('/api/requests/accept-offer', (req, res) => {
   const db = getDB();
   const { requestId, offerId, companyDelivery, deliveryCompany } = req.body;
@@ -312,13 +378,13 @@ app.post('/api/requests/accept-offer', (req, res) => {
     request.companyDeliveryRequested = Boolean(companyDelivery);
     request.deliveryCompany = companyDelivery ? deliveryCompany : null;
 
-    const timeNow = new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
     db.notifications.unshift({
       id: Date.now(),
       userId: offer.merchantId,
+      type: 'offer_accepted',
       title: 'تهانينا! تم اعتماد عرضك 🎉',
       text: `قام العميل ${request.customerName} باختيارك واعتماد عرضك على طلبه [${request.title}]${companyDelivery ? ` مع طلب توصيل عبر ${deliveryCompany}` : ''}`,
-      time: timeNow
+      time: getJordanTimeStr()
     });
 
     saveDB(db);
@@ -377,9 +443,10 @@ app.post('/api/offers', (req, res) => {
     db.notifications.unshift({
       id: Date.now() + 1,
       userId: request.customerId,
+      type: 'new_offer',
       title: 'عرض سعر جديد!',
       text: `قدم ${merchantName} عرضاً بقيمة ${price} د.أ على طلبك [${request.title}]`,
-      time: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })
+      time: getJordanTimeStr()
     });
   }
 
@@ -392,31 +459,22 @@ app.get('/api/messages', (req, res) => {
   const db = getDB();
   const { userName } = req.query;
   if (!userName) return res.json([]);
-  const userMsgs = db.messages.filter(m => m.fromName === userName || m.toName === userName);
-  res.json(userMsgs);
+  res.json(db.messages.filter(m => m.fromName === userName || m.toName === userName));
 });
 
 app.post('/api/messages', (req, res) => {
   const db = getDB();
   const { fromUserId, fromName, toUserId, toName, text } = req.body;
-  const time = new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+  const time = getJordanTimeStr();
 
-  const newMsg = {
-    id: Date.now(),
-    fromUserId,
-    fromName,
-    toUserId,
-    toName,
-    text,
-    time
-  };
-
+  const newMsg = { id: Date.now(), fromUserId, fromName, toUserId, toName, text, time };
   db.messages.push(newMsg);
 
   if (toUserId) {
     db.notifications.unshift({
       id: Date.now() + 2,
       userId: toUserId,
+      type: 'new_message',
       title: `رسالة جديدة من ${fromName}`,
       text: text,
       time: time
@@ -433,9 +491,17 @@ app.get('/api/notifications', (req, res) => {
   res.json(db.notifications.filter(n => n.userId == userId));
 });
 
-// ---------------- API الإدارة وسلة المحذوفات ----------------
+// ---------------- API الإدارة والأرشيف ----------------
 app.get('/api/admin/deleted-requests', (req, res) => {
   res.json(getDB().requests.filter(r => r.isDeleted === 1));
+});
+
+app.post('/api/admin/soft-delete', (req, res) => {
+  const db = getDB();
+  const reqItem = db.requests.find(r => r.id === req.body.requestId);
+  if (reqItem) reqItem.isDeleted = 1;
+  saveDB(db);
+  res.json({ success: true });
 });
 
 app.post('/api/admin/restore-request', (req, res) => {
@@ -446,8 +512,32 @@ app.post('/api/admin/restore-request', (req, res) => {
   res.json({ success: true });
 });
 
+app.post('/api/admin/permanent-delete', (req, res) => {
+  const db = getDB();
+  const { requestId } = req.body;
+  db.requests = db.requests.filter(r => r.id !== requestId);
+  db.offers = db.offers.filter(o => o.requestId !== requestId);
+  saveDB(db);
+  res.json({ success: true });
+});
+
 app.get('/api/admin/all-messages', (req, res) => {
   res.json(getDB().messages);
+});
+
+app.post('/api/admin/archive-message', (req, res) => {
+  const db = getDB();
+  const idx = db.messages.findIndex(m => m.id === req.body.messageId);
+  if (idx !== -1) {
+    const [archived] = db.messages.splice(idx, 1);
+    db.archivedMessages.unshift(archived);
+    saveDB(db);
+  }
+  res.json({ success: true });
+});
+
+app.get('/api/admin/archived-messages', (req, res) => {
+  res.json(getDB().archivedMessages || []);
 });
 
 app.get('/api/admin/email-alerts-logs', (req, res) => {
