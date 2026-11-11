@@ -44,8 +44,9 @@
         <button onclick="navigateTo('my-offers')" id="nav-my-offers" class="hidden px-3 py-1.5 rounded-lg hover:bg-indigo-900 transition items-center gap-1">
           <i class="fa-solid fa-handshake-simple"></i> عروضي المقدمة
         </button>
-        <button onclick="navigateTo('merchant-alerts')" id="nav-merchant-alerts" class="hidden px-3 py-1.5 rounded-lg hover:bg-indigo-900 transition items-center gap-1">
-          <i class="fa-solid fa-envelope-open-text"></i> تنبيهات الأقسام
+        <!-- صفحة إدارة التنبيهات الموحدة للعميل والتاجر -->
+        <button onclick="navigateTo('alerts-management')" id="nav-alerts-management" class="hidden px-3 py-1.5 rounded-lg hover:bg-indigo-900 transition items-center gap-1">
+          <i class="fa-solid fa-bell-concierge"></i> إدارة التنبيهات
         </button>
         <button onclick="navigateTo('admin')" id="nav-admin" class="hidden px-3 py-1.5 rounded-lg bg-amber-500/20 text-amber-300 hover:bg-amber-500/30 transition items-center gap-1">
           <i class="fa-solid fa-shield-halved"></i> لوحة الإدارة
@@ -54,14 +55,11 @@
 
       <!-- زر إشعارات الدردشة وجرس التنبيهات والدخول -->
       <div class="flex items-center gap-2">
-        
-        <!-- إشعار المحادثات الجديد في التوب مينيو (مطلوب) -->
         <button onclick="navigateTo('chat-center')" id="chat-notif-btn" class="hidden p-2 bg-indigo-900/90 hover:bg-indigo-800 rounded-xl text-indigo-200 hover:text-white transition relative" title="المحادثات الجارية">
           <i class="fa-solid fa-comments text-sm"></i>
           <span id="chat-badge" class="absolute -top-1 -right-1 bg-emerald-500 text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center hidden">!</span>
         </button>
 
-        <!-- جرس التنبيهات العامة والعروض -->
         <div id="notif-wrapper" class="relative hidden">
           <button onclick="toggleNotificationsDropdown()" class="p-2 bg-indigo-900/90 hover:bg-indigo-800 rounded-xl text-indigo-200 hover:text-white transition relative">
             <i class="fa-solid fa-bell text-sm"></i>
@@ -104,8 +102,8 @@
       <button onclick="navigateTo('my-offers'); toggleMobileMenu()" id="mob-nav-my-offers" class="hidden w-full text-right p-2 rounded-xl hover:bg-indigo-900 items-center gap-2">
         <i class="fa-solid fa-handshake-simple w-5 text-indigo-400"></i> عروضي المقدمة
       </button>
-      <button onclick="navigateTo('merchant-alerts'); toggleMobileMenu()" id="mob-nav-alerts" class="hidden w-full text-right p-2 rounded-xl hover:bg-indigo-900 items-center gap-2">
-        <i class="fa-solid fa-envelope-open-text w-5 text-indigo-400"></i> تنبيهات الأقسام للتاجر
+      <button onclick="navigateTo('alerts-management'); toggleMobileMenu()" id="mob-nav-alerts" class="hidden w-full text-right p-2 rounded-xl hover:bg-indigo-900 items-center gap-2">
+        <i class="fa-solid fa-bell-concierge w-5 text-indigo-400"></i> إدارة التنبيهات
       </button>
       <button onclick="navigateTo('chat-center'); toggleMobileMenu()" id="mob-nav-chat" class="hidden w-full text-right p-2 rounded-xl hover:bg-indigo-900 items-center gap-2">
         <i class="fa-regular fa-comment-dots w-5 text-indigo-400"></i> المحادثات
@@ -126,7 +124,7 @@
           <span class="bg-indigo-600/70 text-indigo-200 text-xs px-3.5 py-1 rounded-full font-bold inline-block">سوق المناقصات والتجارة العكسية 🇯🇴</span>
           <h2 class="text-2xl sm:text-4xl md:text-5xl font-black leading-tight">اطلب أي سلعة.. ودع المتاجر تتنافس لتقديم أفضل سعر!</h2>
           <p class="text-xs sm:text-sm text-indigo-200 leading-relaxed">
-            المنصة تتيح للعملاء والتجار نشر طلبات الشراء وتقديم عروض الأسعار واختيار التاجر الأنسب مع خدمة التوصيل المعتمدة.
+            المنصة تتيح للعملاء والتجار نشر طلبات الشراء وتقديم عروض الأسعار مع ميزة تنبيهات الإيميل المعتمدة من السوبر أدمن.
           </p>
           <div class="pt-2 flex flex-col sm:flex-row gap-2.5 justify-center md:justify-start">
             <button onclick="handleRequestNewProductNav()" class="bg-white text-indigo-950 font-black px-6 py-3 rounded-xl hover:bg-indigo-50 shadow-md text-xs transition">
@@ -137,73 +135,15 @@
             </button>
           </div>
         </div>
-        <div class="hidden md:flex bg-white/10 p-6 rounded-3xl border border-white/20 text-center w-64 shadow-2xl flex-col items-center">
-          <i class="fa-solid fa-handshake-angle text-5xl text-amber-400 mb-3"></i>
-          <h4 class="font-bold text-base">تبادل عروض ذكي</h4>
-          <p class="text-xs text-indigo-200 mt-1">عروض شفافة ومنافسة تضمن لك أفضل سعر دائماً</p>
-        </div>
       </div>
 
       <!-- تصنيفات المنتجات الـ 12 -->
       <div>
         <div class="flex justify-between items-center mb-4">
-          <div>
-            <h3 class="font-black text-lg sm:text-xl text-slate-900">جميع أقسام وتصنيفات السوق</h3>
-            <p class="text-xs text-slate-500">اختر القسم لمشاهدة الطلبات والعروض الخاصة به</p>
-          </div>
+          <h3 class="font-black text-lg sm:text-xl text-slate-900">جميع أقسام وتصنيفات السوق</h3>
           <button onclick="filterCategoryAndNavigate('الكل')" class="text-xs text-indigo-600 font-bold hover:underline">عرض كل الأقسام &larr;</button>
         </div>
-
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2.5 sm:gap-3">
-          <div onclick="filterCategoryAndNavigate('أجهزة كهربائية ومنزلية')" class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm text-center hover:border-indigo-500 hover:shadow-md cursor-pointer transition active:scale-95">
-            <div class="w-10 h-10 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center text-lg mx-auto mb-2"><i class="fa-solid fa-plug"></i></div>
-            <h4 class="font-bold text-xs text-slate-800">أجهزة كهربائية</h4>
-          </div>
-          <div onclick="filterCategoryAndNavigate('هواتف وإلكترونيات')" class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm text-center hover:border-indigo-500 hover:shadow-md cursor-pointer transition active:scale-95">
-            <div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-lg mx-auto mb-2"><i class="fa-solid fa-mobile-screen"></i></div>
-            <h4 class="font-bold text-xs text-slate-800">موبايلات وإلكترونيات</h4>
-          </div>
-          <div onclick="filterCategoryAndNavigate('كمبيوتر ولابتوب')" class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm text-center hover:border-indigo-500 hover:shadow-md cursor-pointer transition active:scale-95">
-            <div class="w-10 h-10 bg-sky-50 text-sky-600 rounded-xl flex items-center justify-center text-lg mx-auto mb-2"><i class="fa-solid fa-laptop"></i></div>
-            <h4 class="font-bold text-xs text-slate-800">كمبيوتر ولابتوب</h4>
-          </div>
-          <div onclick="filterCategoryAndNavigate('ملابس وأزياء')" class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm text-center hover:border-indigo-500 hover:shadow-md cursor-pointer transition active:scale-95">
-            <div class="w-10 h-10 bg-pink-50 text-pink-600 rounded-xl flex items-center justify-center text-lg mx-auto mb-2"><i class="fa-solid fa-shirt"></i></div>
-            <h4 class="font-bold text-xs text-slate-800">ملابس وأزياء</h4>
-          </div>
-          <div onclick="filterCategoryAndNavigate('قطع سيارات وإكسسوارات')" class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm text-center hover:border-indigo-500 hover:shadow-md cursor-pointer transition active:scale-95">
-            <div class="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center text-lg mx-auto mb-2"><i class="fa-solid fa-car"></i></div>
-            <h4 class="font-bold text-xs text-slate-800">قطع سيارات</h4>
-          </div>
-          <div onclick="filterCategoryAndNavigate('أثاث وديكور')" class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm text-center hover:border-indigo-500 hover:shadow-md cursor-pointer transition active:scale-95">
-            <div class="w-10 h-10 bg-purple-50 text-purple-600 rounded-xl flex items-center justify-center text-lg mx-auto mb-2"><i class="fa-solid fa-couch"></i></div>
-            <h4 class="font-bold text-xs text-slate-800">أثاث وديكور</h4>
-          </div>
-          <div onclick="filterCategoryAndNavigate('مستلزمات أطفال وألعاب')" class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm text-center hover:border-indigo-500 hover:shadow-md cursor-pointer transition active:scale-95">
-            <div class="w-10 h-10 bg-rose-50 text-rose-600 rounded-xl flex items-center justify-center text-lg mx-auto mb-2"><i class="fa-solid fa-baby"></i></div>
-            <h4 class="font-bold text-xs text-slate-800">مستلزمات أطفال</h4>
-          </div>
-          <div onclick="filterCategoryAndNavigate('رياضة ولياقة')" class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm text-center hover:border-indigo-500 hover:shadow-md cursor-pointer transition active:scale-95">
-            <div class="w-10 h-10 bg-teal-50 text-teal-600 rounded-xl flex items-center justify-center text-lg mx-auto mb-2"><i class="fa-solid fa-dumbbell"></i></div>
-            <h4 class="font-bold text-xs text-slate-800">رياضة ولياقة</h4>
-          </div>
-          <div onclick="filterCategoryAndNavigate('عدد وأدوات مهنية')" class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm text-center hover:border-indigo-500 hover:shadow-md cursor-pointer transition active:scale-95">
-            <div class="w-10 h-10 bg-orange-50 text-orange-600 rounded-xl flex items-center justify-center text-lg mx-auto mb-2"><i class="fa-solid fa-screwdriver-wrench"></i></div>
-            <h4 class="font-bold text-xs text-slate-800">عدد وأدوات</h4>
-          </div>
-          <div onclick="filterCategoryAndNavigate('كتب وقرطاسية')" class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm text-center hover:border-indigo-500 hover:shadow-md cursor-pointer transition active:scale-95">
-            <div class="w-10 h-10 bg-yellow-50 text-yellow-600 rounded-xl flex items-center justify-center text-lg mx-auto mb-2"><i class="fa-solid fa-book"></i></div>
-            <h4 class="font-bold text-xs text-slate-800">كتب وقرطاسية</h4>
-          </div>
-          <div onclick="filterCategoryAndNavigate('عقارات ومقاولات')" class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm text-center hover:border-indigo-500 hover:shadow-md cursor-pointer transition active:scale-95">
-            <div class="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center text-lg mx-auto mb-2"><i class="fa-solid fa-building"></i></div>
-            <h4 class="font-bold text-xs text-slate-800">عقارات ومقاولات</h4>
-          </div>
-          <div onclick="filterCategoryAndNavigate('أخرى')" class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm text-center hover:border-indigo-500 hover:shadow-md cursor-pointer transition active:scale-95">
-            <div class="w-10 h-10 bg-slate-50 text-slate-600 rounded-xl flex items-center justify-center text-lg mx-auto mb-2"><i class="fa-solid fa-boxes-stacked"></i></div>
-            <h4 class="font-bold text-xs text-slate-800">أقسام أخرى</h4>
-          </div>
-        </div>
+        <div id="home-categories-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2.5 sm:gap-3"></div>
       </div>
     </section>
 
@@ -211,7 +151,6 @@
     <section id="page-register" class="hidden max-w-xl mx-auto bg-white p-5 sm:p-8 rounded-2xl sm:rounded-3xl shadow-sm border border-slate-200">
       <div class="text-center mb-5">
         <h2 class="text-xl sm:text-2xl font-black text-indigo-950">إنشاء بروفايل جديد</h2>
-        <p class="text-xs text-slate-500 mt-1">سجل عبر جوجل أو فيسبوك أو يدوياً</p>
       </div>
 
       <div class="grid grid-cols-2 gap-3 mb-5">
@@ -238,14 +177,6 @@
           </div>
         </div>
 
-        <div class="flex items-center gap-3 p-3 bg-slate-50 rounded-2xl border border-slate-200">
-          <img id="reg-avatar-preview" src="https://ui-avatars.com/api/?name=User&background=4f46e5&color=fff&size=128" alt="الصورة" class="w-12 h-12 sm:w-14 sm:h-14 rounded-full object-cover border-2 border-indigo-300 shrink-0">
-          <div class="flex-1 overflow-hidden">
-            <span class="text-xs font-bold block mb-1">صورة البروفايل (اختياري)</span>
-            <input type="file" id="reg-avatar-file" accept="image/*" onchange="handleAvatarUpload(event)" class="text-xs text-slate-500 w-full file:mr-2 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-[11px] file:font-bold file:bg-indigo-100 file:text-indigo-700 cursor-pointer">
-          </div>
-        </div>
-
         <div>
           <label class="block text-xs font-bold text-slate-700 mb-1">الاسم الكامل *</label>
           <input type="text" id="reg-name" required placeholder="مثال: يوسف الكردي" class="w-full border rounded-xl p-2.5 text-xs outline-none focus:ring-2 focus:ring-indigo-500">
@@ -259,18 +190,17 @@
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">رقم الهاتف (الأردن) *</label>
             <input type="tel" id="reg-phone" required placeholder="07XXXXXXXX" class="w-full border rounded-xl p-2.5 text-xs outline-none focus:ring-2 focus:ring-indigo-500 text-left" dir="ltr">
-            <span class="text-[10px] text-slate-400 block mt-0.5">يبدأ بـ 077 أو 078 أو 079 ويتكون من 10 أرقام</span>
           </div>
         </div>
 
         <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">المحافظة (العنوان) *</label>
+          <label class="block text-xs font-bold text-slate-700 mb-1">المحافظة *</label>
           <select id="reg-governorate" required class="w-full border rounded-xl p-2.5 text-xs outline-none focus:ring-2 focus:ring-indigo-500 bg-white">
             <option value="" disabled selected>-- اختر محافظتك في الأردن --</option>
             <option value="عمان">عمان (العاصمة)</option>
             <option value="إربد">إربد</option>
             <option value="الزرقاء">الزرقاء</option>
-            <option value="البلقاء">البلقاء (السلط)</option>
+            <option value="البلقاء">البلقاء</option>
             <option value="العقبة">العقبة</option>
             <option value="مادبا">مادبا</option>
             <option value="جرش">جرش</option>
@@ -297,7 +227,6 @@
     <section id="page-login" class="hidden max-w-md mx-auto bg-white p-5 sm:p-8 rounded-2xl sm:rounded-3xl shadow-sm border border-slate-200">
       <div class="text-center mb-5">
         <h2 class="text-xl sm:text-2xl font-black text-indigo-950">تسجيل الدخول</h2>
-        <p class="text-xs text-slate-500 mt-1">اختر طريقة الدخول المناسبة</p>
       </div>
 
       <div class="grid grid-cols-2 gap-3 mb-5">
@@ -314,12 +243,10 @@
           <label class="block text-xs font-bold text-slate-700 mb-1">البريد الإلكتروني أو الاسم *</label>
           <input type="text" id="login-user" required placeholder="اسمك أو بريدك" class="w-full border rounded-xl p-2.5 text-xs outline-none focus:ring-2 focus:ring-indigo-500">
         </div>
-
         <div>
           <label class="block text-xs font-bold text-slate-700 mb-1">كلمة المرور *</label>
           <input type="password" id="login-pass" required placeholder="••••••••" class="w-full border rounded-xl p-2.5 text-xs outline-none focus:ring-2 focus:ring-indigo-500">
         </div>
-
         <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition text-xs shadow-md">
           تسجيل الدخول
         </button>
@@ -329,15 +256,11 @@
     <!-- 4. صفحة طلب منتج جديد -->
     <section id="page-customer-dashboard" class="hidden space-y-6">
       <div class="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl shadow-sm border border-slate-200">
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2.5 border-b border-slate-100 pb-3 mb-4">
-          <div>
-            <h3 class="text-base sm:text-lg font-black text-indigo-950 flex items-center gap-2">
-              <i class="fa-solid fa-cart-plus text-indigo-600"></i> تقديم طلب شراء منتج جديد
-            </h3>
-            <p class="text-[11px] text-slate-500">ضع مواصفات السلعة وسيتنافس الجميع لخدمتك</p>
-          </div>
-
-          <label class="flex items-center gap-2 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-xl text-xs cursor-pointer hover:bg-slate-100 transition">
+        <div class="flex justify-between items-center border-b pb-3 mb-4">
+          <h3 class="text-base sm:text-lg font-black text-indigo-950 flex items-center gap-2">
+            <i class="fa-solid fa-cart-plus text-indigo-600"></i> تقديم طلب شراء منتج جديد
+          </h3>
+          <label class="flex items-center gap-2 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-xl text-xs cursor-pointer">
             <input type="checkbox" id="req-reveal-phone" class="rounded text-indigo-600">
             <span class="font-semibold text-slate-700 text-[11px]">إظهار رقم هاتفي في هذا الطلب</span>
           </label>
@@ -352,22 +275,8 @@
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
               <label class="block text-xs font-bold text-slate-700 mb-1">نوع وتصنيف المنتج *</label>
-              <select id="req-category" class="w-full border rounded-xl p-2.5 text-xs outline-none focus:ring-2 focus:ring-indigo-500 bg-white">
-                <option value="أجهزة كهربائية ومنزلية">أجهزة كهربائية ومنزلية</option>
-                <option value="هواتف وإلكترونيات">هواتف وإلكترونيات</option>
-                <option value="كمبيوتر ولابتوب">كمبيوتر ولابتوب</option>
-                <option value="ملابس وأزياء">ملابس وأزياء</option>
-                <option value="قطع سيارات وإكسسوارات">قطع سيارات وإكسسوارات</option>
-                <option value="أثاث وديكور">أثاث وديكور</option>
-                <option value="مستلزمات أطفال وألعاب">مستلزمات أطفال وألعاب</option>
-                <option value="رياضة ولياقة">رياضة ولياقة</option>
-                <option value="عدد وأدوات مهنية">عدد وأدوات مهنية</option>
-                <option value="كتب وقرطاسية">كتب وقرطاسية</option>
-                <option value="عقارات ومقاولات">عقارات ومقاولات</option>
-                <option value="أخرى">أخرى</option>
-              </select>
+              <select id="req-category" class="w-full border rounded-xl p-2.5 text-xs outline-none focus:ring-2 focus:ring-indigo-500 bg-white"></select>
             </div>
-
             <div>
               <label class="block text-xs font-bold text-slate-700 mb-1">الحد الأدنى للميزانية (د.أ) *</label>
               <input type="number" id="req-budget-min" required placeholder="مثال: 150" class="w-full border rounded-xl p-2.5 text-xs outline-none focus:ring-2 focus:ring-indigo-500">
@@ -382,17 +291,14 @@
             <div>
               <label class="block text-xs font-bold text-slate-700 mb-1">حالة المنتج المطلوبة: *</label>
               <div class="grid grid-cols-3 gap-1.5">
-                <label class="text-center border p-2 rounded-xl text-xs cursor-pointer hover:bg-indigo-50/50 flex items-center justify-center gap-1">
-                  <input type="radio" name="req-condition" value="جديد" checked class="text-indigo-600">
-                  <span class="text-[11px]">جديد</span>
+                <label class="text-center border p-2 rounded-xl text-xs cursor-pointer hover:bg-indigo-50 flex items-center justify-center gap-1">
+                  <input type="radio" name="req-condition" value="جديد" checked> <span>جديد</span>
                 </label>
-                <label class="text-center border p-2 rounded-xl text-xs cursor-pointer hover:bg-indigo-50/50 flex items-center justify-center gap-1">
-                  <input type="radio" name="req-condition" value="مستعمل" class="text-indigo-600">
-                  <span class="text-[11px]">مستعمل</span>
+                <label class="text-center border p-2 rounded-xl text-xs cursor-pointer hover:bg-indigo-50 flex items-center justify-center gap-1">
+                  <input type="radio" name="req-condition" value="مستعمل"> <span>مستعمل</span>
                 </label>
-                <label class="text-center border p-2 rounded-xl text-xs cursor-pointer hover:bg-indigo-50/50 flex items-center justify-center gap-1">
-                  <input type="radio" name="req-condition" value="لا يهم" class="text-indigo-600">
-                  <span class="text-[11px]">لا يهم</span>
+                <label class="text-center border p-2 rounded-xl text-xs cursor-pointer hover:bg-indigo-50 flex items-center justify-center gap-1">
+                  <input type="radio" name="req-condition" value="لا يهم"> <span>لا يهم</span>
                 </label>
               </div>
             </div>
@@ -400,17 +306,14 @@
             <div>
               <label class="block text-xs font-bold text-slate-700 mb-1">خيارات التوصيل: *</label>
               <div class="grid grid-cols-3 gap-1.5">
-                <label class="text-center border p-2 rounded-xl text-xs cursor-pointer hover:bg-indigo-50/50 flex items-center justify-center gap-1">
-                  <input type="radio" name="req-delivery-pref" value="مع توصيل" checked class="text-indigo-600">
-                  <span class="text-[11px]">مع توصيل</span>
+                <label class="text-center border p-2 rounded-xl text-xs cursor-pointer hover:bg-indigo-50 flex items-center justify-center gap-1">
+                  <input type="radio" name="req-delivery-pref" value="مع توصيل" checked> <span>مع توصيل</span>
                 </label>
-                <label class="text-center border p-2 rounded-xl text-xs cursor-pointer hover:bg-indigo-50/50 flex items-center justify-center gap-1">
-                  <input type="radio" name="req-delivery-pref" value="بدون توصيل (استلام)" class="text-indigo-600">
-                  <span class="text-[11px]">استلام</span>
+                <label class="text-center border p-2 rounded-xl text-xs cursor-pointer hover:bg-indigo-50 flex items-center justify-center gap-1">
+                  <input type="radio" name="req-delivery-pref" value="بدون توصيل (استلام)"> <span>استلام</span>
                 </label>
-                <label class="text-center border p-2 rounded-xl text-xs cursor-pointer hover:bg-indigo-50/50 flex items-center justify-center gap-1">
-                  <input type="radio" name="req-delivery-pref" value="لا يهم" class="text-indigo-600">
-                  <span class="text-[11px]">لا يهم</span>
+                <label class="text-center border p-2 rounded-xl text-xs cursor-pointer hover:bg-indigo-50 flex items-center justify-center gap-1">
+                  <input type="radio" name="req-delivery-pref" value="لا يهم"> <span>لا يهم</span>
                 </label>
               </div>
             </div>
@@ -447,12 +350,9 @@
     <section id="page-my-requests" class="hidden space-y-4">
       <div class="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-slate-200 shadow-sm">
         <div class="flex justify-between items-center mb-4 border-b pb-3">
-          <div>
-            <h3 class="text-base font-black text-indigo-950 flex items-center gap-2">
-              <i class="fa-solid fa-boxes-packing text-indigo-600"></i> طلبات الشراء الخاصة بي
-            </h3>
-            <p class="text-[11px] text-slate-500">إدارة طلباتك، واختيار التاجر المناسب، أو طلب شركة توصيل</p>
-          </div>
+          <h3 class="text-base font-black text-indigo-950 flex items-center gap-2">
+            <i class="fa-solid fa-boxes-packing text-indigo-600"></i> طلبات الشراء الخاصة بي
+          </h3>
           <button onclick="handleRequestNewProductNav()" class="bg-indigo-600 text-white font-bold text-xs px-3 py-1.5 rounded-xl hover:bg-indigo-700 transition">
             + طلب جديد
           </button>
@@ -468,32 +368,33 @@
           <h3 class="text-base font-black text-emerald-950 flex items-center gap-2">
             <i class="fa-solid fa-handshake-simple text-emerald-600"></i> عروض الأسعار التي قدمتها
           </h3>
-          <p class="text-[11px] text-slate-500">متابعة حالة العروض وما إذا تم قبولها من الزبائن</p>
         </div>
         <div id="my-offers-container" class="space-y-3"></div>
       </div>
     </section>
 
-    <!-- 7. صفحة "تنبيهات الأقسام بالبريد للتاجر" (فيتشر جديدة) -->
-    <section id="page-merchant-alerts" class="hidden space-y-4">
+    <!-- 7. صفحة "إدارة التنبيهات" (الموحدة للعميل والتاجر معاً) -->
+    <section id="page-alerts-management" class="hidden space-y-4">
       <div class="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-slate-200 shadow-sm">
         <div class="mb-4 border-b pb-3">
           <h3 class="text-base font-black text-indigo-950 flex items-center gap-2">
-            <i class="fa-solid fa-envelope-circle-check text-indigo-600"></i> إعدادات تنبيهات البريد الإلكتروني للطلبات الجديدة
+            <i class="fa-solid fa-bell-concierge text-indigo-600"></i> صفحة إدارة تنبيهات البريد الإلكتروني (للعميل والتاجر)
           </h3>
-          <p class="text-[11px] text-slate-500">اختر الأقسام التي ترغب في استلام إشعار بريدي فوري وصورة السلعة عند نزول أي طلب فيها</p>
+          <p class="text-[11px] text-slate-500">اختر الأقسام التي تهمك ليصلك تنبيه بريدي فوري وصورة السلعة عند نزول أي طلب فيها (تتطلب موافقة السوبر أدمن)</p>
         </div>
 
-        <!-- حالة الاشتراك من السوبر أدمن -->
-        <div id="merchant-alert-status-card" class="p-4 rounded-2xl mb-4 text-xs"></div>
+        <!-- كارت حالة الاشتراك والموافقة -->
+        <div id="user-alert-status-card" class="p-4 rounded-2xl mb-4 text-xs"></div>
 
-        <form onsubmit="handleSaveMerchantCategories(event)" class="space-y-4">
-          <label class="block text-xs font-bold text-slate-800 mb-2">الأقسام المتاحة للاشتراك:</label>
-          <div id="merchant-categories-checkboxes" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 text-xs"></div>
+        <form onsubmit="handleRequestAlertActivation(event)" class="space-y-4">
+          <label class="block text-xs font-bold text-slate-800 mb-2">اختر الأقسام التي تريد تنبيهات عليها (Checkboxes):</label>
+          <div id="alerts-categories-checkboxes" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 text-xs"></div>
 
-          <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 px-6 rounded-xl text-xs transition shadow-md">
-            حفظ اختيارات الأقسام 💾
-          </button>
+          <div class="pt-2">
+            <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 px-6 rounded-xl text-xs transition shadow-md flex items-center gap-2">
+              <i class="fa-solid fa-paper-plane"></i> إرسال طلب تفعيل التنبيهات للسوبر أدمن
+            </button>
+          </div>
         </form>
       </div>
     </section>
@@ -505,9 +406,7 @@
           <h2 class="font-black text-base sm:text-lg flex items-center gap-2">
             <i class="fa-solid fa-store text-emerald-400"></i> سوق الطلبات وعروض الأسعار في الأردن
           </h2>
-          <p class="text-[11px] sm:text-xs text-emerald-200">
-            تصفح طلبات الشراء واطلع على عروض الأسعار (يتم عرض 5 طلبات بكل صفحة)
-          </p>
+          <p class="text-[11px] sm:text-xs text-emerald-200">تصفح طلبات الشراء وقدم عروضك (5 طلبات بكل صفحة)</p>
         </div>
         <div class="flex items-center gap-2 text-xs self-end sm:self-center">
           <span class="text-emerald-300 text-[11px]">القسم:</span>
@@ -519,13 +418,12 @@
       <div id="feed-pagination" class="flex justify-center items-center gap-2 pt-4"></div>
     </section>
 
-    <!-- 9. مركز المحادثات الخاصة (القائمة الجانبية مقتصرة حصراً على من تحدثت معهم) -->
+    <!-- 9. مركز المحادثات الخاصة -->
     <section id="page-chat-center" class="hidden max-w-4xl mx-auto bg-white rounded-2xl sm:rounded-3xl border border-slate-200 shadow-sm overflow-hidden flex flex-col md:flex-row h-[550px] sm:h-[600px]">
       <div class="w-full md:w-1/3 border-b md:border-b-0 md:border-l border-slate-200 flex flex-col bg-slate-50 max-h-48 md:max-h-full">
         <div class="p-3 sm:p-4 border-b border-slate-200 font-black text-xs sm:text-sm text-indigo-950 flex items-center gap-2">
           <i class="fa-solid fa-inbox text-indigo-600"></i> محادثاتي الجارية
         </div>
-        <!-- تعرض فقط وفقط من تم التحدث معه -->
         <div id="chat-threads-list" class="flex-1 overflow-y-auto divide-y divide-slate-100"></div>
       </div>
 
@@ -553,7 +451,7 @@
       </div>
     </section>
 
-    <!-- 10. لوحة الإدارة (تتضمن قسم إدارة التنبيهات للسوبر أدمن فقط) -->
+    <!-- 10. لوحة الإدارة (مع قسم السوبر أدمن لتفعيل التنبيهات بالتقويم) -->
     <section id="page-admin" class="hidden space-y-5 sm:space-y-6">
       <div class="bg-slate-900 text-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl shadow-lg space-y-4">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
@@ -561,12 +459,12 @@
             <h2 class="text-lg sm:text-xl font-black text-amber-400 flex items-center gap-2">
               <i class="fa-solid fa-crown"></i> لوحة المدير العام للمنصة 👑
             </h2>
-            <p class="text-xs text-slate-300">مراقبة الطلبات والعروض، تفعيل اشتراكات التنبيهات بالتقويم، وسلة المحذوفات</p>
+            <p class="text-xs text-slate-300">مراقبة الطلبات، واعتماد تفعيل التنبيهات بالتقويم للمستخدمين</p>
           </div>
           <div class="flex gap-2 flex-wrap">
             <button onclick="toggleAdminView('active')" id="btn-admin-active" class="text-xs bg-indigo-600 px-3 py-1.5 rounded-xl font-bold transition">الطلبات النشطة</button>
             <button onclick="toggleAdminView('super-alerts')" id="btn-admin-super-alerts" class="text-xs bg-slate-800 hover:bg-slate-700 text-amber-300 px-3 py-1.5 rounded-xl font-bold transition flex items-center gap-1">
-              <i class="fa-solid fa-calendar-days"></i> اشتراكات التنبيهات (سوبر أدمن)
+              <i class="fa-solid fa-calendar-check"></i> طلبات التنبيهات الواردة (سوبر أدمن)
             </button>
             <button onclick="toggleAdminView('deleted')" id="btn-admin-deleted" class="text-xs bg-slate-800 hover:bg-slate-700 text-rose-300 px-3 py-1.5 rounded-xl font-bold transition flex items-center gap-1">
               <i class="fa-solid fa-trash-can"></i> المحذوفات
@@ -594,18 +492,18 @@
         </div>
       </div>
 
-      <!-- تبويب إدارة اشتراكات التنبيهات بالتقويم (خاص بالسوبر أدمن فقط) -->
+      <!-- تبويب تفعيل التنبيهات بالتقويم (خاص بالسوبر أدمن فقط عند ورود طلب) -->
       <div id="admin-super-alerts-section" class="hidden bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-amber-200 shadow-sm space-y-4">
         <div class="flex justify-between items-center border-b pb-3">
           <div>
             <h3 class="font-black text-sm sm:text-base text-amber-950 flex items-center gap-2">
-              <i class="fa-solid fa-calendar-check text-amber-600"></i> تفعيل تنبيهات البريد الإلكتروني للتجار (خاص بالسوبر أدمن فقط)
+              <i class="fa-solid fa-bell-ring text-amber-600"></i> طلبات تفعيل التنبيهات الواردة من المستخدمين (عملاء وتجار)
             </h3>
-            <p class="text-[11px] text-slate-500">حدد تاريخ انتهاء التفعيل واضغط تفعيل ليتم إرسال إيميلات للتاجر بالطلبات الجديدة</p>
+            <p class="text-[11px] text-slate-500">حدد تاريخ انتهاء الصلاحية من التقويم واضغط موافقة لتفعيل إرسال التنبيهات بالبريد</p>
           </div>
-          <span class="text-xs bg-amber-50 text-amber-800 font-bold px-3 py-1 rounded-full border border-amber-200">صلاحية حصرية</span>
+          <span class="text-xs bg-amber-50 text-amber-800 font-bold px-3 py-1 rounded-full border border-amber-200">صلاحية السوبر أدمن</span>
         </div>
-        <div id="super-admin-merchants-alerts-list" class="space-y-3"></div>
+        <div id="super-admin-alerts-requests-list" class="space-y-3"></div>
       </div>
 
       <!-- تبويب الطلبات النشطة والعروض المدمجة -->
@@ -614,7 +512,6 @@
           <h3 class="font-black text-sm sm:text-base text-slate-900 flex items-center gap-2">
             <i class="fa-solid fa-list-check text-indigo-600"></i> الطلبات النشطة والعروض التابعة لها
           </h3>
-          <span class="text-xs bg-indigo-50 text-indigo-700 font-bold px-3 py-1 rounded-full">الطلبات الحالية</span>
         </div>
         <div id="admin-unified-requests-offers" class="space-y-4"></div>
       </div>
@@ -632,7 +529,7 @@
 
   <!-- ==================== نوافذ المودال (Modals) ==================== -->
 
-  <!-- مودال اختيار التاجر وخدمة التوصيل بالشركة (مطلوب) -->
+  <!-- مودال اختيار التاجر وشركة الشحن -->
   <div id="modal-accept-merchant" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm hidden flex items-center justify-center p-3 sm:p-4 z-50">
     <div class="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-6 max-w-md w-full shadow-2xl space-y-4">
       <div class="border-b pb-2.5">
@@ -641,19 +538,17 @@
       </div>
 
       <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs space-y-1">
-        <div>السعر المتفق عليه: <b id="accept-price-display" class="text-emerald-700"></b> د.أ</div>
+        <div>السعر: <b id="accept-price-display" class="text-emerald-700"></b> د.أ</div>
         <div>رسوم توصيل التاجر: <b id="accept-fee-display"></b> د.أ</div>
       </div>
 
-      <!-- خدمة التوصيل عبر شركة شحن وسيطة (اختيارية) -->
       <div class="p-3.5 bg-indigo-50/60 rounded-2xl border border-indigo-200 space-y-2.5">
         <label class="flex items-center gap-2 cursor-pointer font-bold text-xs text-indigo-950">
           <input type="checkbox" id="accept-company-delivery-checkbox" onchange="toggleDeliveryCompanySelect()" class="rounded text-indigo-600">
-          <span>طلب خدمة التوصيل عبر شركة شحن وسيطة (اختياري) 🚚</span>
+          <span>طلب خدمة التوصيل عبر شركة شحن معتمدة (اختياري) 🚚</span>
         </label>
         
         <div id="delivery-company-selector-box" class="hidden space-y-2 pt-1">
-          <label class="block text-[11px] font-bold text-slate-700">اختر شركة التوصيل المعتمدة:</label>
           <select id="accept-delivery-company-select" class="w-full border rounded-xl p-2 text-xs bg-white outline-none">
             <option value="شركة أرامكس الأردن (3.00 د.أ)">شركة أرامكس الأردن (3.00 د.أ)</option>
             <option value="شركة التوصيل السريع Express (2.50 د.أ)">شركة التوصيل السريع Express (2.50 د.أ)</option>
@@ -677,10 +572,7 @@
   <div id="modal-offer" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm hidden flex items-center justify-center p-3 sm:p-4 z-50">
     <div class="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 max-w-lg w-full shadow-2xl max-h-[92vh] overflow-y-auto space-y-3.5">
       <div class="flex justify-between items-center border-b pb-2.5">
-        <div>
-          <h4 class="font-black text-sm sm:text-base text-slate-900">تقديم عرض سعر على الطلب</h4>
-          <span id="modal-req-title-display" class="text-[11px] text-indigo-600 font-semibold block"></span>
-        </div>
+        <h4 class="font-black text-sm sm:text-base text-slate-900">تقديم عرض سعر</h4>
         <button onclick="closeOfferModal()" class="text-slate-400 hover:text-slate-600 text-2xl font-bold">&times;</button>
       </div>
 
@@ -689,7 +581,7 @@
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
           <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">سعر السلعة المعروضة (د.أ) *</label>
+            <label class="block text-xs font-bold text-slate-700 mb-1">سعر السلعة (د.أ) *</label>
             <input type="number" id="modal-offer-price" required placeholder="مثال: 190" class="w-full border rounded-xl p-2.5 text-xs outline-none focus:ring-2 focus:ring-indigo-500">
           </div>
           <div>
@@ -699,33 +591,19 @@
         </div>
 
         <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">رقم هاتفك للتواصل *</label>
+          <label class="block text-xs font-bold text-slate-700 mb-1">رقم الهاتف *</label>
           <input type="tel" id="modal-offer-phone" required class="w-full border rounded-xl p-2.5 text-xs outline-none focus:ring-2 focus:ring-indigo-500 text-left" dir="ltr">
         </div>
 
-        <div class="space-y-2 py-2 border-y border-slate-100 text-xs">
-          <label class="flex items-center gap-2 cursor-pointer">
-            <input type="checkbox" id="modal-offer-shipping" class="rounded text-indigo-600">
-            <span class="font-semibold text-slate-800 text-[11px]">السعر الإجمالي شامل التوصيل 🚚</span>
-          </label>
-          <label class="flex items-center gap-2 cursor-pointer">
-            <input type="checkbox" id="modal-offer-negotiable" class="rounded text-indigo-600">
-            <span class="font-semibold text-slate-800 text-[11px]">السعر قابل للتفاوض البسيط 🤝</span>
-          </label>
-        </div>
-
         <div class="p-3 bg-slate-50 border border-slate-200 rounded-2xl space-y-2">
-          <div class="flex justify-between items-center">
-            <label class="block text-xs font-bold text-slate-700">إضافة صور للمنتج (حتى 3 صور - اختياري)</label>
-            <span class="text-[10px] text-indigo-600 font-bold" id="offer-images-count">0 / 3</span>
-          </div>
+          <label class="block text-xs font-bold text-slate-700">صور السلعة المعروضة (حتى 3 صور - اختياري)</label>
           <input type="file" id="modal-offer-images" accept="image/*" multiple onchange="handleOfferImagesUpload(event)" class="text-xs text-slate-500 w-full file:mr-2 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-[11px] file:font-bold file:bg-indigo-100 file:text-indigo-700 cursor-pointer">
           <div id="offer-images-preview" class="flex gap-2 flex-wrap pt-1"></div>
         </div>
 
         <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">تفاصيل ومواصفات العرض *</label>
-          <textarea id="modal-offer-note" rows="3" required placeholder="اكتب وصفاً دقيقاً للسلعة..." class="w-full border rounded-xl p-2.5 text-xs outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+          <label class="block text-xs font-bold text-slate-700 mb-1">ملاحظات ومواصفات العرض *</label>
+          <textarea id="modal-offer-note" rows="3" required placeholder="اكتب المواصفات بدقة..." class="w-full border rounded-xl p-2.5 text-xs outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
         </div>
 
         <div class="flex gap-2 pt-2">
@@ -764,18 +642,6 @@
           <span class="text-slate-400 block text-[10px]">خيار التوصيل:</span>
           <span id="detail-delivery" class="font-bold text-slate-800"></span>
         </div>
-        <div class="bg-slate-50 p-2 rounded-xl border border-slate-100">
-          <span class="text-slate-400 block text-[10px]">المحافظة:</span>
-          <span id="detail-city" class="font-bold text-slate-800"></span>
-        </div>
-        <div class="bg-slate-50 p-2 rounded-xl border border-slate-100">
-          <span class="text-slate-400 block text-[10px]">صاحب الطلب:</span>
-          <span id="detail-customer-name" class="font-bold text-slate-800"></span>
-        </div>
-        <div class="bg-slate-50 p-2 rounded-xl border border-slate-100">
-          <span class="text-slate-400 block text-[10px]">هاتف العميل:</span>
-          <span id="detail-customer-phone" class="font-bold text-slate-800"></span>
-        </div>
       </div>
 
       <div>
@@ -793,10 +659,7 @@
   <div id="modal-offer-details" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm hidden flex items-center justify-center p-3 sm:p-4 z-50">
     <div class="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 max-w-lg w-full shadow-2xl max-h-[90vh] overflow-y-auto space-y-3.5">
       <div class="flex justify-between items-center border-b pb-2.5">
-        <div>
-          <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">تفاصيل العرض الكاملة</span>
-          <h4 id="modal-offer-merchant-title" class="font-black text-base text-slate-900 mt-1"></h4>
-        </div>
+        <h4 id="modal-offer-merchant-title" class="font-black text-base text-slate-900 mt-1"></h4>
         <button onclick="closeOfferDetailsModal()" class="text-slate-400 hover:text-slate-600 text-2xl font-bold">&times;</button>
       </div>
 
@@ -809,15 +672,6 @@
           <span class="text-slate-400 block text-[10px]">رسوم التوصيل:</span>
           <span id="modal-offer-det-delivery" class="font-bold text-slate-800"></span>
         </div>
-        <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
-          <span class="text-slate-400 block text-[10px]">المحافظة:</span>
-          <span id="modal-offer-det-city" class="font-bold text-slate-800"></span>
-        </div>
-      </div>
-
-      <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-200 flex justify-between items-center text-xs">
-        <span class="text-slate-600 font-medium">رقم الهاتف:</span>
-        <span id="modal-offer-det-phone" class="font-bold text-slate-800"></span>
       </div>
 
       <div>
@@ -841,7 +695,7 @@
   <div id="modal-lightbox" class="fixed inset-0 bg-black/90 backdrop-blur-md hidden flex items-center justify-center p-3 z-50 cursor-pointer" onclick="closeLightbox()">
     <div class="relative max-w-3xl w-full max-h-[90vh] flex flex-col items-center">
       <img id="lightbox-img" class="max-w-full max-h-[85vh] object-contain rounded-xl shadow-2xl">
-      <span class="text-white text-xs mt-3 bg-black/50 px-3 py-1 rounded-full">انقر في أي مكان للإغلاق</span>
+      <span class="text-white text-xs mt-3 bg-black/50 px-3 py-1 rounded-full">انقر للإغلاق</span>
     </div>
   </div>
 
@@ -861,7 +715,6 @@
     let isSocialRegister = false;
     let currentFeedPage = 1;
     const ITEMS_PER_PAGE = 5;
-
     let selectedAcceptOfferData = null;
 
     let app = {
@@ -872,6 +725,7 @@
       messages: [],
       notifications: [],
       myOffers: [],
+      alertRequests: [],
       selectedCategoryFilter: "الكل",
       activeChatTarget: null,
       activeChatTargetId: 0
@@ -887,7 +741,6 @@
         app.users = resUsers;
 
         if (app.currentUser) {
-          // تحديث بيانات المستخدم الحالي
           const updatedSelf = resUsers.find(u => u.id === app.currentUser.id);
           if (updatedSelf) {
             app.currentUser = updatedSelf;
@@ -905,12 +758,14 @@
         }
 
         if (app.currentUser && app.currentUser.role === 'admin') {
-          const [resDel, resAllMsgs] = await Promise.all([
+          const [resDel, resAllMsgs, resAlertReqs] = await Promise.all([
             fetch('/api/admin/deleted-requests').then(r => r.json()),
-            fetch('/api/admin/all-messages').then(r => r.json())
+            fetch('/api/admin/all-messages').then(r => r.json()),
+            fetch('/api/admin/alert-activation-requests').then(r => r.json())
           ]);
           app.deletedRequests = resDel;
           app.allAdminMessages = resAllMsgs;
+          app.alertRequests = resAlertReqs;
         }
       } catch (err) {
         console.warn('تحديث البيانات...', err);
@@ -922,7 +777,6 @@
       if (app.currentUser) syncData();
     }, 3000);
 
-    // تصفير صورة الطلب
     function clearReqProductImage() {
       reqProductImageUploaded = null;
       document.getElementById('product-img-preview').src = '';
@@ -959,11 +813,11 @@
     }
 
     function navigateTo(pageId) {
-      if ((pageId === 'customer-dashboard' || pageId === 'my-requests' || pageId === 'my-offers' || pageId === 'merchant-alerts' || pageId === 'chat-center') && !app.currentUser) {
+      if ((pageId === 'customer-dashboard' || pageId === 'my-requests' || pageId === 'my-offers' || pageId === 'alerts-management' || pageId === 'chat-center') && !app.currentUser) {
         pageId = 'login';
       }
 
-      const pages = ['home', 'register', 'login', 'customer-dashboard', 'my-requests', 'my-offers', 'merchant-alerts', 'merchant-feed', 'chat-center', 'admin'];
+      const pages = ['home', 'register', 'login', 'customer-dashboard', 'my-requests', 'my-offers', 'alerts-management', 'merchant-feed', 'chat-center', 'admin'];
       pages.forEach(p => {
         const el = document.getElementById(`page-${p}`);
         if (el) el.classList.add('hidden');
@@ -971,13 +825,6 @@
 
       const target = document.getElementById(`page-${pageId}`);
       if (target) target.classList.remove('hidden');
-
-      if (pageId === 'register' && !isSocialRegister) {
-        regAvatarUploaded = DEFAULT_AVATAR;
-        document.getElementById('reg-avatar-preview').src = DEFAULT_AVATAR;
-        document.getElementById('password-field-container').classList.remove('hidden');
-        document.getElementById('reg-password').required = true;
-      }
 
       window.scrollTo({ top: 0, behavior: 'smooth' });
       render();
@@ -1005,7 +852,6 @@
       }
     });
 
-    // تسجيل الدخول والحساب
     function triggerSocialAuth(provider, mode) {
       const dummyEmail = prompt(`محاكاة الدخول عبر ${provider}:\nاكتب بريدك الإلكتروني:`, `user@${provider}.com`);
       if (!dummyEmail) return;
@@ -1022,16 +868,13 @@
           if (res.success) {
             app.currentUser = res.user;
             localStorage.setItem('jordan_user_session', JSON.stringify(res.user));
-            alert(`أهلاً بك يا ${res.user.name}!`);
             syncData();
             navigateTo('home');
           } else {
-            alert('الحساب غير مسجل مسبقاً، تفضل بإكمال التسجيل دون الحاجة لكلمة مرور.');
             isSocialRegister = true;
             document.getElementById('reg-name').value = dummyName;
             document.getElementById('reg-email').value = dummyEmail;
             regAvatarUploaded = dummyAvatar;
-            document.getElementById('reg-avatar-preview').src = dummyAvatar;
             document.getElementById('password-field-container').classList.add('hidden');
             document.getElementById('reg-password').required = false;
             navigateTo('register');
@@ -1042,10 +885,8 @@
         document.getElementById('reg-name').value = dummyName;
         document.getElementById('reg-email').value = dummyEmail;
         regAvatarUploaded = dummyAvatar;
-        document.getElementById('reg-avatar-preview').src = dummyAvatar;
         document.getElementById('password-field-container').classList.add('hidden');
         document.getElementById('reg-password').required = false;
-        alert('تم استيراد الاسم والصورة بنجاح! اختر صفتك (عميل أو تاجر) ورقم الهاتف والمحافظة فقط.');
         navigateTo('register');
       }
     }
@@ -1063,34 +904,14 @@
       }
     }
 
-    function handleAvatarUpload(e) {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(evt) {
-          regAvatarUploaded = evt.target.result;
-          document.getElementById('reg-avatar-preview').src = regAvatarUploaded;
-        };
-        reader.readAsDataURL(file);
-      }
-    }
-
-    function validateJordanPhone(phone) {
-      return /^07[789]\d{7}$/.test(phone.trim());
-    }
-
-    function validateEmail(email) {
-      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
-    }
-
     async function handleRegistration(e) {
       e.preventDefault();
       const phone = document.getElementById('reg-phone').value.trim();
       const email = document.getElementById('reg-email').value.trim();
       const role = document.querySelector('input[name="reg-account-type"]:checked').value;
 
-      if (!validateEmail(email)) return alert('يرجى إدخال بريد إلكتروني صحيح.');
-      if (!validateJordanPhone(phone)) return alert('رقم الهاتف غير صالح للاستخدام في الأردن (10 أرقام ويبدأ بـ 077 أو 078 أو 079).');
+      if (!/^07[789]\d{7}$/.test(phone)) return alert('رقم الهاتف يجب أن يتكون من 10 أرقام ويبدأ بـ 077 أو 078 أو 079.');
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return alert('يرجى كتابة بريد إلكتروني صحيح.');
 
       const payload = {
         name: document.getElementById('reg-name').value.trim(),
@@ -1113,13 +934,12 @@
         if (res.success) {
           app.currentUser = res.user;
           localStorage.setItem('jordan_user_session', JSON.stringify(res.user));
-          alert(`أهلاً بك يا ${res.user.name}! تم إنشاء حسابك بنجاح.`);
           isSocialRegister = false;
           syncData();
           if (role === 'merchant') navigateTo('home');
           else navigateTo('customer-dashboard');
         } else {
-          alert(res.message || 'حدث خطأ');
+          alert(res.message);
         }
       } catch (err) {
         alert('تعذر الاتصال بالسيرفر');
@@ -1161,7 +981,7 @@
       navigateTo('home');
     }
 
-    // إرسال طلب جديد
+    // إرسال طلب شراء
     async function handlePostRequest(e) {
       e.preventDefault();
       if (!app.currentUser) return handleRequestNewProductNav();
@@ -1195,12 +1015,8 @@
         }).then(r => r.json());
 
         if (res.success) {
-          document.getElementById('req-title').value = '';
-          document.getElementById('req-budget-min').value = '';
-          document.getElementById('req-budget-max').value = '';
-          document.getElementById('req-notes').value = '';
           clearReqProductImage();
-          alert('تم نشر طلبك بنجاح! وتم إرسال تنبيهات بريد للتجار المشتركين.');
+          alert('تم نشر طلبك بنجاح! وتم إرسال تنبيهات بريد إلكتروني للمستخدمين المفعلين من السوبر أدمن.');
           syncData();
           navigateTo('my-requests');
         }
@@ -1209,7 +1025,66 @@
       }
     }
 
-    // اختيار التاجر واعتماد العرض
+    // المستخدم يطلب تفعيل التنبيهات من السوبر أدمن
+    async function handleRequestAlertActivation(e) {
+      e.preventDefault();
+      const selected = [];
+      document.querySelectorAll('.alert-cat-chk:checked').forEach(c => selected.push(c.value));
+
+      if (selected.length === 0) {
+        return alert('يرجى اختيار قسم واحد على الأقل عبر الشيك بوكس (Checkboxes).');
+      }
+
+      try {
+        const res = await fetch('/api/alerts/request-activation', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId: app.currentUser.id, categories: selected })
+        }).then(r => r.json());
+
+        if (res.success) {
+          app.currentUser = res.user;
+          localStorage.setItem('jordan_user_session', JSON.stringify(res.user));
+          alert('تم إرسال طلب تفعيل التنبيهات للسوبر أدمن بنجاح! سيظهر إشعار في لوحة الإدارة لاعتماد التفعيل وتحديد مدة الصلاحية.');
+          syncData();
+        }
+      } catch (err) {
+        alert('خطأ أثناء إرسال الطلب');
+      }
+    }
+
+    // السوبر أدمن يعتمد تفعيل التنبيهات بالتقويم
+    async function handleSuperAdminActivation(targetUserId, action) {
+      let expiryDate = null;
+      if (action === 'approve') {
+        expiryDate = document.getElementById(`super-admin-date-${targetUserId}`).value;
+        if (!expiryDate) return alert('يرجى اختيار تاريخ انتهاء الصلاحية من التقويم أولاً!');
+      }
+
+      try {
+        const res = await fetch('/api/admin/handle-alert-activation', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            adminEmail: app.currentUser.email,
+            targetUserId: targetUserId,
+            action: action,
+            expiryDate: expiryDate
+          })
+        }).then(r => r.json());
+
+        if (res.success) {
+          alert(action === 'approve' ? 'تمت الموافقة وتفعيل التنبيهات بالتقويم بنجاح!' : 'تم رفض الطلب.');
+          syncData();
+        } else {
+          alert(res.message);
+        }
+      } catch (err) {
+        alert('حدث خطأ');
+      }
+    }
+
+    // اعتماد التاجر
     function openAcceptMerchantModal(reqId, offerId, merchantName, price, fee) {
       selectedAcceptOfferData = { reqId, offerId };
       document.getElementById('accept-merchant-name-display').innerText = merchantName;
@@ -1222,14 +1097,11 @@
 
     function closeAcceptMerchantModal() {
       document.getElementById('modal-accept-merchant').classList.add('hidden');
-      selectedAcceptOfferData = null;
     }
 
     function toggleDeliveryCompanySelect() {
       const isChecked = document.getElementById('accept-company-delivery-checkbox').checked;
-      const box = document.getElementById('delivery-company-selector-box');
-      if (isChecked) box.classList.remove('hidden');
-      else box.classList.add('hidden');
+      document.getElementById('delivery-company-selector-box').classList.toggle('hidden', !isChecked);
     }
 
     async function confirmAcceptOffer() {
@@ -1251,7 +1123,7 @@
 
         if (res.success) {
           closeAcceptMerchantModal();
-          alert('تم اعتماد التاجر بنجاح! وتم إرسال إشعار فوري له.');
+          alert('تم اعتماد التاجر واختيار العرض بنجاح!');
           syncData();
         }
       } catch (err) {
@@ -1259,89 +1131,19 @@
       }
     }
 
-    // حفظ أقسام التاجر للتنبيهات
-    async function handleSaveMerchantCategories(e) {
-      e.preventDefault();
-      const selected = [];
-      document.querySelectorAll('.merchant-cat-chk:checked').forEach(c => selected.push(c.value));
-
-      try {
-        const res = await fetch('/api/merchant/update-subscribed-categories', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ userId: app.currentUser.id, categories: selected })
-        }).then(r => r.json());
-
-        if (res.success) {
-          app.currentUser = res.user;
-          localStorage.setItem('jordan_user_session', JSON.stringify(res.user));
-          alert('تم حفظ الأقسام بنجاح!');
-          render();
-        }
-      } catch (err) {
-        alert('خطأ أثناء الحفظ');
-      }
-    }
-
-    // تفعيل اشتراك التاجر من قبل السوبر أدمن
-    async function activateMerchantAlerts(merchantId) {
-      const dateVal = document.getElementById(`super-admin-date-${merchantId}`).value;
-      if (!dateVal) return alert('يرجى اختيار تاريخ انتهاء الصلاحية من التقويم أولاً!');
-
-      try {
-        const res = await fetch('/api/admin/toggle-merchant-alerts', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            adminEmail: app.currentUser.email,
-            merchantId: merchantId,
-            alertsEnabled: true,
-            alertsExpiry: dateVal
-          })
-        }).then(r => r.json());
-
-        if (res.success) {
-          alert('تم تفعيل اشتراك تنبيهات التاجر بالتقويم بنجاح!');
-          syncData();
-        } else {
-          alert(res.message);
-        }
-      } catch (err) {
-        alert('حدث خطأ');
-      }
-    }
-
-    // إنهاء وحذف الطلب
-    async function finishAndDeleteRequest(reqId) {
-      if (!confirm('هل أنت متأكد من رغبتك في إنهاء وحذف هذا الطلب؟')) return;
-      try {
-        await fetch('/api/requests/delete', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ requestId: reqId })
-        });
-        alert('تم إنهاء وحذف الطلب بنجاح.');
-        syncData();
-      } catch (err) {
-        alert('حدث خطأ');
-      }
-    }
-
-    // تقديم عرض
+    // تقديم العرض
     function handleOfferImagesUpload(e) {
       const files = Array.from(e.target.files).slice(0, 3);
       offerUploadedImages = [];
       const previewBox = document.getElementById('offer-images-preview');
       previewBox.innerHTML = '';
-      document.getElementById('offer-images-count').innerText = `${files.length} / 3`;
-
       files.forEach((file) => {
         const reader = new FileReader();
         reader.onload = function(evt) {
           offerUploadedImages.push(evt.target.result);
           const thumb = document.createElement('img');
           thumb.src = evt.target.result;
-          thumb.className = "w-14 h-14 object-cover rounded-xl border-2 border-indigo-300 shadow-sm";
+          thumb.className = "w-14 h-14 object-cover rounded-xl border-2 border-indigo-300";
           previewBox.appendChild(thumb);
         };
         reader.readAsDataURL(file);
@@ -1352,11 +1154,9 @@
       if (!app.currentUser) return navigateTo('login');
       const req = app.requests.find(r => r.id === reqId);
       document.getElementById('modal-offer-req-id').value = reqId;
-      document.getElementById('modal-req-title-display').innerText = `${req.title} (الميزانية: ${req.budgetMin} - ${req.budgetMax} د.أ)`;
       document.getElementById('modal-offer-phone').value = app.currentUser.phone || '';
       document.getElementById('modal-offer-delivery-fee').value = "0";
       document.getElementById('offer-images-preview').innerHTML = '';
-      document.getElementById('offer-images-count').innerText = "0 / 3";
       offerUploadedImages = [];
       document.getElementById('modal-offer').classList.remove('hidden');
     }
@@ -1376,8 +1176,8 @@
         phone: document.getElementById('modal-offer-phone').value,
         price: parseFloat(document.getElementById('modal-offer-price').value),
         deliveryFee: parseFloat(document.getElementById('modal-offer-delivery-fee').value) || 0,
-        shipping: document.getElementById('modal-offer-shipping').checked,
-        negotiable: document.getElementById('modal-offer-negotiable').checked,
+        shipping: true,
+        negotiable: true,
         note: document.getElementById('modal-offer-note').value.trim(),
         images: [...offerUploadedImages]
       };
@@ -1391,7 +1191,7 @@
 
         if (res.success) {
           closeOfferModal();
-          alert('تم إرسال عرضك بنجاح!');
+          alert('تم إرسال العرض بنجاح!');
           syncData();
         }
       } catch (err) {
@@ -1467,21 +1267,11 @@
       document.getElementById('detail-budget').innerText = `من ${req.budgetMin} إلى ${req.budgetMax} د.أ`;
       document.getElementById('detail-condition').innerText = req.condition;
       document.getElementById('detail-delivery').innerText = req.deliveryPref;
-      document.getElementById('detail-city').innerText = req.customerCity;
-      document.getElementById('detail-customer-name').innerText = req.customerName;
-
-      if (!app.currentUser) {
-        document.getElementById('detail-customer-phone').innerHTML = `<span class="text-slate-400">079•••••• <button onclick="navigateTo('login')" class="text-indigo-600 underline text-[10px]">دخول</button></span>`;
-      } else {
-        document.getElementById('detail-customer-phone').innerText = req.showPhone ? req.customerPhone : "مخفي برغبة العميل";
-      }
-
       document.getElementById('detail-notes').innerText = req.notes || 'لا توجد ملاحظات إضافية.';
 
       const imgBox = document.getElementById('detail-image-box');
-      const imgEl = document.getElementById('detail-image');
       if (req.image) {
-        imgEl.src = req.image;
+        document.getElementById('detail-image').src = req.image;
         imgBox.classList.remove('hidden');
       } else {
         imgBox.classList.add('hidden');
@@ -1503,24 +1293,7 @@
       document.getElementById('modal-offer-merchant-title').innerText = `${offer.merchantName} (على: ${req.title})`;
       document.getElementById('modal-offer-det-price').innerText = `${offer.price} د.أ`;
       document.getElementById('modal-offer-det-delivery').innerText = offer.deliveryFee > 0 ? `${offer.deliveryFee} د.أ` : 'مجاني 🚚';
-      document.getElementById('modal-offer-det-city').innerText = offer.merchantCity;
       document.getElementById('modal-offer-det-note').innerText = offer.note;
-
-      if (!app.currentUser) {
-        document.getElementById('modal-offer-det-phone').innerHTML = `<span class="text-slate-400">078•••••• <button onclick="closeOfferDetailsModal(); navigateTo('login')" class="text-indigo-600 underline font-bold text-xs">سجل دخولك</button></span>`;
-        document.getElementById('modal-offer-chat-action-box').innerHTML = `
-          <button onclick="closeOfferDetailsModal(); navigateTo('login')" class="bg-indigo-50 text-indigo-700 hover:bg-indigo-100 px-4 py-2 rounded-xl text-xs font-bold transition">
-            سجل الدخول لبدء محادثة
-          </button>
-        `;
-      } else {
-        document.getElementById('modal-offer-det-phone').innerHTML = `<span class="text-slate-500 font-mono">078•••••• <a href="tel:${offer.phone}" class="text-emerald-700 font-bold underline mr-2">اتصال (${offer.phone})</a></span>`;
-        document.getElementById('modal-offer-chat-action-box').innerHTML = `
-          <button onclick="closeOfferDetailsModal(); setChatTarget('${offer.merchantName}', ${offer.merchantId})" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5">
-            <i class="fa-solid fa-comment"></i> دردشة مع صاحب العرض
-          </button>
-        `;
-      }
 
       const imgContainer = document.getElementById('modal-offer-det-images');
       imgContainer.innerHTML = '';
@@ -1552,7 +1325,6 @@
       document.getElementById('modal-lightbox').classList.add('hidden');
     }
 
-    // تحديث الواجهات
     function render() {
       const authBox = document.getElementById('header-auth');
       const notifWrapper = document.getElementById('notif-wrapper');
@@ -1560,16 +1332,13 @@
       const navAdmin = document.getElementById('nav-admin');
       const navMyReq = document.getElementById('nav-my-requests');
       const navMyOffers = document.getElementById('nav-my-offers');
-      const navAlerts = document.getElementById('nav-merchant-alerts');
+      const navAlerts = document.getElementById('nav-alerts-management');
 
       if (app.currentUser) {
         authBox.innerHTML = `
           <div class="flex items-center gap-1.5 bg-indigo-900/80 px-2 py-1 rounded-xl border border-indigo-700">
             <img src="${app.currentUser.avatar}" class="w-6 h-6 rounded-full object-cover">
-            <div class="text-right hidden sm:block">
-              <span class="text-xs font-bold block leading-none truncate max-w-[90px]">${app.currentUser.name}</span>
-              <span class="text-[9px] text-indigo-300">${app.currentUser.role === 'customer' ? 'عميل' : (app.currentUser.role === 'admin' ? (app.currentUser.isSuperAdmin ? 'سوبر أدمن' : 'مدير') : 'تاجر')} • ${app.currentUser.city}</span>
-            </div>
+            <span class="text-xs font-bold truncate max-w-[90px]">${app.currentUser.name}</span>
             <button onclick="handleLogout()" title="تسجيل الخروج" class="text-xs text-rose-300 hover:text-rose-100 p-1">
               <i class="fa fa-arrow-right-from-bracket"></i>
             </button>
@@ -1579,12 +1348,7 @@
         chatNotifBtn.classList.remove('hidden');
         navMyReq.classList.remove('hidden'); navMyReq.classList.add('flex');
         navMyOffers.classList.remove('hidden'); navMyOffers.classList.add('flex');
-
-        if (app.currentUser.role === 'merchant') {
-          navAlerts.classList.remove('hidden'); navAlerts.classList.add('flex');
-        } else {
-          navAlerts.classList.add('hidden');
-        }
+        navAlerts.classList.remove('hidden'); navAlerts.classList.add('flex');
 
         if (app.currentUser.role === 'admin') {
           navAdmin.classList.remove('hidden'); navAdmin.classList.add('flex');
@@ -1594,7 +1358,7 @@
       } else {
         authBox.innerHTML = `
           <button onclick="navigateTo('login')" class="text-xs font-bold hover:text-indigo-200 px-2 py-1">دخول</button>
-          <button onclick="navigateTo('register')" class="text-xs font-black bg-indigo-600 hover:bg-indigo-500 text-white px-2.5 py-1.5 rounded-xl shadow transition">إنشاء بروفايل</button>
+          <button onclick="navigateTo('register')" class="text-xs font-black bg-indigo-600 hover:bg-indigo-500 text-white px-2.5 sm:px-3 py-1.5 rounded-xl shadow transition">إنشاء بروفايل</button>
         `;
         notifWrapper.classList.add('hidden');
         chatNotifBtn.classList.add('hidden');
@@ -1604,12 +1368,11 @@
         navAdmin.classList.add('hidden');
       }
 
-      // إشعار الدردشة في الهيدر (فيتشر مطلوبة)
+      // إشعار وجود محادثة
       const chatBadge = document.getElementById('chat-badge');
       if (app.messages && app.messages.length > 0 && app.currentUser) {
         const hasIncoming = app.messages.some(m => m.toName === app.currentUser.name);
-        if (hasIncoming) chatBadge.classList.remove('hidden');
-        else chatBadge.classList.add('hidden');
+        chatBadge.classList.toggle('hidden', !hasIncoming);
       } else {
         chatBadge.classList.add('hidden');
       }
@@ -1621,17 +1384,31 @@
         badge.innerText = app.notifications.length;
         badge.classList.remove('hidden');
         notifList.innerHTML = app.notifications.map(n => `
-          <div onclick="navigateTo('my-requests'); toggleNotificationsDropdown()" class="p-3 hover:bg-indigo-50/70 cursor-pointer transition">
-            <div class="flex justify-between items-center mb-0.5">
-              <span class="font-bold text-slate-900">${n.title}</span>
-              <span class="text-[9px] text-slate-400">${n.time}</span>
-            </div>
-            <p class="text-slate-600 text-[11px] leading-relaxed">${n.text}</p>
+          <div class="p-3 hover:bg-indigo-50/70 transition">
+            <span class="font-bold text-slate-900 block text-xs">${n.title}</span>
+            <p class="text-slate-600 text-[11px]">${n.text}</p>
+            <span class="text-[9px] text-slate-400 block mt-1">${n.time}</span>
           </div>
         `).join('');
       } else {
         badge.classList.add('hidden');
         notifList.innerHTML = `<div class="p-4 text-center text-slate-400 text-xs">لا توجد تنبيهات جديدة</div>`;
+      }
+
+      // شبكة الأقسام في الرئيسية
+      const homeCats = document.getElementById('home-categories-grid');
+      if (homeCats) {
+        homeCats.innerHTML = ALL_CATEGORIES.map(cat => `
+          <div onclick="filterCategoryAndNavigate('${cat}')" class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm text-center hover:border-indigo-500 hover:shadow-md cursor-pointer transition">
+            <h4 class="font-bold text-xs text-slate-800">${cat}</h4>
+          </div>
+        `).join('');
+      }
+
+      // فئات طلب منتج جديد
+      const reqCatSelect = document.getElementById('req-category');
+      if (reqCatSelect && reqCatSelect.children.length === 0) {
+        reqCatSelect.innerHTML = ALL_CATEGORIES.map(c => `<option value="${c}">${c}</option>`).join('');
       }
 
       // صفحة "طلباتي"
@@ -1654,46 +1431,56 @@
           myOffersBox.innerHTML = app.myOffers.map(o => `
             <div class="p-3.5 bg-white border border-slate-200 rounded-2xl shadow-sm text-xs space-y-2">
               <div class="flex justify-between items-start">
-                <div>
-                  <span class="text-[10px] bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded font-bold">طلب: ${o.requestTitle || '---'}</span>
-                  <div class="mt-1 font-black text-emerald-700 text-sm">عرضك: ${o.price} د.أ (التوصيل: ${o.deliveryFee > 0 ? o.deliveryFee + ' د.أ' : 'مجاني'})</div>
-                </div>
+                <span class="text-[10px] bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded font-bold">طلب: ${o.requestTitle || '---'}</span>
                 <span class="text-[10px] px-2 py-0.5 rounded-full font-bold ${o.requestStatus === 'accepted' ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-600'}">
-                  ${o.requestStatus === 'accepted' ? 'تم اختيار تاجر ✓' : 'قيد الانتظار'}
+                  ${o.requestStatus === 'accepted' ? 'تم اعتماد التاجر ✓' : 'قيد الانتظار'}
                 </span>
               </div>
+              <div class="font-black text-emerald-700 text-sm">عرضك: ${o.price} د.أ (توصيل: ${o.deliveryFee > 0 ? o.deliveryFee + ' د.أ' : 'مجاني'})</div>
               <p class="text-slate-600 bg-slate-50 p-2 rounded-xl text-[11px]">"${o.note}"</p>
             </div>
           `).join('');
         }
       }
 
-      // صفحة تنبيهات الأقسام للتاجر
-      if (app.currentUser && app.currentUser.role === 'merchant') {
-        const statusCard = document.getElementById('merchant-alert-status-card');
-        const isExpValid = app.currentUser.alertsEnabled && app.currentUser.alertsExpiry && new Date(app.currentUser.alertsExpiry) >= new Date();
+      // صفحة "إدارة التنبيهات" (للعميل والتاجر معاً)
+      if (app.currentUser) {
+        const statusCard = document.getElementById('user-alert-status-card');
+        const status = app.currentUser.alertStatus || 'none';
+        const isExpValid = status === 'active' && app.currentUser.alertExpiry && new Date(app.currentUser.alertExpiry) >= new Date();
 
         if (isExpValid) {
           statusCard.className = "p-4 rounded-2xl mb-4 text-xs bg-emerald-50 border border-emerald-200 text-emerald-900";
           statusCard.innerHTML = `
-            <div class="font-bold flex items-center gap-1.5"><i class="fa-solid fa-circle-check text-emerald-600"></i> خدمة تنبيهات البريد مفعلة لك من الإدارة</div>
-            <div class="mt-1 text-[11px]">صالحة ومفعلة حتى تاريخ: <b class="font-mono">${app.currentUser.alertsExpiry}</b></div>
+            <div class="font-bold flex items-center gap-1.5"><i class="fa-solid fa-circle-check text-emerald-600"></i> خدمة التنبيهات بالبريد مفعلة لك بنجاح من السوبر أدمن</div>
+            <div class="mt-1 text-[11px]">مفعلة وصالحة حتى تاريخ: <b class="font-mono text-emerald-950">${app.currentUser.alertExpiry}</b></div>
           `;
-        } else {
+        } else if (status === 'pending') {
           statusCard.className = "p-4 rounded-2xl mb-4 text-xs bg-amber-50 border border-amber-200 text-amber-900";
           statusCard.innerHTML = `
-            <div class="font-bold flex items-center gap-1.5"><i class="fa-solid fa-circle-exclamation text-amber-600"></i> خدمة التنبيهات غير مفعلة حالياً</div>
-            <div class="mt-1 text-[11px]">يرجى التواصل مع السوبر أدمن لتفعيل اشتراكك وتحديد فترة الصلاحية بالتقويم لتصلك إيميلات بالطلبات الجديدة.</div>
+            <div class="font-bold flex items-center gap-1.5"><i class="fa-solid fa-clock text-amber-600"></i> طلبك قيد مراجعة السوبر أدمن حالياً ⏳</div>
+            <div class="mt-1 text-[11px]">تم إرسال إشعار للسوبر أدمن. بمجرد قيامه بالموافقة وتحديد تاريخ الصلاحية بالتقويم، ستعمل التنبيهات تلقائياً.</div>
+          `;
+        } else if (status === 'rejected') {
+          statusCard.className = "p-4 rounded-2xl mb-4 text-xs bg-rose-50 border border-rose-200 text-rose-900";
+          statusCard.innerHTML = `<div class="font-bold">نعتذر، تم رفض طلب التفعيل السابق. يمكنك تحديد الأقسام وإرسال طلب جديد.</div>`;
+        } else {
+          statusCard.className = "p-4 rounded-2xl mb-4 text-xs bg-slate-50 border border-slate-200 text-slate-800";
+          statusCard.innerHTML = `
+            <div class="font-bold mb-1">الخدمة تتطلب تفعيل من السوبر أدمن 🔒</div>
+            <div class="text-[11px] text-slate-600">حدد الأقسام التي تهمك أدناه واضغط زر (إرسال طلب تفعيل التنبيهات للسوبر أدمن) ليظهر له إشعار لاعتمادك بالتقويم.</div>
           `;
         }
 
-        const chkBox = document.getElementById('merchant-categories-checkboxes');
-        chkBox.innerHTML = ALL_CATEGORIES.map(cat => `
-          <label class="flex items-center gap-2 p-2.5 bg-slate-50 border rounded-xl cursor-pointer hover:bg-indigo-50">
-            <input type="checkbox" value="${cat}" class="merchant-cat-chk rounded text-indigo-600" ${app.currentUser.subscribedCategories?.includes(cat) ? 'checked' : ''}>
-            <span>${cat}</span>
-          </label>
-        `).join('');
+        const chkBox = document.getElementById('alerts-categories-checkboxes');
+        if (chkBox) {
+          chkBox.innerHTML = ALL_CATEGORIES.map(cat => `
+            <label class="flex items-center gap-2 p-2.5 bg-slate-50 border rounded-xl cursor-pointer hover:bg-indigo-50">
+              <input type="checkbox" value="${cat}" class="alert-cat-chk rounded text-indigo-600" ${app.currentUser.alertCategories?.includes(cat) ? 'checked' : ''}>
+              <span>${cat}</span>
+            </label>
+          `).join('');
+        }
       }
 
       // سوق الطلبات
@@ -1713,13 +1500,7 @@
 
       if (feedBox) {
         if (filteredRequests.length === 0) {
-          feedBox.innerHTML = `
-            <div class="bg-white border rounded-2xl sm:rounded-3xl p-8 sm:p-12 text-center text-slate-400 space-y-2">
-              <i class="fa-solid fa-box-open text-4xl text-slate-300"></i>
-              <p class="text-sm font-bold text-slate-600">لا توجد طلبات شراء منشورة في هذا القسم حالياً.</p>
-              <button onclick="handleRequestNewProductNav()" class="mt-2 bg-indigo-600 text-white text-xs font-bold px-4 py-2 rounded-xl">أضف طلباً جديداً</button>
-            </div>
-          `;
+          feedBox.innerHTML = `<div class="bg-white border rounded-2xl p-8 text-center text-slate-400 text-xs">لا توجد طلبات شراء منشورة في هذا القسم حالياً.</div>`;
           paginationBox.innerHTML = '';
         } else {
           feedBox.innerHTML = paginatedRequests.map(req => renderRequestCard(req, false)).join('');
@@ -1733,7 +1514,7 @@
         }
       }
 
-      // الدردشة (القائمة الجانبية مقتصرة حصراً وفقط على من تمت مراسلتهم)
+      // الدردشة (القائمة الجانبية مقتصرة حصراً على من تمت مراسلتهم)
       const activeName = app.activeChatTarget || "";
       document.getElementById('chat-target-name').innerText = activeName || "اختر محادثة";
       const chatBox = document.getElementById('chat-messages-box');
@@ -1756,7 +1537,6 @@
         }
       }
 
-      // استخراج جهات الاتصال التي تم التحدث معها فقط
       const threadsBox = document.getElementById('chat-threads-list');
       if (threadsBox && app.currentUser) {
         const myChatPartners = new Set();
@@ -1768,7 +1548,7 @@
         const partnersArray = Array.from(myChatPartners);
 
         if (partnersArray.length === 0) {
-          threadsBox.innerHTML = `<div class="p-4 text-center text-slate-400 text-xs">لا توجد محادثات سابقة. يمكنك بدء محادثة مباشرة بالضغط على "دردشة مع صاحب العرض" في أي طلب!</div>`;
+          threadsBox.innerHTML = `<div class="p-4 text-center text-slate-400 text-xs">لا توجد محادثات سابقة.</div>`;
         } else {
           threadsBox.innerHTML = partnersArray.map(name => {
             const partnerUser = app.users.find(u => u.name === name) || { avatar: DEFAULT_AVATAR, city: '' };
@@ -1785,7 +1565,7 @@
         }
       }
 
-      // لوحة الأدمن والسوبر أدمن
+      // لوحة الإدارة وقسم تفعيل التنبيهات بالتقويم للسوبر أدمن
       if (app.currentUser && app.currentUser.role === 'admin') {
         const totalOffers = app.requests.reduce((sum, r) => sum + r.offers.length, 0);
         document.getElementById('stat-users').innerText = app.users.length;
@@ -1793,29 +1573,33 @@
         document.getElementById('stat-offers').innerText = totalOffers;
         document.getElementById('stat-messages').innerText = app.allAdminMessages?.length || 0;
 
-        // قسم اشتراكات التنبيهات بالتقويم (خاص بالسوبر أدمن فقط)
-        const superAlertsList = document.getElementById('super-admin-merchants-alerts-list');
+        // قسم السوبر أدمن
+        const superAlertsList = document.getElementById('super-admin-alerts-requests-list');
         const superBtn = document.getElementById('btn-admin-super-alerts');
 
         if (app.currentUser.email === 'admin1@souq.jo') {
           superBtn.classList.remove('hidden');
-          const merchants = app.users.filter(u => u.role === 'merchant');
-          if (merchants.length === 0) {
-            superAlertsList.innerHTML = `<p class="text-xs text-slate-400">لا يوجد تجار مسجلين حتى الآن.</p>`;
+          const alertReqs = app.alertRequests || [];
+          if (alertReqs.length === 0) {
+            superAlertsList.innerHTML = `<p class="text-xs text-slate-400">لا توجد طلبات تفعيل واردة حالياً.</p>`;
           } else {
-            superAlertsList.innerHTML = merchants.map(m => `
-              <div class="p-3 bg-amber-50/40 border border-amber-200 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 text-xs">
+            superAlertsList.innerHTML = alertReqs.map(r => `
+              <div class="p-3 bg-amber-50/50 border border-amber-200 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 text-xs">
                 <div>
-                  <span class="font-bold text-slate-900">${m.name}</span>
-                  <span class="text-slate-500 font-mono mr-1">(${m.phone} • ${m.email})</span>
-                  <div class="text-[11px] text-amber-900 mt-1">الأقسام المختارة: <b>${m.subscribedCategories && m.subscribedCategories.length > 0 ? m.subscribedCategories.join('، ') : 'لم يختر أقساماً بعد'}</b></div>
-                  <div class="text-[10px] text-slate-500 mt-0.5">الحالة الحالية: ${m.alertsEnabled ? `<b class="text-emerald-700">مفعل حتى ${m.alertsExpiry}</b>` : '<b class="text-rose-700">غير مفعل</b>'}</div>
+                  <span class="font-black text-slate-900">${r.userName}</span>
+                  <span class="text-[10px] bg-slate-200 px-2 py-0.5 rounded font-bold mr-1">${r.userRole === 'merchant' ? 'تاجر' : 'عميل'}</span>
+                  <div class="text-slate-600 mt-0.5">${r.userPhone} • ${r.userEmail}</div>
+                  <div class="text-[11px] text-amber-900 mt-1">الأقسام المطلوبة: <b>${r.categories ? r.categories.join('، ') : '---'}</b></div>
+                  <div class="text-[10px] mt-0.5">الحالة: <b class="${r.status === 'active' ? 'text-emerald-700' : (r.status === 'pending' ? 'text-amber-700' : 'text-rose-700')}">${r.status === 'active' ? `مفعل حتى ${r.expiryDate}` : (r.status === 'pending' ? 'بانتظار موافقتك' : 'مرفوض')}</b></div>
                 </div>
 
                 <div class="flex items-center gap-2 w-full sm:w-auto">
-                  <input type="date" id="super-admin-date-${m.id}" value="${m.alertsExpiry || ''}" class="border rounded-xl p-1.5 text-xs bg-white">
-                  <button onclick="activateMerchantAlerts(${m.id})" class="bg-amber-600 hover:bg-amber-700 text-white font-bold px-3 py-1.5 rounded-xl text-xs transition shrink-0">
-                    تفعيل / تجديد بالتقويم 📅
+                  <input type="date" id="super-admin-date-${r.userId}" value="${r.expiryDate || ''}" class="border rounded-xl p-1.5 text-xs bg-white">
+                  <button onclick="handleSuperAdminActivation(${r.userId}, 'approve')" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-3 py-1.5 rounded-xl text-xs transition shrink-0">
+                    موافقة وتفعيل 📅
+                  </button>
+                  <button onclick="handleSuperAdminActivation(${r.userId}, 'reject')" class="bg-rose-600 hover:bg-rose-700 text-white font-bold px-2.5 py-1.5 rounded-xl text-xs transition shrink-0">
+                    رفض
                   </button>
                 </div>
               </div>
@@ -1830,12 +1614,9 @@
         if (unifiedContainer) {
           unifiedContainer.innerHTML = app.requests.map(req => `
             <div class="border border-slate-200 rounded-2xl p-4 bg-slate-50 space-y-3">
-              <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 pb-2 border-b border-slate-200">
+              <div class="flex justify-between items-start pb-2 border-b">
                 <div>
                   <span class="bg-indigo-100 text-indigo-800 text-[10px] font-bold px-2 py-0.5 rounded-full">${req.category}</span>
-                  <span class="text-[10px] font-bold ${req.status === 'accepted' ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-200 text-slate-700'} px-2 py-0.5 rounded-full mr-2">
-                    ${req.status === 'accepted' ? `تم اعتماد التاجر: ${req.acceptedMerchantName}` : 'مفتوح للمنافسة'}
-                  </span>
                   <h4 class="font-black text-sm text-slate-900 mt-1">${req.title}</h4>
                   <p class="text-xs text-slate-700 mt-0.5">العميل: <b>${req.customerName}</b> | هاتف: <b class="font-mono text-emerald-800">${req.customerPhone}</b></p>
                 </div>
@@ -1877,15 +1658,13 @@
               </div>
 
               <div class="flex items-center gap-1.5 flex-wrap self-end sm:self-center">
-                <!-- كبسة دردشة مع صاحب العرض مباشرة (مطلوب) -->
                 <button onclick="setChatTarget('${o.merchantName}', ${o.merchantId})" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-2.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1">
                   <i class="fa-solid fa-comment-dots"></i> دردشة مع صاحب العرض
                 </button>
 
-                <!-- كبسة اختيار التاجر والموافقة عليه لصاحب الطلب (مطلوب) -->
                 ${isOwner && req.status !== 'accepted' ? `
                   <button onclick="openAcceptMerchantModal(${req.id}, ${o.id}, '${o.merchantName}', ${o.price}, ${o.deliveryFee})" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition shadow-sm flex items-center gap-1">
-                    <i class="fa-solid fa-check"></i> اختيار التاجر والموافقة عليه
+                    <i class="fa-solid fa-check"></i> اختيار التاجر واعتماد العرض
                   </button>
                 ` : ''}
 
@@ -1905,9 +1684,7 @@
             <div class="space-y-1">
               <div class="flex items-center gap-1.5 flex-wrap">
                 <span class="text-[10px] bg-indigo-100 text-indigo-800 font-bold px-2 py-0.5 rounded-full">${req.category}</span>
-                <span class="text-[10px] bg-slate-100 text-slate-700 font-bold px-2 py-0.5 rounded-full">${req.condition}</span>
-                <span class="text-[10px] bg-sky-100 text-sky-800 font-bold px-2 py-0.5 rounded-full">${req.deliveryPref}</span>
-                <span class="text-[10px] bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded-full">${req.customerCity}</span>
+                <span class="text-[10px] bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded-full"><i class="fa fa-location-dot"></i> ${req.customerCity}</span>
                 ${req.status === 'accepted' ? `
                   <span class="text-[10px] bg-emerald-600 text-white font-bold px-2.5 py-0.5 rounded-full">
                     تم اعتماد التاجر: ${req.acceptedMerchantName} ✓
@@ -1936,7 +1713,6 @@
             </div>
           </div>
 
-          <!-- تفاصيل خدمة التوصيل المعتمدة إن طلبت -->
           ${req.companyDeliveryRequested ? `
             <div class="p-2.5 bg-indigo-50 border border-indigo-200 rounded-xl text-xs flex items-center gap-2 text-indigo-950 font-bold">
               <i class="fa-solid fa-truck-fast text-indigo-600"></i>
