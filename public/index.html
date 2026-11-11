@@ -42,18 +42,18 @@
           <i class="fa-solid fa-boxes-packing"></i> طلباتي
         </button>
         <button onclick="navigateTo('my-offers')" id="nav-my-offers" class="hidden px-3 py-1.5 rounded-lg hover:bg-indigo-900 transition items-center gap-1">
-          <i class="fa-solid fa-handshake-simple"></i> عروضي المقدمة
+          <i class="fa-solid fa-handshake-simple"></i> عروضي
         </button>
-        <!-- صفحة إدارة التنبيهات الموحدة للعميل والتاجر -->
         <button onclick="navigateTo('alerts-management')" id="nav-alerts-management" class="hidden px-3 py-1.5 rounded-lg hover:bg-indigo-900 transition items-center gap-1">
           <i class="fa-solid fa-bell-concierge"></i> إدارة التنبيهات
         </button>
-        <button onclick="navigateTo('admin')" id="nav-admin" class="hidden px-3 py-1.5 rounded-lg bg-amber-500/20 text-amber-300 hover:bg-amber-500/30 transition items-center gap-1">
+        <button onclick="navigateTo('admin')" id="nav-admin" class="hidden px-3 py-1.5 rounded-lg bg-amber-500/20 text-amber-300 hover:bg-amber-500/30 transition items-center gap-1 relative">
           <i class="fa-solid fa-shield-halved"></i> لوحة الإدارة
+          <span id="admin-pending-badge" class="hidden bg-rose-500 text-white text-[9px] px-1.5 rounded-full font-black">0</span>
         </button>
       </nav>
 
-      <!-- زر إشعارات الدردشة وجرس التنبيهات والدخول -->
+      <!-- إشعارات الدردشة والتنبيهات والدخول -->
       <div class="flex items-center gap-2">
         <button onclick="navigateTo('chat-center')" id="chat-notif-btn" class="hidden p-2 bg-indigo-900/90 hover:bg-indigo-800 rounded-xl text-indigo-200 hover:text-white transition relative" title="المحادثات الجارية">
           <i class="fa-solid fa-comments text-sm"></i>
@@ -69,7 +69,7 @@
           <div id="notifications-dropdown" class="hidden absolute left-0 mt-2 w-72 sm:w-80 bg-white text-slate-800 rounded-2xl shadow-2xl border border-slate-200 overflow-hidden z-50">
             <div class="p-3 bg-indigo-950 text-white flex justify-between items-center text-xs">
               <span class="font-bold flex items-center gap-1"><i class="fa-solid fa-bell text-amber-400"></i> التنبيهات الجديدة</span>
-              <button onclick="navigateTo('chat-center'); toggleNotificationsDropdown()" class="text-[10px] text-indigo-300 hover:underline">المحادثات</button>
+              <button onclick="navigateTo('alerts-management'); toggleNotificationsDropdown()" class="text-[10px] text-indigo-300 hover:underline">صندوق الإيميلات</button>
             </div>
             <div id="notifications-list" class="max-h-64 overflow-y-auto divide-y divide-slate-100 text-xs">
               <div class="p-4 text-center text-slate-400 text-xs">لا توجد تنبيهات جديدة</div>
@@ -124,7 +124,7 @@
           <span class="bg-indigo-600/70 text-indigo-200 text-xs px-3.5 py-1 rounded-full font-bold inline-block">سوق المناقصات والتجارة العكسية 🇯🇴</span>
           <h2 class="text-2xl sm:text-4xl md:text-5xl font-black leading-tight">اطلب أي سلعة.. ودع المتاجر تتنافس لتقديم أفضل سعر!</h2>
           <p class="text-xs sm:text-sm text-indigo-200 leading-relaxed">
-            المنصة تتيح للعملاء والتجار نشر طلبات الشراء وتقديم عروض الأسعار مع ميزة تنبيهات الإيميل المعتمدة من السوبر أدمن.
+            المنصة تتيح للعملاء والتجار نشر طلبات الشراء وتقديم عروض الأسعار، مع خدمة التنبيهات البريدية الفورية للأقسام المعتمدة من السوبر أدمن.
           </p>
           <div class="pt-2 flex flex-col sm:flex-row gap-2.5 justify-center md:justify-start">
             <button onclick="handleRequestNewProductNav()" class="bg-white text-indigo-950 font-black px-6 py-3 rounded-xl hover:bg-indigo-50 shadow-md text-xs transition">
@@ -133,6 +133,41 @@
             <button onclick="filterCategoryAndNavigate('الكل')" class="bg-indigo-700 border border-indigo-500 text-white font-black px-6 py-3 rounded-xl hover:bg-indigo-600 shadow-md text-xs transition">
               استعرض طلبات وعروض السوق 📢
             </button>
+          </div>
+        </div>
+        <div class="hidden md:flex bg-white/10 p-6 rounded-3xl border border-white/20 text-center w-64 shadow-2xl flex-col items-center">
+          <i class="fa-solid fa-handshake-angle text-5xl text-amber-400 mb-3"></i>
+          <h4 class="font-bold text-base">تبادل عروض ذكي</h4>
+          <p class="text-xs text-indigo-200 mt-1">عروض شفافة ومنافسة تضمن لك أفضل سعر دائماً</p>
+        </div>
+      </div>
+
+      <!-- خطوات عمل الموقع -->
+      <div>
+        <div class="text-center max-w-lg mx-auto mb-6">
+          <h3 class="font-black text-xl sm:text-2xl text-slate-900">كيف يعمل سوق الطلب المعكوس؟</h3>
+          <p class="text-xs text-slate-500 mt-1">4 خطوات بسيطة للحصول على أفضل سعر لأي سلعة تبحث عنها</p>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm text-center space-y-2">
+            <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center text-xl font-black mx-auto">1</div>
+            <h4 class="font-bold text-sm text-slate-800">1. انشر طلبك</h4>
+            <p class="text-xs text-slate-500 leading-relaxed">حدد اسم المنتج، ميزانيتك، خيار التوصيل، وصورة اختيارية.</p>
+          </div>
+          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm text-center space-y-2">
+            <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center text-xl font-black mx-auto">2</div>
+            <h4 class="font-bold text-sm text-slate-800">2. استقبل العروض</h4>
+            <p class="text-xs text-slate-500 leading-relaxed">يقوم التجار والمهتمون بتقديم عروض أسعار تفصيلية وتكلفة التوصيل.</p>
+          </div>
+          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm text-center space-y-2">
+            <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center text-xl font-black mx-auto">3</div>
+            <h4 class="font-bold text-sm text-slate-800">3. قارن واعتمد التاجر</h4>
+            <p class="text-xs text-slate-500 leading-relaxed">اختر التاجر المناسب وحدد خدمة شركة التوصيل المعتمدة إن أردت.</p>
+          </div>
+          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm text-center space-y-2">
+            <div class="w-12 h-12 bg-purple-50 text-purple-600 rounded-2xl flex items-center justify-center text-xl font-black mx-auto">4</div>
+            <h4 class="font-bold text-sm text-slate-800">4. تواصل وأتمم الصفقة</h4>
+            <p class="text-xs text-slate-500 leading-relaxed">تواصل فورياً عبر المحادثة الخاصة لإنهاء الشراء والاستلام.</p>
           </div>
         </div>
       </div>
@@ -174,6 +209,14 @@
               <input type="radio" name="reg-account-type" value="merchant" onchange="toggleRegStyle()" class="text-indigo-600">
               <span class="font-bold text-xs">تاجر</span>
             </label>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3 p-3 bg-slate-50 rounded-2xl border border-slate-200">
+          <img id="reg-avatar-preview" src="https://ui-avatars.com/api/?name=User&background=4f46e5&color=fff&size=128" alt="الصورة" class="w-12 h-12 sm:w-14 sm:h-14 rounded-full object-cover border-2 border-indigo-300 shrink-0">
+          <div class="flex-1 overflow-hidden">
+            <span class="text-xs font-bold block mb-1">صورة البروفايل (اختياري)</span>
+            <input type="file" id="reg-avatar-file" accept="image/*" onchange="handleAvatarUpload(event)" class="text-xs text-slate-500 w-full file:mr-2 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-[11px] file:font-bold file:bg-indigo-100 file:text-indigo-700 cursor-pointer">
           </div>
         </div>
 
@@ -229,6 +272,11 @@
         <h2 class="text-xl sm:text-2xl font-black text-indigo-950">تسجيل الدخول</h2>
       </div>
 
+      <div id="login-alert-banner" class="hidden bg-amber-50 border border-amber-300 text-amber-900 text-xs p-3 rounded-xl mb-4 font-bold flex items-center gap-2">
+        <i class="fa-solid fa-circle-exclamation text-amber-600 text-sm"></i>
+        <span>يرجى تسجيل الدخول أو إنشاء حساب جديد للمتابعة</span>
+      </div>
+
       <div class="grid grid-cols-2 gap-3 mb-5">
         <button type="button" onclick="triggerSocialAuth('google', 'login')" class="flex items-center justify-center gap-2 border border-slate-200 hover:bg-slate-50 p-2.5 rounded-xl text-xs font-bold transition">
           <i class="fa-brands fa-google text-red-500 text-sm"></i> الدخول بجوجل
@@ -256,7 +304,7 @@
     <!-- 4. صفحة طلب منتج جديد -->
     <section id="page-customer-dashboard" class="hidden space-y-6">
       <div class="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl shadow-sm border border-slate-200">
-        <div class="flex justify-between items-center border-b pb-3 mb-4">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b pb-3 mb-4">
           <h3 class="text-base sm:text-lg font-black text-indigo-950 flex items-center gap-2">
             <i class="fa-solid fa-cart-plus text-indigo-600"></i> تقديم طلب شراء منتج جديد
           </h3>
@@ -319,7 +367,6 @@
             </div>
           </div>
 
-          <!-- صورة المنتج -->
           <div class="p-3 bg-slate-50 border border-slate-200 rounded-2xl flex items-center gap-3">
             <div id="product-img-preview-box" class="w-14 h-14 bg-slate-200 rounded-xl flex items-center justify-center overflow-hidden border border-slate-300 shrink-0">
               <i class="fa-solid fa-image text-slate-400 text-lg" id="product-img-icon"></i>
@@ -373,21 +420,20 @@
       </div>
     </section>
 
-    <!-- 7. صفحة "إدارة التنبيهات" (الموحدة للعميل والتاجر معاً) -->
-    <section id="page-alerts-management" class="hidden space-y-4">
+    <!-- 7. صفحة "إدارة التنبيهات" (للعميل والتاجر + صندوق الإيميلات الواردة) -->
+    <section id="page-alerts-management" class="hidden space-y-6">
       <div class="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-slate-200 shadow-sm">
         <div class="mb-4 border-b pb-3">
           <h3 class="text-base font-black text-indigo-950 flex items-center gap-2">
             <i class="fa-solid fa-bell-concierge text-indigo-600"></i> صفحة إدارة تنبيهات البريد الإلكتروني (للعميل والتاجر)
           </h3>
-          <p class="text-[11px] text-slate-500">اختر الأقسام التي تهمك ليصلك تنبيه بريدي فوري وصورة السلعة عند نزول أي طلب فيها (تتطلب موافقة السوبر أدمن)</p>
+          <p class="text-[11px] text-slate-500">اختر الأقسام التي تهمك ليصلك تنبيه بريدي فوري وصورة السلعة عند نزول أي طلب فيها خلال الفترة المعتمدة من السوبر أدمن</p>
         </div>
 
-        <!-- كارت حالة الاشتراك والموافقة -->
         <div id="user-alert-status-card" class="p-4 rounded-2xl mb-4 text-xs"></div>
 
         <form onsubmit="handleRequestAlertActivation(event)" class="space-y-4">
-          <label class="block text-xs font-bold text-slate-800 mb-2">اختر الأقسام التي تريد تنبيهات عليها (Checkboxes):</label>
+          <label class="block text-xs font-bold text-slate-800 mb-2">اختر الأقسام التي تريد استلام تنبيهات عليها (Checkboxes):</label>
           <div id="alerts-categories-checkboxes" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 text-xs"></div>
 
           <div class="pt-2">
@@ -396,6 +442,20 @@
             </button>
           </div>
         </form>
+      </div>
+
+      <!-- صندوق تنبيهات البريد الإلكتروني الواردة للمستخدم -->
+      <div class="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-slate-200 shadow-sm space-y-4">
+        <div class="border-b pb-3 flex justify-between items-center">
+          <div>
+            <h3 class="text-sm sm:text-base font-black text-emerald-950 flex items-center gap-2">
+              <i class="fa-solid fa-envelope-open-text text-emerald-600"></i> صندوق تنبيهات البريد الإلكتروني الواردة لك
+            </h3>
+            <p class="text-[11px] text-slate-500">تصل هنا تنبيهات الطلبات الجديدة في أقسامك المختارة متضمنة تفاصيل وصورة السلعة</p>
+          </div>
+          <span id="user-emails-count" class="text-xs bg-emerald-100 text-emerald-800 font-bold px-2.5 py-1 rounded-full">0 رسائل</span>
+        </div>
+        <div id="user-email-inbox-list" class="space-y-3"></div>
       </div>
     </section>
 
@@ -451,7 +511,7 @@
       </div>
     </section>
 
-    <!-- 10. لوحة الإدارة (مع قسم السوبر أدمن لتفعيل التنبيهات بالتقويم) -->
+    <!-- 10. لوحة الإدارة المتكاملة -->
     <section id="page-admin" class="hidden space-y-5 sm:space-y-6">
       <div class="bg-slate-900 text-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl shadow-lg space-y-4">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
@@ -459,15 +519,19 @@
             <h2 class="text-lg sm:text-xl font-black text-amber-400 flex items-center gap-2">
               <i class="fa-solid fa-crown"></i> لوحة المدير العام للمنصة 👑
             </h2>
-            <p class="text-xs text-slate-300">مراقبة الطلبات، واعتماد تفعيل التنبيهات بالتقويم للمستخدمين</p>
+            <p class="text-xs text-slate-300">إدارة الطلبات، تفعيل التنبيهات بالتقويم (من تاريخ إلى تاريخ)، الأرشيف وسلة المحذوفات</p>
           </div>
           <div class="flex gap-2 flex-wrap">
-            <button onclick="toggleAdminView('active')" id="btn-admin-active" class="text-xs bg-indigo-600 px-3 py-1.5 rounded-xl font-bold transition">الطلبات النشطة</button>
-            <button onclick="toggleAdminView('super-alerts')" id="btn-admin-super-alerts" class="text-xs bg-slate-800 hover:bg-slate-700 text-amber-300 px-3 py-1.5 rounded-xl font-bold transition flex items-center gap-1">
-              <i class="fa-solid fa-calendar-check"></i> طلبات التنبيهات الواردة (سوبر أدمن)
+            <button onclick="toggleAdminView('active')" id="btn-admin-active" class="text-xs bg-indigo-600 px-3 py-1.5 rounded-xl font-bold transition">الطلبات والعروض</button>
+            <button onclick="toggleAdminView('alerts')" id="btn-admin-alerts" class="text-xs bg-slate-800 hover:bg-slate-700 text-amber-300 px-3 py-1.5 rounded-xl font-bold transition flex items-center gap-1.5">
+              <i class="fa-solid fa-calendar-days"></i> إدارة التنبيهات
+              <span id="admin-tab-pending-badge" class="hidden bg-rose-500 text-white text-[10px] px-1.5 rounded-full font-black">0</span>
             </button>
             <button onclick="toggleAdminView('deleted')" id="btn-admin-deleted" class="text-xs bg-slate-800 hover:bg-slate-700 text-rose-300 px-3 py-1.5 rounded-xl font-bold transition flex items-center gap-1">
               <i class="fa-solid fa-trash-can"></i> المحذوفات
+            </button>
+            <button onclick="toggleAdminView('archive')" id="btn-admin-archive" class="text-xs bg-slate-800 hover:bg-slate-700 text-sky-300 px-3 py-1.5 rounded-xl font-bold transition flex items-center gap-1">
+              <i class="fa-solid fa-box-archive"></i> أرشيف المحادثات
             </button>
           </div>
         </div>
@@ -479,7 +543,7 @@
           </div>
           <div class="bg-slate-800 p-2.5 sm:p-3 rounded-2xl border border-slate-700 text-center">
             <span class="text-xl sm:text-2xl font-black text-emerald-400" id="stat-requests">0</span>
-            <p class="text-[10px] sm:text-[11px] text-slate-300 mt-0.5">الطلبات</p>
+            <p class="text-[10px] sm:text-[11px] text-slate-300 mt-0.5">الطلبات النشطة</p>
           </div>
           <div class="bg-slate-800 p-2.5 sm:p-3 rounded-2xl border border-slate-700 text-center">
             <span class="text-xl sm:text-2xl font-black text-amber-400" id="stat-offers">0</span>
@@ -492,40 +556,105 @@
         </div>
       </div>
 
-      <!-- تبويب تفعيل التنبيهات بالتقويم (خاص بالسوبر أدمن فقط عند ورود طلب) -->
-      <div id="admin-super-alerts-section" class="hidden bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-amber-200 shadow-sm space-y-4">
-        <div class="flex justify-between items-center border-b pb-3">
-          <div>
-            <h3 class="font-black text-sm sm:text-base text-amber-950 flex items-center gap-2">
-              <i class="fa-solid fa-bell-ring text-amber-600"></i> طلبات تفعيل التنبيهات الواردة من المستخدمين (عملاء وتجار)
-            </h3>
-            <p class="text-[11px] text-slate-500">حدد تاريخ انتهاء الصلاحية من التقويم واضغط موافقة لتفعيل إرسال التنبيهات بالبريد</p>
+      <!-- 1) تبويب إدارة التنبيهات بالتقويم (من تاريخ إلى تاريخ) -->
+      <div id="admin-alerts-section" class="hidden space-y-6">
+        <div class="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-amber-200 shadow-sm space-y-4">
+          <div class="flex justify-between items-center border-b pb-3">
+            <div>
+              <h3 class="font-black text-sm sm:text-base text-amber-950 flex items-center gap-2">
+                <i class="fa-solid fa-calendar-check text-amber-600"></i> طلبات تفعيل تنبيهات المستخدمين (من تاريخ إلى تاريخ)
+              </h3>
+              <p class="text-[11px] text-slate-500">قم بمراجعة طلب المستخدم وتحديد فترة التفعيل بالتقويم (من تاريخ &larr; إلى تاريخ) للموافقة وبدء عمل التنبيهات</p>
+            </div>
+            <span class="text-xs bg-amber-50 text-amber-800 font-bold px-3 py-1 rounded-full border border-amber-200">صلاحية السوبر أدمن</span>
           </div>
-          <span class="text-xs bg-amber-50 text-amber-800 font-bold px-3 py-1 rounded-full border border-amber-200">صلاحية السوبر أدمن</span>
+          <div id="super-admin-alerts-requests-list" class="space-y-3"></div>
         </div>
-        <div id="super-admin-alerts-requests-list" class="space-y-3"></div>
+
+        <!-- سجل الإيميلات المرسلة للمستخدمين (للمراجعة والتأكد) -->
+        <div class="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-slate-200 shadow-sm space-y-4">
+          <h3 class="font-black text-sm text-slate-900 flex items-center gap-2 border-b pb-2">
+            <i class="fa-solid fa-envelope-circle-check text-emerald-600"></i> سجل الإيميلات المرسلة تلقائياً للمشتركين
+          </h3>
+          <div id="admin-email-logs-list" class="space-y-2.5"></div>
+        </div>
       </div>
 
-      <!-- تبويب الطلبات النشطة والعروض المدمجة -->
+      <!-- 2) تبويب الطلبات النشطة والعروض المدمجة -->
       <div id="admin-active-section" class="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-slate-200 shadow-sm space-y-4">
         <div class="flex justify-between items-center border-b pb-3">
           <h3 class="font-black text-sm sm:text-base text-slate-900 flex items-center gap-2">
-            <i class="fa-solid fa-list-check text-indigo-600"></i> الطلبات النشطة والعروض التابعة لها
+            <i class="fa-solid fa-list-check text-indigo-600"></i> الطلبات النشطة والعروض التابعة لها (أرقام الهواتف كاملة)
           </h3>
         </div>
         <div id="admin-unified-requests-offers" class="space-y-4"></div>
       </div>
 
-      <!-- سلة المحذوفات -->
+      <!-- 3) سلة المحذوفات للطلبات -->
       <div id="admin-deleted-section" class="hidden bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-rose-200 shadow-sm space-y-4">
         <div class="border-b pb-3">
-          <h3 class="font-black text-sm sm:text-base text-rose-950">سلة المحذوفات</h3>
+          <h3 class="font-black text-sm sm:text-base text-rose-950">سلة المحذوفات للطلبات (استعادة أو حذف نهائي)</h3>
         </div>
         <div id="admin-deleted-requests-list" class="space-y-3"></div>
+      </div>
+
+      <!-- 4) أرشيف المحادثات -->
+      <div id="admin-archive-section" class="hidden bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-sky-200 shadow-sm space-y-4">
+        <div class="border-b pb-3">
+          <h3 class="font-black text-sm sm:text-base text-sky-950">أرشيف المحادثات والرسائل المؤرشفة</h3>
+        </div>
+        <div id="admin-archived-messages-list" class="space-y-2"></div>
+      </div>
+
+      <!-- مراقبة المحادثات الحية والمستخدمين -->
+      <div class="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-slate-200 shadow-sm space-y-3">
+        <h3 class="font-black text-xs sm:text-sm text-slate-900 border-b pb-2">مراقبة المحادثات الحية</h3>
+        <div id="admin-chat-monitor-table" class="space-y-2"></div>
+      </div>
+
+      <div class="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-slate-200 shadow-sm space-y-3">
+        <h3 class="font-black text-xs sm:text-sm text-slate-900">سجل المستخدمين والتجار (يتضمن حسابات الأدمن الـ 3)</h3>
+        <div id="admin-users-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5"></div>
       </div>
     </section>
 
   </main>
+
+  <!-- ==================== الفوتر ==================== -->
+  <footer class="bg-slate-900 text-slate-300 text-xs mt-12 border-t border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-10 grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div class="space-y-3">
+        <h4 class="font-black text-sm text-white">سوق الطلب المعكوس</h4>
+        <p class="text-slate-400 text-xs leading-relaxed">
+          أول منصة أردنية للتجارة العكسية والمناقصات المفتوحة. اطلب ما تحتاج، ودع المتاجر والأفراد يتنافسون لتقديم أفضل الأسعار في جميع محافظات المملكة.
+        </p>
+      </div>
+      <div class="space-y-2">
+        <h5 class="font-bold text-white text-sm mb-3">روابط سريعة</h5>
+        <ul class="space-y-1.5 text-slate-400">
+          <li><button onclick="navigateTo('home')" class="hover:text-white transition">الرئيسية</button></li>
+          <li><button onclick="filterCategoryAndNavigate('الكل')" class="hover:text-white transition">سوق الطلبات</button></li>
+          <li><button onclick="handleRequestNewProductNav()" class="hover:text-white transition">إضافة طلب جديد</button></li>
+        </ul>
+      </div>
+      <div class="space-y-2">
+        <h5 class="font-bold text-white text-sm mb-3">المحافظات المغطاة</h5>
+        <p class="text-slate-400 leading-relaxed text-[11px]">
+          عمان • إربد • الزرقاء • البلقاء • العقبة • مادبا • جرش • عجلون • المفرق • الكرك • الطفيلة • معان
+        </p>
+      </div>
+      <div class="space-y-2">
+        <h5 class="font-bold text-white text-sm mb-3">الدعم وخدمة العملاء</h5>
+        <div class="text-slate-300 space-y-1 text-xs font-mono">
+          <div><i class="fa-solid fa-envelope text-indigo-400 ml-1"></i> admin1@souq.jo</div>
+          <div><i class="fa-solid fa-phone text-emerald-400 ml-1"></i> 079-000-0001</div>
+        </div>
+      </div>
+    </div>
+    <div class="border-t border-slate-800 text-center py-4 px-4 text-slate-500 text-[11px]">
+      جميع الحقوق محفوظة © سوق الطلب المعكوس - المملكة الأردنية الهاشمية
+    </div>
+  </footer>
 
   <!-- ==================== نوافذ المودال (Modals) ==================== -->
 
@@ -536,18 +665,15 @@
         <h4 class="font-black text-base text-slate-900">اعتماد العرض واختيار التاجر</h4>
         <p class="text-xs text-slate-500 mt-0.5">أنت على وشك قبول عرض: <b id="accept-merchant-name-display" class="text-emerald-700"></b></p>
       </div>
-
       <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs space-y-1">
         <div>السعر: <b id="accept-price-display" class="text-emerald-700"></b> د.أ</div>
         <div>رسوم توصيل التاجر: <b id="accept-fee-display"></b> د.أ</div>
       </div>
-
       <div class="p-3.5 bg-indigo-50/60 rounded-2xl border border-indigo-200 space-y-2.5">
         <label class="flex items-center gap-2 cursor-pointer font-bold text-xs text-indigo-950">
           <input type="checkbox" id="accept-company-delivery-checkbox" onchange="toggleDeliveryCompanySelect()" class="rounded text-indigo-600">
           <span>طلب خدمة التوصيل عبر شركة شحن معتمدة (اختياري) 🚚</span>
         </label>
-        
         <div id="delivery-company-selector-box" class="hidden space-y-2 pt-1">
           <select id="accept-delivery-company-select" class="w-full border rounded-xl p-2 text-xs bg-white outline-none">
             <option value="شركة أرامكس الأردن (3.00 د.أ)">شركة أرامكس الأردن (3.00 د.أ)</option>
@@ -556,14 +682,11 @@
           </select>
         </div>
       </div>
-
       <div class="flex gap-2 pt-2">
         <button onclick="confirmAcceptOffer()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl text-xs transition shadow-sm">
           تأكيد الاختيار واعتماد التاجر ✓
         </button>
-        <button onclick="closeAcceptMerchantModal()" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition">
-          إلغاء
-        </button>
+        <button onclick="closeAcceptMerchantModal()" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition">إلغاء</button>
       </div>
     </div>
   </div>
@@ -575,10 +698,8 @@
         <h4 class="font-black text-sm sm:text-base text-slate-900">تقديم عرض سعر</h4>
         <button onclick="closeOfferModal()" class="text-slate-400 hover:text-slate-600 text-2xl font-bold">&times;</button>
       </div>
-
       <form onsubmit="handleSendOffer(event)" class="space-y-3">
         <input type="hidden" id="modal-offer-req-id">
-
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">سعر السلعة (د.أ) *</label>
@@ -586,26 +707,22 @@
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">رسوم التوصيل (د.أ) *</label>
-            <input type="number" id="modal-offer-delivery-fee" required value="0" placeholder="0 = توصيل مجاني" class="w-full border rounded-xl p-2.5 text-xs outline-none focus:ring-2 focus:ring-indigo-500">
+            <input type="number" id="modal-offer-delivery-fee" required value="0" placeholder="0 = مجاني" class="w-full border rounded-xl p-2.5 text-xs outline-none focus:ring-2 focus:ring-indigo-500">
           </div>
         </div>
-
         <div>
           <label class="block text-xs font-bold text-slate-700 mb-1">رقم الهاتف *</label>
           <input type="tel" id="modal-offer-phone" required class="w-full border rounded-xl p-2.5 text-xs outline-none focus:ring-2 focus:ring-indigo-500 text-left" dir="ltr">
         </div>
-
         <div class="p-3 bg-slate-50 border border-slate-200 rounded-2xl space-y-2">
           <label class="block text-xs font-bold text-slate-700">صور السلعة المعروضة (حتى 3 صور - اختياري)</label>
           <input type="file" id="modal-offer-images" accept="image/*" multiple onchange="handleOfferImagesUpload(event)" class="text-xs text-slate-500 w-full file:mr-2 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-[11px] file:font-bold file:bg-indigo-100 file:text-indigo-700 cursor-pointer">
           <div id="offer-images-preview" class="flex gap-2 flex-wrap pt-1"></div>
         </div>
-
         <div>
           <label class="block text-xs font-bold text-slate-700 mb-1">ملاحظات ومواصفات العرض *</label>
           <textarea id="modal-offer-note" rows="3" required placeholder="اكتب المواصفات بدقة..." class="w-full border rounded-xl p-2.5 text-xs outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
         </div>
-
         <div class="flex gap-2 pt-2">
           <button type="submit" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl text-xs transition shadow-sm">إرسال العرض</button>
           <button type="button" onclick="closeOfferModal()" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition">إلغاء</button>
@@ -624,11 +741,9 @@
         </div>
         <button onclick="closeDetailsModal()" class="text-slate-400 hover:text-slate-600 text-2xl font-bold">&times;</button>
       </div>
-
       <div id="detail-image-box" class="hidden w-full h-48 sm:h-56 rounded-2xl overflow-hidden border border-slate-200 bg-slate-50 flex items-center justify-center cursor-pointer" onclick="openLightbox(this.querySelector('img').src)">
         <img id="detail-image" class="w-full h-full object-contain">
       </div>
-
       <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
         <div class="bg-slate-50 p-2 rounded-xl border border-slate-100">
           <span class="text-slate-400 block text-[10px]">الميزانية:</span>
@@ -643,12 +758,10 @@
           <span id="detail-delivery" class="font-bold text-slate-800"></span>
         </div>
       </div>
-
       <div>
         <h5 class="text-xs font-bold text-slate-700 mb-1">ملاحظات الطلب:</h5>
         <p id="detail-notes" class="text-xs text-slate-600 bg-slate-50 p-2.5 rounded-xl border border-slate-100 leading-relaxed"></p>
       </div>
-
       <div class="pt-1 text-left">
         <button onclick="closeDetailsModal()" class="px-5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold rounded-xl transition">إغلاق</button>
       </div>
@@ -662,8 +775,7 @@
         <h4 id="modal-offer-merchant-title" class="font-black text-base text-slate-900 mt-1"></h4>
         <button onclick="closeOfferDetailsModal()" class="text-slate-400 hover:text-slate-600 text-2xl font-bold">&times;</button>
       </div>
-
-      <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
+      <div class="grid grid-cols-2 gap-2 text-xs">
         <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
           <span class="text-slate-400 block text-[10px]">سعر السلعة:</span>
           <span id="modal-offer-det-price" class="font-black text-emerald-700 text-sm"></span>
@@ -673,17 +785,18 @@
           <span id="modal-offer-det-delivery" class="font-bold text-slate-800"></span>
         </div>
       </div>
-
+      <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-200 flex justify-between items-center text-xs">
+        <span class="text-slate-600 font-medium">رقم الهاتف:</span>
+        <span id="modal-offer-det-phone" class="font-bold text-slate-800"></span>
+      </div>
       <div>
         <h5 class="text-xs font-bold text-slate-700 mb-1">الملاحظة والمواصفات:</h5>
         <p id="modal-offer-det-note" class="text-xs text-slate-700 bg-slate-50 p-3 rounded-xl border border-slate-100 leading-relaxed font-medium whitespace-pre-line"></p>
       </div>
-
       <div>
         <h5 class="text-xs font-bold text-slate-700 mb-1.5">الصور المرفقة:</h5>
         <div id="modal-offer-det-images" class="flex gap-2 flex-wrap"></div>
       </div>
-
       <div class="pt-2 flex justify-between items-center border-t border-slate-100">
         <div id="modal-offer-chat-action-box"></div>
         <button onclick="closeOfferDetailsModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold rounded-xl transition">إغلاق</button>
@@ -725,11 +838,19 @@
       messages: [],
       notifications: [],
       myOffers: [],
+      myEmailAlerts: [],
       alertRequests: [],
+      adminEmailLogs: [],
+      allAdminMessages: [],
+      archivedMessages: [],
       selectedCategoryFilter: "الكل",
       activeChatTarget: null,
       activeChatTargetId: 0
     };
+
+    function getTodayDateString() {
+      return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Amman' }).format(new Date());
+    }
 
     async function syncData() {
       try {
@@ -747,25 +868,31 @@
             localStorage.setItem('jordan_user_session', JSON.stringify(updatedSelf));
           }
 
-          const [resNotifs, resMsgs, resMyOffers] = await Promise.all([
+          const [resNotifs, resMsgs, resMyOffers, resMyEmails] = await Promise.all([
             fetch(`/api/notifications?userId=${app.currentUser.id}`).then(r => r.json()),
             fetch(`/api/messages?userName=${encodeURIComponent(app.currentUser.name)}`).then(r => r.json()),
-            fetch(`/api/my-offers?userId=${app.currentUser.id}`).then(r => r.json())
+            fetch(`/api/my-offers?userId=${app.currentUser.id}`).then(r => r.json()),
+            fetch(`/api/user/email-alerts?userId=${app.currentUser.id}`).then(r => r.json())
           ]);
           app.notifications = resNotifs;
           app.messages = resMsgs;
           app.myOffers = resMyOffers;
+          app.myEmailAlerts = resMyEmails;
         }
 
         if (app.currentUser && app.currentUser.role === 'admin') {
-          const [resDel, resAllMsgs, resAlertReqs] = await Promise.all([
+          const [resDel, resAllMsgs, resArchived, resAlertReqs, resEmailLogs] = await Promise.all([
             fetch('/api/admin/deleted-requests').then(r => r.json()),
             fetch('/api/admin/all-messages').then(r => r.json()),
-            fetch('/api/admin/alert-activation-requests').then(r => r.json())
+            fetch('/api/admin/archived-messages').then(r => r.json()),
+            fetch('/api/admin/alert-activation-requests').then(r => r.json()),
+            fetch('/api/admin/email-alerts-logs').then(r => r.json())
           ]);
           app.deletedRequests = resDel;
           app.allAdminMessages = resAllMsgs;
+          app.archivedMessages = resArchived;
           app.alertRequests = resAlertReqs;
+          app.adminEmailLogs = resEmailLogs;
         }
       } catch (err) {
         console.warn('تحديث البيانات...', err);
@@ -805,6 +932,7 @@
 
     function handleRequestNewProductNav() {
       if (!app.currentUser) {
+        document.getElementById('login-alert-banner').classList.remove('hidden');
         navigateTo('login');
       } else {
         clearReqProductImage();
@@ -814,6 +942,7 @@
 
     function navigateTo(pageId) {
       if ((pageId === 'customer-dashboard' || pageId === 'my-requests' || pageId === 'my-offers' || pageId === 'alerts-management' || pageId === 'chat-center') && !app.currentUser) {
+        document.getElementById('login-alert-banner').classList.remove('hidden');
         pageId = 'login';
       }
 
@@ -825,6 +954,13 @@
 
       const target = document.getElementById(`page-${pageId}`);
       if (target) target.classList.remove('hidden');
+
+      if (pageId === 'register' && !isSocialRegister) {
+        regAvatarUploaded = DEFAULT_AVATAR;
+        document.getElementById('reg-avatar-preview').src = DEFAULT_AVATAR;
+        document.getElementById('password-field-container').classList.remove('hidden');
+        document.getElementById('reg-password').required = true;
+      }
 
       window.scrollTo({ top: 0, behavior: 'smooth' });
       render();
@@ -875,6 +1011,7 @@
             document.getElementById('reg-name').value = dummyName;
             document.getElementById('reg-email').value = dummyEmail;
             regAvatarUploaded = dummyAvatar;
+            document.getElementById('reg-avatar-preview').src = dummyAvatar;
             document.getElementById('password-field-container').classList.add('hidden');
             document.getElementById('reg-password').required = false;
             navigateTo('register');
@@ -885,6 +1022,7 @@
         document.getElementById('reg-name').value = dummyName;
         document.getElementById('reg-email').value = dummyEmail;
         regAvatarUploaded = dummyAvatar;
+        document.getElementById('reg-avatar-preview').src = dummyAvatar;
         document.getElementById('password-field-container').classList.add('hidden');
         document.getElementById('reg-password').required = false;
         navigateTo('register');
@@ -901,6 +1039,18 @@
       } else {
         merch.className = "flex items-center justify-center gap-2 border-2 border-indigo-600 bg-indigo-50/60 p-2.5 rounded-xl cursor-pointer";
         cust.className = "flex items-center justify-center gap-2 border-2 border-slate-200 p-2.5 rounded-xl cursor-pointer";
+      }
+    }
+
+    function handleAvatarUpload(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          regAvatarUploaded = evt.target.result;
+          document.getElementById('reg-avatar-preview').src = regAvatarUploaded;
+        };
+        reader.readAsDataURL(file);
       }
     }
 
@@ -963,6 +1113,7 @@
         if (res.success) {
           app.currentUser = res.user;
           localStorage.setItem('jordan_user_session', JSON.stringify(res.user));
+          document.getElementById('login-alert-banner').classList.add('hidden');
           syncData();
           if (res.user.role === 'admin') navigateTo('admin');
           else navigateTo('home');
@@ -981,7 +1132,6 @@
       navigateTo('home');
     }
 
-    // إرسال طلب شراء
     async function handlePostRequest(e) {
       e.preventDefault();
       if (!app.currentUser) return handleRequestNewProductNav();
@@ -1015,8 +1165,12 @@
         }).then(r => r.json());
 
         if (res.success) {
+          document.getElementById('req-title').value = '';
+          document.getElementById('req-budget-min').value = '';
+          document.getElementById('req-budget-max').value = '';
+          document.getElementById('req-notes').value = '';
           clearReqProductImage();
-          alert('تم نشر طلبك بنجاح! وتم إرسال تنبيهات بريد إلكتروني للمستخدمين المفعلين من السوبر أدمن.');
+          alert('تم نشر طلبك بنجاح! وتم إرسال تنبيهات البريد الإلكتروني للمشتركين المفعلين.');
           syncData();
           navigateTo('my-requests');
         }
@@ -1025,15 +1179,12 @@
       }
     }
 
-    // المستخدم يطلب تفعيل التنبيهات من السوبر أدمن
+    // طلب تفعيل التنبيهات من السوبر أدمن
     async function handleRequestAlertActivation(e) {
       e.preventDefault();
       const selected = [];
       document.querySelectorAll('.alert-cat-chk:checked').forEach(c => selected.push(c.value));
-
-      if (selected.length === 0) {
-        return alert('يرجى اختيار قسم واحد على الأقل عبر الشيك بوكس (Checkboxes).');
-      }
+      if (selected.length === 0) return alert('يرجى اختيار قسم واحد على الأقل.');
 
       try {
         const res = await fetch('/api/alerts/request-activation', {
@@ -1045,7 +1196,7 @@
         if (res.success) {
           app.currentUser = res.user;
           localStorage.setItem('jordan_user_session', JSON.stringify(res.user));
-          alert('تم إرسال طلب تفعيل التنبيهات للسوبر أدمن بنجاح! سيظهر إشعار في لوحة الإدارة لاعتماد التفعيل وتحديد مدة الصلاحية.');
+          alert('تم إرسال طلب تفعيل التنبيهات بنجاح! وصل إشعار للسوبر أدمن ليقوم بتحديد الفترة (من تاريخ إلى تاريخ) وتفعيلها لك.');
           syncData();
         }
       } catch (err) {
@@ -1053,12 +1204,15 @@
       }
     }
 
-    // السوبر أدمن يعتمد تفعيل التنبيهات بالتقويم
+    // موافقة وتفعيل التنبيهات بالتقويم (من تاريخ - إلى تاريخ) من قبل السوبر أدمن
     async function handleSuperAdminActivation(targetUserId, action) {
-      let expiryDate = null;
+      let startDate = null;
+      let endDate = null;
       if (action === 'approve') {
-        expiryDate = document.getElementById(`super-admin-date-${targetUserId}`).value;
-        if (!expiryDate) return alert('يرجى اختيار تاريخ انتهاء الصلاحية من التقويم أولاً!');
+        startDate = document.getElementById(`alert-start-${targetUserId}`).value;
+        endDate = document.getElementById(`alert-end-${targetUserId}`).value;
+        if (!startDate || !endDate) return alert('يرجى إدخال الفترة الزمنية بالتقويم (من تاريخ وإلى تاريخ)!');
+        if (startDate > endDate) return alert('خطأ: تاريخ البداية لا يمكن أن يكون بعد تاريخ الانتهاء!');
       }
 
       try {
@@ -1069,12 +1223,13 @@
             adminEmail: app.currentUser.email,
             targetUserId: targetUserId,
             action: action,
-            expiryDate: expiryDate
+            startDate: startDate,
+            endDate: endDate
           })
         }).then(r => r.json());
 
         if (res.success) {
-          alert(action === 'approve' ? 'تمت الموافقة وتفعيل التنبيهات بالتقويم بنجاح!' : 'تم رفض الطلب.');
+          alert(action === 'approve' ? `تم تفعيل التنبيهات بنجاح من ${startDate} إلى ${endDate}!` : 'تم رفض الطلب.');
           syncData();
         } else {
           alert(res.message);
@@ -1084,7 +1239,6 @@
       }
     }
 
-    // اعتماد التاجر
     function openAcceptMerchantModal(reqId, offerId, merchantName, price, fee) {
       selectedAcceptOfferData = { reqId, offerId };
       document.getElementById('accept-merchant-name-display').innerText = merchantName;
@@ -1131,7 +1285,44 @@
       }
     }
 
-    // تقديم العرض
+    async function finishAndDeleteRequest(reqId) {
+      if (!confirm('هل أنت متأكد من رغبتك في حذف وإغلاق هذا الطلب؟')) return;
+      await fetch('/api/requests/delete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ requestId: reqId })
+      });
+      syncData();
+    }
+
+    async function restoreDeletedRequest(id) {
+      await fetch('/api/admin/restore-request', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ requestId: id })
+      });
+      syncData();
+    }
+
+    async function permanentDeleteRequest(id) {
+      if (!confirm('تحذير: حذف نهائي لا يمكن التراجع عنه!')) return;
+      await fetch('/api/admin/permanent-delete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ requestId: id })
+      });
+      syncData();
+    }
+
+    async function archiveMessage(msgId) {
+      await fetch('/api/admin/archive-message', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messageId: msgId })
+      });
+      syncData();
+    }
+
     function handleOfferImagesUpload(e) {
       const files = Array.from(e.target.files).slice(0, 3);
       offerUploadedImages = [];
@@ -1152,7 +1343,6 @@
 
     function openOfferModal(reqId) {
       if (!app.currentUser) return navigateTo('login');
-      const req = app.requests.find(r => r.id === reqId);
       document.getElementById('modal-offer-req-id').value = reqId;
       document.getElementById('modal-offer-phone').value = app.currentUser.phone || '';
       document.getElementById('modal-offer-delivery-fee').value = "0";
@@ -1182,24 +1372,19 @@
         images: [...offerUploadedImages]
       };
 
-      try {
-        const res = await fetch('/api/offers', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        }).then(r => r.json());
+      const res = await fetch('/api/offers', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      }).then(r => r.json());
 
-        if (res.success) {
-          closeOfferModal();
-          alert('تم إرسال العرض بنجاح!');
-          syncData();
-        }
-      } catch (err) {
-        alert('تعذر إرسال العرض');
+      if (res.success) {
+        closeOfferModal();
+        alert('تم إرسال العرض بنجاح!');
+        syncData();
       }
     }
 
-    // الدردشة (حصراً لمن تحدثت معهم)
     function setChatTarget(name, targetId) {
       if (!app.currentUser) return navigateTo('login');
       app.activeChatTarget = name;
@@ -1210,58 +1395,57 @@
     async function handleSendChatMessage(e) {
       e.preventDefault();
       if (!app.currentUser) return navigateTo('login');
-
       const input = document.getElementById('chat-input');
       const text = input.value.trim();
       if (!text) return;
 
-      const payload = {
-        fromUserId: app.currentUser.id,
-        fromName: app.currentUser.name,
-        toUserId: app.activeChatTargetId || 0,
-        toName: app.activeChatTarget || 'الطرف الآخر',
-        text: text
-      };
-
-      try {
-        await fetch('/api/messages', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-        input.value = '';
-        syncData();
-      } catch (err) {
-        alert('تعذر إرسال الرسالة');
-      }
+      await fetch('/api/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          fromUserId: app.currentUser.id,
+          fromName: app.currentUser.name,
+          toUserId: app.activeChatTargetId || 0,
+          toName: app.activeChatTarget || 'الطرف الآخر',
+          text: text
+        })
+      });
+      input.value = '';
+      syncData();
     }
 
     function toggleAdminView(view) {
-      document.getElementById('admin-active-section').classList.add('hidden');
-      document.getElementById('admin-deleted-section').classList.add('hidden');
-      document.getElementById('admin-super-alerts-section').classList.add('hidden');
-
-      ['active', 'deleted', 'super-alerts'].forEach(v => {
+      ['active', 'alerts', 'deleted', 'archive'].forEach(v => {
+        document.getElementById(`admin-${v}-section`).classList.add('hidden');
         const btn = document.getElementById(`btn-admin-${v}`);
-        if (btn) btn.className = "text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-xl font-bold transition";
+        if (btn) btn.className = "text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-xl font-bold transition flex items-center gap-1";
       });
 
-      if (view === 'active') {
-        document.getElementById('admin-active-section').classList.remove('hidden');
-        document.getElementById('btn-admin-active').className = "text-xs bg-indigo-600 px-3 py-1.5 rounded-xl font-bold transition";
-      } else if (view === 'deleted') {
-        document.getElementById('admin-deleted-section').classList.remove('hidden');
-        document.getElementById('btn-admin-deleted').className = "text-xs bg-rose-600 text-white px-3 py-1.5 rounded-xl font-bold transition";
+      document.getElementById(`admin-${view}-section`).classList.remove('hidden');
+      const activeBtn = document.getElementById(`btn-admin-${view}`);
+      if (activeBtn) {
+        const bgClass = view === 'alerts' ? 'bg-amber-600 text-white' : (view === 'deleted' ? 'bg-rose-600 text-white' : (view === 'archive' ? 'bg-sky-600 text-white' : 'bg-indigo-600 text-white'));
+        activeBtn.className = `text-xs ${bgClass} px-3 py-1.5 rounded-xl font-bold transition flex items-center gap-1`;
+      }
+    }
+
+    function handleNotificationClick(type) {
+      toggleNotificationsDropdown();
+      if (type === 'admin_alert_request' && app.currentUser?.role === 'admin') {
+        navigateTo('admin');
+        toggleAdminView('alerts');
+      } else if (type === 'email_alert' || type === 'alert_approved') {
+        navigateTo('alerts-management');
+      } else if (type === 'new_message') {
+        navigateTo('chat-center');
       } else {
-        document.getElementById('admin-super-alerts-section').classList.remove('hidden');
-        document.getElementById('btn-admin-super-alerts').className = "text-xs bg-amber-600 text-white px-3 py-1.5 rounded-xl font-bold transition";
+        navigateTo('my-requests');
       }
     }
 
     function showRequestDetails(reqId) {
       const req = app.requests.find(r => r.id === reqId);
       if (!req) return;
-
       document.getElementById('detail-title').innerText = req.title;
       document.getElementById('detail-category-badge').innerText = req.category;
       document.getElementById('detail-budget').innerText = `من ${req.budgetMin} إلى ${req.budgetMax} د.أ`;
@@ -1276,7 +1460,6 @@
       } else {
         imgBox.classList.add('hidden');
       }
-
       document.getElementById('modal-details').classList.remove('hidden');
     }
 
@@ -1295,20 +1478,27 @@
       document.getElementById('modal-offer-det-delivery').innerText = offer.deliveryFee > 0 ? `${offer.deliveryFee} د.أ` : 'مجاني 🚚';
       document.getElementById('modal-offer-det-note').innerText = offer.note;
 
+      if (!app.currentUser) {
+        document.getElementById('modal-offer-det-phone').innerHTML = `<span class="text-slate-400">078•••••• <button onclick="closeOfferDetailsModal(); navigateTo('login')" class="text-indigo-600 underline font-bold text-xs">سجل دخولك</button></span>`;
+        document.getElementById('modal-offer-chat-action-box').innerHTML = `<button onclick="closeOfferDetailsModal(); navigateTo('login')" class="bg-indigo-50 text-indigo-700 px-4 py-2 rounded-xl text-xs font-bold">سجل الدخول لبدء محادثة</button>`;
+      } else {
+        document.getElementById('modal-offer-det-phone').innerHTML = `<span class="text-slate-500 font-mono">078•••••• <a href="tel:${offer.phone}" class="text-emerald-700 font-bold underline mr-2">اتصال (${offer.phone})</a></span>`;
+        document.getElementById('modal-offer-chat-action-box').innerHTML = `<button onclick="closeOfferDetailsModal(); setChatTarget('${offer.merchantName}', ${offer.merchantId})" class="bg-indigo-600 text-white px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5"><i class="fa-solid fa-comment"></i> دردشة مع صاحب العرض</button>`;
+      }
+
       const imgContainer = document.getElementById('modal-offer-det-images');
       imgContainer.innerHTML = '';
       if (offer.images && offer.images.length > 0) {
         offer.images.forEach(img => {
           const el = document.createElement('img');
           el.src = img;
-          el.className = "w-20 h-20 object-cover rounded-xl border border-slate-300 shadow cursor-pointer";
+          el.className = "w-20 h-20 object-cover rounded-xl border cursor-pointer";
           el.onclick = () => openLightbox(img);
           imgContainer.appendChild(el);
         });
       } else {
         imgContainer.innerHTML = `<span class="text-slate-400 text-xs">لا توجد صور مرفقة</span>`;
       }
-
       document.getElementById('modal-offer-details').classList.remove('hidden');
     }
 
@@ -1329,10 +1519,10 @@
       const authBox = document.getElementById('header-auth');
       const notifWrapper = document.getElementById('notif-wrapper');
       const chatNotifBtn = document.getElementById('chat-notif-btn');
-      const navAdmin = document.getElementById('nav-admin');
-      const navMyReq = document.getElementById('nav-my-requests');
-      const navMyOffers = document.getElementById('nav-my-offers');
-      const navAlerts = document.getElementById('nav-alerts-management');
+
+      // أزرار الديسكتوب والموبايل للمسجلين
+      const loggedInNavs = ['nav-my-requests', 'nav-my-offers', 'nav-alerts-management'];
+      const loggedInMobNavs = ['mob-nav-my-requests', 'mob-nav-my-offers', 'mob-nav-alerts', 'mob-nav-chat'];
 
       if (app.currentUser) {
         authBox.innerHTML = `
@@ -1346,15 +1536,17 @@
         `;
         notifWrapper.classList.remove('hidden');
         chatNotifBtn.classList.remove('hidden');
-        navMyReq.classList.remove('hidden'); navMyReq.classList.add('flex');
-        navMyOffers.classList.remove('hidden'); navMyOffers.classList.add('flex');
-        navAlerts.classList.remove('hidden'); navAlerts.classList.add('flex');
+        loggedInNavs.forEach(id => { const el = document.getElementById(id); if (el) { el.classList.remove('hidden'); el.classList.add('flex'); } });
+        loggedInMobNavs.forEach(id => { const el = document.getElementById(id); if (el) { el.classList.remove('hidden'); el.classList.add('flex'); } });
 
-        if (app.currentUser.role === 'admin') {
-          navAdmin.classList.remove('hidden'); navAdmin.classList.add('flex');
-        } else {
-          navAdmin.classList.add('hidden');
-        }
+        const isAdmin = app.currentUser.role === 'admin';
+        ['nav-admin', 'mob-nav-admin'].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) {
+            el.classList.toggle('hidden', !isAdmin);
+            if (isAdmin) el.classList.add('flex'); else el.classList.remove('flex');
+          }
+        });
       } else {
         authBox.innerHTML = `
           <button onclick="navigateTo('login')" class="text-xs font-bold hover:text-indigo-200 px-2 py-1">دخول</button>
@@ -1362,29 +1554,27 @@
         `;
         notifWrapper.classList.add('hidden');
         chatNotifBtn.classList.add('hidden');
-        navMyReq.classList.add('hidden');
-        navMyOffers.classList.add('hidden');
-        navAlerts.classList.add('hidden');
-        navAdmin.classList.add('hidden');
+        loggedInNavs.forEach(id => document.getElementById(id)?.classList.add('hidden'));
+        loggedInMobNavs.forEach(id => document.getElementById(id)?.classList.add('hidden'));
+        ['nav-admin', 'mob-nav-admin'].forEach(id => document.getElementById(id)?.classList.add('hidden'));
       }
 
       // إشعار وجود محادثة
       const chatBadge = document.getElementById('chat-badge');
       if (app.messages && app.messages.length > 0 && app.currentUser) {
-        const hasIncoming = app.messages.some(m => m.toName === app.currentUser.name);
-        chatBadge.classList.toggle('hidden', !hasIncoming);
+        chatBadge.classList.toggle('hidden', !app.messages.some(m => m.toName === app.currentUser.name));
       } else {
         chatBadge.classList.add('hidden');
       }
 
-      // التنبيهات
+      // جرس التنبيهات
       const badge = document.getElementById('notif-badge');
       const notifList = document.getElementById('notifications-list');
       if (app.notifications && app.notifications.length > 0) {
         badge.innerText = app.notifications.length;
         badge.classList.remove('hidden');
         notifList.innerHTML = app.notifications.map(n => `
-          <div class="p-3 hover:bg-indigo-50/70 transition">
+          <div onclick="handleNotificationClick('${n.type || ''}')" class="p-3 hover:bg-indigo-50/70 cursor-pointer transition">
             <span class="font-bold text-slate-900 block text-xs">${n.title}</span>
             <p class="text-slate-600 text-[11px]">${n.text}</p>
             <span class="text-[9px] text-slate-400 block mt-1">${n.time}</span>
@@ -1395,7 +1585,7 @@
         notifList.innerHTML = `<div class="p-4 text-center text-slate-400 text-xs">لا توجد تنبيهات جديدة</div>`;
       }
 
-      // شبكة الأقسام في الرئيسية
+      // شبكة الأقسام
       const homeCats = document.getElementById('home-categories-grid');
       if (homeCats) {
         homeCats.innerHTML = ALL_CATEGORIES.map(cat => `
@@ -1405,7 +1595,6 @@
         `).join('');
       }
 
-      // فئات طلب منتج جديد
       const reqCatSelect = document.getElementById('req-category');
       if (reqCatSelect && reqCatSelect.children.length === 0) {
         reqCatSelect.innerHTML = ALL_CATEGORIES.map(c => `<option value="${c}">${c}</option>`).join('');
@@ -1415,61 +1604,64 @@
       const myReqBox = document.getElementById('my-requests-container');
       if (myReqBox) {
         const myRequests = app.currentUser ? app.requests.filter(r => r.customerId === app.currentUser.id) : [];
-        if (myRequests.length === 0) {
-          myReqBox.innerHTML = `<div class="text-center py-10 text-slate-400 text-xs">لا توجد طلبات نشطة لك حالياً.</div>`;
-        } else {
-          myReqBox.innerHTML = myRequests.map(req => renderRequestCard(req, true)).join('');
-        }
+        myReqBox.innerHTML = myRequests.length === 0
+          ? `<div class="text-center py-10 text-slate-400 text-xs">لا توجد طلبات نشطة لك حالياً.</div>`
+          : myRequests.map(req => renderRequestCard(req, true)).join('');
       }
 
-      // صفحة "عروضي المقدمة"
+      // صفحة "عروضي"
       const myOffersBox = document.getElementById('my-offers-container');
       if (myOffersBox) {
-        if (!app.myOffers || app.myOffers.length === 0) {
-          myOffersBox.innerHTML = `<div class="text-center py-10 text-slate-400 text-xs">لم تقدم أي عروض أسعار حتى الآن.</div>`;
-        } else {
-          myOffersBox.innerHTML = app.myOffers.map(o => `
+        myOffersBox.innerHTML = !app.myOffers || app.myOffers.length === 0
+          ? `<div class="text-center py-10 text-slate-400 text-xs">لم تقدم أي عروض أسعار حتى الآن.</div>`
+          : app.myOffers.map(o => `
             <div class="p-3.5 bg-white border border-slate-200 rounded-2xl shadow-sm text-xs space-y-2">
               <div class="flex justify-between items-start">
                 <span class="text-[10px] bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded font-bold">طلب: ${o.requestTitle || '---'}</span>
                 <span class="text-[10px] px-2 py-0.5 rounded-full font-bold ${o.requestStatus === 'accepted' ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-600'}">
-                  ${o.requestStatus === 'accepted' ? 'تم اعتماد التاجر ✓' : 'قيد الانتظار'}
+                  ${o.requestStatus === 'accepted' ? 'تم اعتماد العرض ✓' : 'قيد الانتظار'}
                 </span>
               </div>
-              <div class="font-black text-emerald-700 text-sm">عرضك: ${o.price} د.أ (توصيل: ${o.deliveryFee > 0 ? o.deliveryFee + ' د.أ' : 'مجاني'})</div>
+              <div class="font-black text-emerald-700 text-sm">عرضك: ${o.price} د.أ</div>
               <p class="text-slate-600 bg-slate-50 p-2 rounded-xl text-[11px]">"${o.note}"</p>
             </div>
           `).join('');
-        }
       }
 
-      // صفحة "إدارة التنبيهات" (للعميل والتاجر معاً)
+      // صفحة "إدارة التنبيهات" (للعميل والتاجر + صندوق الإيميلات الواردة)
       if (app.currentUser) {
         const statusCard = document.getElementById('user-alert-status-card');
         const status = app.currentUser.alertStatus || 'none';
-        const isExpValid = status === 'active' && app.currentUser.alertExpiry && new Date(app.currentUser.alertExpiry) >= new Date();
+        const todayStr = getTodayDateString();
+        const start = app.currentUser.alertStartDate;
+        const end = app.currentUser.alertEndDate;
 
-        if (isExpValid) {
-          statusCard.className = "p-4 rounded-2xl mb-4 text-xs bg-emerald-50 border border-emerald-200 text-emerald-900";
-          statusCard.innerHTML = `
-            <div class="font-bold flex items-center gap-1.5"><i class="fa-solid fa-circle-check text-emerald-600"></i> خدمة التنبيهات بالبريد مفعلة لك بنجاح من السوبر أدمن</div>
-            <div class="mt-1 text-[11px]">مفعلة وصالحة حتى تاريخ: <b class="font-mono text-emerald-950">${app.currentUser.alertExpiry}</b></div>
-          `;
+        if (status === 'active' && start && end) {
+          if (todayStr >= start && todayStr <= end) {
+            statusCard.className = "p-4 rounded-2xl mb-4 text-xs bg-emerald-50 border border-emerald-200 text-emerald-900";
+            statusCard.innerHTML = `
+              <div class="font-bold flex items-center gap-1.5"><i class="fa-solid fa-circle-check text-emerald-600"></i> خدمة التنبيهات بالبريد مفعلة وتعمل الآن ✓</div>
+              <div class="mt-1 text-[11px]">الفترة المعتمدة من السوبر أدمن: من تاريخ <b class="font-mono">${start}</b> إلى تاريخ <b class="font-mono">${end}</b></div>
+            `;
+          } else if (todayStr < start) {
+            statusCard.className = "p-4 rounded-2xl mb-4 text-xs bg-sky-50 border border-sky-200 text-sky-900";
+            statusCard.innerHTML = `
+              <div class="font-bold flex items-center gap-1.5"><i class="fa-solid fa-calendar-clock text-sky-600"></i> تمت الموافقة! ستبدأ الخدمة بالعمل قريباً</div>
+              <div class="mt-1 text-[11px]">فترة عمل التنبيهات المقررة: من <b>${start}</b> إلى <b>${end}</b></div>
+            `;
+          } else {
+            statusCard.className = "p-4 rounded-2xl mb-4 text-xs bg-rose-50 border border-rose-200 text-rose-900";
+            statusCard.innerHTML = `<div class="font-bold">انتهت فترة اشتراك التنبيهات بتاريخ (${end}). يمكنك إرسال طلب تجديد جديد أدناه.</div>`;
+          }
         } else if (status === 'pending') {
           statusCard.className = "p-4 rounded-2xl mb-4 text-xs bg-amber-50 border border-amber-200 text-amber-900";
           statusCard.innerHTML = `
             <div class="font-bold flex items-center gap-1.5"><i class="fa-solid fa-clock text-amber-600"></i> طلبك قيد مراجعة السوبر أدمن حالياً ⏳</div>
-            <div class="mt-1 text-[11px]">تم إرسال إشعار للسوبر أدمن. بمجرد قيامه بالموافقة وتحديد تاريخ الصلاحية بالتقويم، ستعمل التنبيهات تلقائياً.</div>
+            <div class="mt-1 text-[11px]">بمجرد قيامه بتحديد الفترة بالتقويم والموافقة عليه، ستعمل الخدمة فوراً.</div>
           `;
-        } else if (status === 'rejected') {
-          statusCard.className = "p-4 rounded-2xl mb-4 text-xs bg-rose-50 border border-rose-200 text-rose-900";
-          statusCard.innerHTML = `<div class="font-bold">نعتذر، تم رفض طلب التفعيل السابق. يمكنك تحديد الأقسام وإرسال طلب جديد.</div>`;
         } else {
           statusCard.className = "p-4 rounded-2xl mb-4 text-xs bg-slate-50 border border-slate-200 text-slate-800";
-          statusCard.innerHTML = `
-            <div class="font-bold mb-1">الخدمة تتطلب تفعيل من السوبر أدمن 🔒</div>
-            <div class="text-[11px] text-slate-600">حدد الأقسام التي تهمك أدناه واضغط زر (إرسال طلب تفعيل التنبيهات للسوبر أدمن) ليظهر له إشعار لاعتمادك بالتقويم.</div>
-          `;
+          statusCard.innerHTML = `<div class="font-bold">الخدمة غير مفعلة 🔒</div><div class="text-[11px] mt-1">اختر الأقسام أدناه واضغط إرسال ليقوم السوبر أدمن بتفعيلها لك لفترة محدودة.</div>`;
         }
 
         const chkBox = document.getElementById('alerts-categories-checkboxes');
@@ -1481,9 +1673,34 @@
             </label>
           `).join('');
         }
+
+        // عرض صندوق الإيميلات الواردة للمستخدم مع الصورة والمعلومات
+        const emailInboxBox = document.getElementById('user-email-inbox-list');
+        const emailCountBadge = document.getElementById('user-emails-count');
+        if (emailInboxBox) {
+          emailCountBadge.innerText = `${app.myEmailAlerts.length} رسائل`;
+          if (app.myEmailAlerts.length === 0) {
+            emailInboxBox.innerHTML = `<div class="text-center py-6 text-slate-400 text-xs">لم تستلم أي تنبيهات إيميل حتى الآن.</div>`;
+          } else {
+            emailInboxBox.innerHTML = app.myEmailAlerts.map(em => `
+              <div class="p-3.5 bg-emerald-50/40 border border-emerald-200 rounded-2xl flex flex-col sm:flex-row gap-3 items-start text-xs">
+                ${em.image ? `<img src="${em.image}" onclick="openLightbox('${em.image}')" class="w-16 h-16 object-cover rounded-xl border border-slate-300 cursor-pointer shrink-0">` : `<div class="w-16 h-16 bg-slate-100 rounded-xl flex items-center justify-center text-slate-400 shrink-0"><i class="fa fa-image text-xl"></i></div>`}
+                <div class="flex-1 space-y-1">
+                  <div class="flex justify-between items-center">
+                    <span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-bold text-[10px]">قسم: ${em.category}</span>
+                    <span class="text-[10px] text-slate-400 font-mono">${em.sentAt}</span>
+                  </div>
+                  <h4 class="font-black text-slate-900 text-sm">${em.requestTitle}</h4>
+                  <p class="text-slate-600">الميزانية: <b class="text-emerald-700">${em.budget}</b> | المحافظة: <b>${em.city}</b></p>
+                  <p class="text-slate-500 text-[11px]">${em.notes}</p>
+                </div>
+              </div>
+            `).join('');
+          }
+        }
       }
 
-      // سوق الطلبات
+      // سوق الطلبات مع الـ Pagination
       const feedBox = document.getElementById('merchant-feed-list');
       const paginationBox = document.getElementById('feed-pagination');
       document.getElementById('active-feed-category').innerText = app.selectedCategoryFilter;
@@ -1500,11 +1717,10 @@
 
       if (feedBox) {
         if (filteredRequests.length === 0) {
-          feedBox.innerHTML = `<div class="bg-white border rounded-2xl p-8 text-center text-slate-400 text-xs">لا توجد طلبات شراء منشورة في هذا القسم حالياً.</div>`;
+          feedBox.innerHTML = `<div class="bg-white border rounded-2xl p-8 text-center text-slate-400 text-xs">لا توجد طلبات شراء منشورة حالياً.</div>`;
           paginationBox.innerHTML = '';
         } else {
           feedBox.innerHTML = paginatedRequests.map(req => renderRequestCard(req, false)).join('');
-
           let pagHtml = `<button onclick="changeFeedPage(${currentFeedPage - 1})" ${currentFeedPage === 1 ? 'disabled class="opacity-40 cursor-not-allowed"' : ''} class="px-3 py-1.5 rounded-lg border bg-white text-xs font-bold">السابق</button>`;
           for (let i = 1; i <= totalPages; i++) {
             pagHtml += `<button onclick="changeFeedPage(${i})" class="px-3 py-1.5 rounded-lg border text-xs font-bold ${i === currentFeedPage ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white'}">${i}</button>`;
@@ -1514,7 +1730,7 @@
         }
       }
 
-      // الدردشة (القائمة الجانبية مقتصرة حصراً على من تمت مراسلتهم)
+      // الدردشة (القائمة مقتصرة على من تم التحدث معهم فقط)
       const activeName = app.activeChatTarget || "";
       document.getElementById('chat-target-name').innerText = activeName || "اختر محادثة";
       const chatBox = document.getElementById('chat-messages-box');
@@ -1523,18 +1739,15 @@
           (m.fromName === app.currentUser?.name && m.toName === activeName) ||
           (m.fromName === activeName && m.toName === app.currentUser?.name)
         );
-
-        if (activeMessages.length === 0) {
-          chatBox.innerHTML = `<div class="text-center text-slate-400 py-12 text-xs">لا توجد رسائل سابقة. ابدأ المحادثة الآن!</div>`;
-        } else {
-          chatBox.innerHTML = activeMessages.map(m => `
+        chatBox.innerHTML = activeMessages.length === 0
+          ? `<div class="text-center text-slate-400 py-12 text-xs">لا توجد رسائل سابقة.</div>`
+          : activeMessages.map(m => `
             <div class="p-2.5 sm:p-3 rounded-2xl max-w-xs sm:max-w-sm ${m.fromName === (app.currentUser?.name) ? 'bg-indigo-600 text-white mr-auto' : 'bg-white border border-slate-200 text-slate-800 ml-auto'} shadow-sm">
               <span class="text-[9px] block opacity-75 font-bold mb-0.5">${m.fromName}</span>
               <p class="leading-relaxed text-xs">${m.text}</p>
               <span class="text-[8px] block text-left opacity-75 mt-1">${m.time}</span>
             </div>
           `).join('');
-        }
       }
 
       const threadsBox = document.getElementById('chat-threads-list');
@@ -1544,13 +1757,10 @@
           if (m.fromName === app.currentUser.name && m.toName) myChatPartners.add(m.toName);
           if (m.toName === app.currentUser.name && m.fromName) myChatPartners.add(m.fromName);
         });
-
         const partnersArray = Array.from(myChatPartners);
-
-        if (partnersArray.length === 0) {
-          threadsBox.innerHTML = `<div class="p-4 text-center text-slate-400 text-xs">لا توجد محادثات سابقة.</div>`;
-        } else {
-          threadsBox.innerHTML = partnersArray.map(name => {
+        threadsBox.innerHTML = partnersArray.length === 0
+          ? `<div class="p-4 text-center text-slate-400 text-xs">لا توجد محادثات سابقة.</div>`
+          : partnersArray.map(name => {
             const partnerUser = app.users.find(u => u.name === name) || { avatar: DEFAULT_AVATAR, city: '' };
             return `
               <div onclick="setChatTarget('${name}', ${partnerUser.id || 0})" class="p-2.5 hover:bg-indigo-50/70 cursor-pointer transition flex items-center gap-2 ${app.activeChatTarget === name ? 'bg-indigo-50' : ''}">
@@ -1562,10 +1772,9 @@
               </div>
             `;
           }).join('');
-        }
       }
 
-      // لوحة الإدارة وقسم تفعيل التنبيهات بالتقويم للسوبر أدمن
+      // لوحة الإدارة
       if (app.currentUser && app.currentUser.role === 'admin') {
         const totalOffers = app.requests.reduce((sum, r) => sum + r.offers.length, 0);
         document.getElementById('stat-users').innerText = app.users.length;
@@ -1573,30 +1782,45 @@
         document.getElementById('stat-offers').innerText = totalOffers;
         document.getElementById('stat-messages').innerText = app.allAdminMessages?.length || 0;
 
-        // قسم السوبر أدمن
-        const superAlertsList = document.getElementById('super-admin-alerts-requests-list');
-        const superBtn = document.getElementById('btn-admin-super-alerts');
+        // عداد طلبات التنبيهات المعلقة
+        const alertReqs = app.alertRequests || [];
+        const pendingCount = alertReqs.filter(r => r.status === 'pending').length;
+        const navBadge = document.getElementById('admin-pending-badge');
+        const tabBadge = document.getElementById('admin-tab-pending-badge');
+        [navBadge, tabBadge].forEach(b => {
+          if (b) {
+            b.innerText = pendingCount;
+            b.classList.toggle('hidden', pendingCount === 0);
+          }
+        });
 
+        // قسم تفعيل التنبيهات بالتقويم (من تاريخ إلى تاريخ) للسوبر أدمن
+        const superAlertsList = document.getElementById('super-admin-alerts-requests-list');
         if (app.currentUser.email === 'admin1@souq.jo') {
-          superBtn.classList.remove('hidden');
-          const alertReqs = app.alertRequests || [];
-          if (alertReqs.length === 0) {
-            superAlertsList.innerHTML = `<p class="text-xs text-slate-400">لا توجد طلبات تفعيل واردة حالياً.</p>`;
-          } else {
-            superAlertsList.innerHTML = alertReqs.map(r => `
-              <div class="p-3 bg-amber-50/50 border border-amber-200 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 text-xs">
+          const todayStr = getTodayDateString();
+          superAlertsList.innerHTML = alertReqs.length === 0
+            ? `<p class="text-xs text-slate-400">لا توجد طلبات تفعيل واردة حالياً.</p>`
+            : alertReqs.map(r => `
+              <div class="p-3.5 bg-amber-50/40 border border-amber-200 rounded-2xl flex flex-col lg:flex-row justify-between items-start lg:items-center gap-3 text-xs">
                 <div>
                   <span class="font-black text-slate-900">${r.userName}</span>
                   <span class="text-[10px] bg-slate-200 px-2 py-0.5 rounded font-bold mr-1">${r.userRole === 'merchant' ? 'تاجر' : 'عميل'}</span>
-                  <div class="text-slate-600 mt-0.5">${r.userPhone} • ${r.userEmail}</div>
+                  <div class="text-slate-600 mt-0.5 font-mono">${r.userPhone} • ${r.userEmail}</div>
                   <div class="text-[11px] text-amber-900 mt-1">الأقسام المطلوبة: <b>${r.categories ? r.categories.join('، ') : '---'}</b></div>
-                  <div class="text-[10px] mt-0.5">الحالة: <b class="${r.status === 'active' ? 'text-emerald-700' : (r.status === 'pending' ? 'text-amber-700' : 'text-rose-700')}">${r.status === 'active' ? `مفعل حتى ${r.expiryDate}` : (r.status === 'pending' ? 'بانتظار موافقتك' : 'مرفوض')}</b></div>
+                  <div class="text-[10px] mt-0.5">الحالة: <b class="${r.status === 'active' ? 'text-emerald-700' : (r.status === 'pending' ? 'text-amber-700' : 'text-rose-700')}">${r.status === 'active' ? `مفعل من (${r.startDate}) إلى (${r.endDate})` : (r.status === 'pending' ? 'بانتظار موافقتك ⏳' : 'مرفوض')}</b></div>
                 </div>
 
-                <div class="flex items-center gap-2 w-full sm:w-auto">
-                  <input type="date" id="super-admin-date-${r.userId}" value="${r.expiryDate || ''}" class="border rounded-xl p-1.5 text-xs bg-white">
+                <div class="flex flex-wrap items-center gap-2 w-full lg:w-auto bg-white p-2.5 rounded-xl border border-amber-100">
+                  <div class="flex items-center gap-1">
+                    <span class="text-[10px] font-bold text-slate-500">من:</span>
+                    <input type="date" id="alert-start-${r.userId}" value="${r.startDate || todayStr}" class="border rounded-lg p-1 text-xs">
+                  </div>
+                  <div class="flex items-center gap-1">
+                    <span class="text-[10px] font-bold text-slate-500">إلى:</span>
+                    <input type="date" id="alert-end-${r.userId}" value="${r.endDate || ''}" class="border rounded-lg p-1 text-xs">
+                  </div>
                   <button onclick="handleSuperAdminActivation(${r.userId}, 'approve')" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-3 py-1.5 rounded-xl text-xs transition shrink-0">
-                    موافقة وتفعيل 📅
+                    موافقة وتفعيل ✓
                   </button>
                   <button onclick="handleSuperAdminActivation(${r.userId}, 'reject')" class="bg-rose-600 hover:bg-rose-700 text-white font-bold px-2.5 py-1.5 rounded-xl text-xs transition shrink-0">
                     رفض
@@ -1604,17 +1828,34 @@
                 </div>
               </div>
             `).join('');
-          }
         } else {
-          superBtn.classList.add('hidden');
+          superAlertsList.innerHTML = `<div class="p-4 bg-rose-50 text-rose-800 rounded-xl text-xs font-bold">هذه الميزة مخصصة لحساب السوبر أدمن فقط (admin1@souq.jo).</div>`;
         }
 
-        // الطلبات النشطة
+        // سجل الإيميلات المرسلة للمدير
+        const logsList = document.getElementById('admin-email-logs-list');
+        if (logsList) {
+          logsList.innerHTML = app.adminEmailLogs.length === 0
+            ? `<p class="text-xs text-slate-400">لم تُرسل تنبيهات إيميل بعد.</p>`
+            : app.adminEmailLogs.map(log => `
+              <div class="p-2.5 bg-slate-50 border rounded-xl text-xs flex justify-between items-center">
+                <div>
+                  <span class="font-bold text-emerald-700">إلى: ${log.toName} (${log.toEmail})</span>
+                  <div class="text-slate-700 mt-0.5">القسم: <b>${log.category}</b> | الطلب: <b>${log.requestTitle}</b></div>
+                </div>
+                <span class="text-[10px] text-slate-400 font-mono">${log.sentAt}</span>
+              </div>
+            `).join('');
+        }
+
+        // الطلبات النشطة في لوحة المدير
         const unifiedContainer = document.getElementById('admin-unified-requests-offers');
         if (unifiedContainer) {
-          unifiedContainer.innerHTML = app.requests.map(req => `
-            <div class="border border-slate-200 rounded-2xl p-4 bg-slate-50 space-y-3">
-              <div class="flex justify-between items-start pb-2 border-b">
+          unifiedContainer.innerHTML = app.requests.length === 0
+            ? `<p class="text-xs text-slate-400">لا توجد طلبات نشطة.</p>`
+            : app.requests.map(req => `
+            <div class="border border-slate-200 rounded-2xl p-4 bg-slate-50 space-y-2">
+              <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 pb-2 border-b">
                 <div>
                   <span class="bg-indigo-100 text-indigo-800 text-[10px] font-bold px-2 py-0.5 rounded-full">${req.category}</span>
                   <h4 class="font-black text-sm text-slate-900 mt-1">${req.title}</h4>
@@ -1624,6 +1865,58 @@
                   <button onclick="showRequestDetails(${req.id})" class="bg-indigo-600 text-white text-xs px-2.5 py-1.5 rounded-lg font-bold">تفاصيل</button>
                   <button onclick="finishAndDeleteRequest(${req.id})" class="bg-rose-600 text-white text-xs px-2.5 py-1.5 rounded-lg font-bold">إيداع بالمحذوفات</button>
                 </div>
+              </div>
+              <div class="text-xs">العروض (${req.offers.length}): ${req.offers.map(o => `<span class="inline-block bg-white border px-2 py-1 rounded-lg m-0.5">${o.merchantName} (${o.price} د.أ - هاتف: ${o.phone})</span>`).join('')}</div>
+            </div>
+          `).join('');
+        }
+
+        // سلة المحذوفات
+        const delContainer = document.getElementById('admin-deleted-requests-list');
+        if (delContainer) {
+          delContainer.innerHTML = app.deletedRequests.length === 0
+            ? `<p class="text-xs text-slate-400 text-center py-6">سلة المحذوفات فارغة.</p>`
+            : app.deletedRequests.map(d => `
+              <div class="p-3 bg-rose-50/50 border border-rose-200 rounded-xl flex justify-between items-center text-xs">
+                <div>
+                  <span class="font-black text-rose-950">${d.title}</span>
+                  <p class="text-slate-600 font-mono">صاحب الطلب: ${d.customerName} (${d.customerPhone})</p>
+                </div>
+                <div class="flex gap-2">
+                  <button onclick="restoreDeletedRequest(${d.id})" class="bg-emerald-600 text-white px-3 py-1 rounded-lg font-bold">استعادة</button>
+                  <button onclick="permanentDeleteRequest(${d.id})" class="bg-rose-700 text-white px-3 py-1 rounded-lg font-bold">حذف نهائي</button>
+                </div>
+              </div>
+            `).join('');
+        }
+
+        // أرشيف المحادثات والمراقبة
+        const archContainer = document.getElementById('admin-archived-messages-list');
+        if (archContainer) {
+          archContainer.innerHTML = app.archivedMessages.length === 0
+            ? `<p class="text-xs text-slate-400 text-center py-4">الأرشيف فارغ.</p>`
+            : app.archivedMessages.map(m => `<div class="p-2 bg-sky-50 border rounded-xl text-xs">${m.fromName} &rarr; ${m.toName}: "${m.text}"</div>`).join('');
+        }
+
+        const monitorBox = document.getElementById('admin-chat-monitor-table');
+        if (monitorBox) {
+          monitorBox.innerHTML = app.allAdminMessages.map(m => `
+            <div class="bg-slate-50 p-2 rounded-xl border text-xs flex justify-between items-center">
+              <div><span class="font-bold text-indigo-700">${m.fromName} &rarr; ${m.toName}</span>: ${m.text}</div>
+              <button onclick="archiveMessage(${m.id})" class="text-sky-600 font-bold text-[11px] hover:underline">أرشفة</button>
+            </div>
+          `).join('');
+        }
+
+        const usersBox = document.getElementById('admin-users-list');
+        if (usersBox) {
+          usersBox.innerHTML = app.users.map(u => `
+            <div class="p-2.5 bg-slate-50 border rounded-xl flex items-center gap-2.5 text-xs">
+              <img src="${u.avatar}" class="w-9 h-9 rounded-full object-cover">
+              <div>
+                <h5 class="font-bold">${u.name}</h5>
+                <p class="text-emerald-800 font-mono font-bold">${u.phone}</p>
+                <span class="text-[10px] text-slate-500">${u.role} • ${u.city}</span>
               </div>
             </div>
           `).join('');
@@ -1637,15 +1930,11 @@
       window.scrollTo({ top: 300, behavior: 'smooth' });
     }
 
-    // بناء كارت الطلب
     function renderRequestCard(req, isCustomerView) {
       const isOwner = app.currentUser && app.currentUser.id === req.customerId;
-
-      let offersHtml = '';
-      if (!req.offers || req.offers.length === 0) {
-        offersHtml = `<p class="text-[11px] text-slate-400 py-1">لا توجد عروض مقدمة بعد.</p>`;
-      } else {
-        offersHtml = req.offers.map(o => `
+      let offersHtml = (!req.offers || req.offers.length === 0)
+        ? `<p class="text-[11px] text-slate-400 py-1">لا توجد عروض مقدمة بعد.</p>`
+        : req.offers.map(o => `
           <div class="p-3 bg-white rounded-2xl border border-slate-200 space-y-2 text-xs">
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-1.5">
               <div>
@@ -1656,27 +1945,21 @@
                   <span class="bg-slate-100 text-slate-700 text-[10px] font-bold px-2 py-0.5 rounded">التوصيل: ${o.deliveryFee > 0 ? o.deliveryFee + ' د.أ' : 'مجاني'}</span>
                 </div>
               </div>
-
               <div class="flex items-center gap-1.5 flex-wrap self-end sm:self-center">
                 <button onclick="setChatTarget('${o.merchantName}', ${o.merchantId})" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-2.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1">
-                  <i class="fa-solid fa-comment-dots"></i> دردشة مع صاحب العرض
+                  <i class="fa-solid fa-comment-dots"></i> دردشة
                 </button>
-
                 ${isOwner && req.status !== 'accepted' ? `
                   <button onclick="openAcceptMerchantModal(${req.id}, ${o.id}, '${o.merchantName}', ${o.price}, ${o.deliveryFee})" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition shadow-sm flex items-center gap-1">
-                    <i class="fa-solid fa-check"></i> اختيار التاجر واعتماد العرض
+                    <i class="fa-solid fa-check"></i> اختيار التاجر والموافقة
                   </button>
                 ` : ''}
-
-                <button onclick="showOfferDetailsModal(${req.id}, ${o.id})" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-2.5 py-1.5 rounded-xl text-xs font-bold transition">
-                  تفاصيل
-                </button>
+                <button onclick="showOfferDetailsModal(${req.id}, ${o.id})" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-2.5 py-1.5 rounded-xl text-xs font-bold transition">تفاصيل</button>
               </div>
             </div>
             <p class="text-xs text-slate-700 bg-slate-50 p-2 rounded-xl leading-relaxed font-medium">${o.note}</p>
           </div>
         `).join('');
-      }
 
       return `
         <div class="bg-white border border-slate-200 rounded-2xl sm:rounded-3xl p-4 sm:p-5 shadow-sm space-y-3.5">
@@ -1685,25 +1968,19 @@
               <div class="flex items-center gap-1.5 flex-wrap">
                 <span class="text-[10px] bg-indigo-100 text-indigo-800 font-bold px-2 py-0.5 rounded-full">${req.category}</span>
                 <span class="text-[10px] bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded-full"><i class="fa fa-location-dot"></i> ${req.customerCity}</span>
-                ${req.status === 'accepted' ? `
-                  <span class="text-[10px] bg-emerald-600 text-white font-bold px-2.5 py-0.5 rounded-full">
-                    تم اعتماد التاجر: ${req.acceptedMerchantName} ✓
-                  </span>
-                ` : ''}
+                ${req.status === 'accepted' ? `<span class="text-[10px] bg-emerald-600 text-white font-bold px-2.5 py-0.5 rounded-full">تم اعتماد التاجر: ${req.acceptedMerchantName} ✓</span>` : ''}
               </div>
               <h3 class="text-base sm:text-lg font-black text-slate-900 mt-1">${req.title}</h3>
               <p class="text-xs text-slate-600">${req.notes || ''}</p>
             </div>
-
             <div class="flex sm:flex-col items-center sm:items-end justify-between w-full sm:w-auto gap-2">
               <div class="text-left bg-slate-50 p-2 rounded-xl border border-slate-200">
                 <span class="text-[9px] text-slate-400 block">الميزانية:</span>
                 <span class="text-xs sm:text-sm font-black text-emerald-600">${req.budgetMin} - ${req.budgetMax} د.أ</span>
               </div>
-
               ${isCustomerView ? `
                 <button onclick="finishAndDeleteRequest(${req.id})" class="bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold px-3 py-1.5 rounded-xl text-xs transition flex items-center gap-1">
-                  <i class="fa-trash-can fa-solid"></i> إنهاء وحذف الطلب
+                  <i class="fa fa-trash-can"></i> إنهاء وحذف الطلب
                 </button>
               ` : `
                 <button onclick="openOfferModal(${req.id})" class="bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold py-2 px-4 rounded-xl text-xs flex items-center gap-1.5 transition shadow">
@@ -1712,25 +1989,13 @@
               `}
             </div>
           </div>
-
-          ${req.companyDeliveryRequested ? `
-            <div class="p-2.5 bg-indigo-50 border border-indigo-200 rounded-xl text-xs flex items-center gap-2 text-indigo-950 font-bold">
-              <i class="fa-solid fa-truck-fast text-indigo-600"></i>
-              <span>مطلوب توصيل عبر: ${req.deliveryCompany}</span>
-            </div>
-          ` : ''}
-
+          ${req.companyDeliveryRequested ? `<div class="p-2.5 bg-indigo-50 border border-indigo-200 rounded-xl text-xs flex items-center gap-2 text-indigo-950 font-bold"><i class="fa-solid fa-truck-fast text-indigo-600"></i> <span>مطلوب توصيل عبر: ${req.deliveryCompany}</span></div>` : ''}
           <div class="flex items-center justify-between pt-1">
-            <button onclick="showRequestDetails(${req.id})" class="text-xs text-indigo-600 hover:text-indigo-800 font-bold flex items-center gap-1">
-              <i class="fa-solid fa-circle-info"></i> عرض التفاصيل الكاملة للطلب
-            </button>
+            <button onclick="showRequestDetails(${req.id})" class="text-xs text-indigo-600 hover:text-indigo-800 font-bold flex items-center gap-1"><i class="fa-solid fa-circle-info"></i> عرض التفاصيل الكاملة</button>
             ${req.image ? `<img src="${req.image}" onclick="openLightbox('${req.image}')" class="w-10 h-10 object-cover rounded-lg border cursor-pointer">` : ''}
           </div>
-
           <div class="border-t border-slate-100 pt-3 space-y-2">
-            <span class="text-xs font-black text-slate-800 flex items-center gap-1.5">
-              <i class="fa-solid fa-comments-dollar text-emerald-600"></i> عروض الأسعار المقدمة (${req.offers ? req.offers.length : 0})
-            </span>
+            <span class="text-xs font-black text-slate-800 flex items-center gap-1.5"><i class="fa-solid fa-comments-dollar text-emerald-600"></i> عروض الأسعار المقدمة (${req.offers ? req.offers.length : 0})</span>
             <div class="space-y-2.5">${offersHtml}</div>
           </div>
         </div>
