@@ -12,18 +12,18 @@ app.use(express.json({ limit: '20mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(__dirname));
 
-// قراءة وإنشاء قاعدة البيانات المحلية تلقائياً
 function getDB() {
   const initialAdmins = [
     {
       id: 991,
-      name: "مدير المنصة الرئيسي (أدمن 1)",
+      name: "مدير المنصة الرئيسي (السوبر أدمن)",
       email: "admin1@souq.jo",
       phone: "0790000001",
       city: "عمان",
       role: "admin",
+      isSuperAdmin: true,
       password: "admin123",
-      avatar: "https://ui-avatars.com/api/?name=Admin+1&background=1e1b4b&color=fff"
+      avatar: "https://ui-avatars.com/api/?name=Super+Admin&background=1e1b4b&color=fff"
     },
     {
       id: 992,
@@ -32,6 +32,7 @@ function getDB() {
       phone: "0780000002",
       city: "إربد",
       role: "admin",
+      isSuperAdmin: false,
       password: "admin123",
       avatar: "https://ui-avatars.com/api/?name=Admin+2&background=047857&color=fff"
     },
@@ -42,6 +43,7 @@ function getDB() {
       phone: "0770000003",
       city: "الزرقاء",
       role: "admin",
+      isSuperAdmin: false,
       password: "admin123",
       avatar: "https://ui-avatars.com/api/?name=Admin+3&background=b45309&color=fff"
     }
@@ -54,19 +56,23 @@ function getDB() {
       offers: [],
       messages: [],
       notifications: [],
-      archivedMessages: []
+      archivedMessages: [],
+      emailAlertsLogs: [],
+      alertActivationRequests: [] // طلبات تفعيل التنبيهات للسوبر أدمن
     };
     fs.writeFileSync(DB_FILE, JSON.stringify(initialData, null, 2), 'utf8');
     return initialData;
   }
 
   const db = JSON.parse(fs.readFileSync(DB_FILE, 'utf8'));
-  // التأكد من وجود حسابات الأدمن الـ 3 دائماً
   initialAdmins.forEach(adm => {
-    if (!db.users.find(u => u.email === adm.email)) {
-      db.users.push(adm);
-    }
+    const existing = db.users.find(u => u.email === adm.email);
+    if (!existing) db.users.push(adm);
+    else existing.isSuperAdmin = adm.isSuperAdmin;
   });
+
+  if (!db.alertActivationRequests) db.alertActivationRequests = [];
+  if (!db.emailAlertsLogs) db.emailAlertsLogs = [];
   if (!db.archivedMessages) db.archivedMessages = [];
   return db;
 }
@@ -80,13 +86,12 @@ app.post('/api/register', (req, res) => {
   const db = getDB();
   const { name, email, phone, city, role, password, avatar, authProvider } = req.body;
 
-  // التحقق من تكرار الإيميل ورقم الهاتف
   if (db.users.find(u => u.email.toLowerCase() === email.toLowerCase())) {
-    return res.status(400).json({ success: false, message: 'البريد الإلكتروني مسجل مسبقاً، يرجى تسجيل الدخول.' });
+    return res.status(400).json({ success: false, message: 'البريد الإلكتروني مسجل مسبقاً.' });
   }
 
   if (phone && db.users.find(u => u.phone === phone)) {
-    return res.status(400).json({ success: false, message: 'رقم الهاتف مسجل مسبقاً بحساب آخر.' });
+    return res.status(400).json({ success: false, message: 'رقم الهاتف مسجل مسبقاً.' });
   }
 
   const newUser = {
@@ -95,10 +100,13 @@ app.post('/api/register', (req, res) => {
     email,
     phone: phone || '',
     city: city || 'عمان',
-    role, // عميل أو تاجر
+    role,
     password: password || '',
     avatar: avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=4f46e5&color=fff`,
-    authProvider: authProvider || 'local'
+    authProvider: authProvider || 'local',
+    alertCategories: [],
+    alertStatus: 'none', // none, pending, active, expired, rejected
+    alertExpiry: null
   };
 
   db.users.push(newUser);
@@ -110,31 +118,123 @@ app.post('/api/login', (req, res) => {
   const db = getDB();
   const { identifier, password, isSocial, socialEmail, socialName, socialAvatar } = req.body;
 
-  // تسجيل دخول اجتماعي
   if (isSocial) {
     let user = db.users.find(u => u.email.toLowerCase() === socialEmail.toLowerCase());
-    if (user) {
-      return res.json({ success: true, user });
-    } else {
-      return res.json({ success: false, needRegister: true, socialEmail, socialName, socialAvatar });
-    }
+    if (user) return res.json({ success: true, user });
+    return res.json({ success: false, needRegister: true, socialEmail, socialName, socialAvatar });
   }
 
-  // تسجيل دخول عادي
   const user = db.users.find(u => (u.email.toLowerCase() === identifier.toLowerCase() || u.name === identifier) && u.password === password);
-  if (user) {
-    res.json({ success: true, user });
-  } else {
-    res.status(401).json({ success: false, message: 'بيانات الدخول غير صحيحة، تأكد من الإيميل وكلمة المرور' });
-  }
+  if (user) res.json({ success: true, user });
+  else res.status(401).json({ success: false, message: 'بيانات الدخول غير صحيحة.' });
 });
 
 app.get('/api/users', (req, res) => {
-  const db = getDB();
-  res.json(db.users);
+  res.json(getDB().users);
 });
 
-// ---------------- API طلبات الشراء ----------------
+// ---------------- API نظام التنبيهات الموقوت بموافقة السوبر أدمن ----------------
+// المستخدم (عميل أو تاجر) يختار الأقسام ويرسل طلب تفعيل للسوبر أدمن
+app.post('/api/alerts/request-activation', (req, res) => {
+  const db = getDB();
+  const { userId, categories } = req.body;
+
+  const user = db.users.find(u => u.id === userId);
+  if (!user) return res.status(404).json({ success: false, message: 'المستخدم غير موجود' });
+
+  user.alertCategories = categories || [];
+  user.alertStatus = 'pending'; // قيد موافقة السوبر أدمن
+
+  // إنشاء أو تحديث سجل الطلب في قائمة السوبر أدمن
+  const existingReqIndex = db.alertActivationRequests.findIndex(r => r.userId === userId);
+  const reqObj = {
+    id: Date.now(),
+    userId: user.id,
+    userName: user.name,
+    userEmail: user.email,
+    userPhone: user.phone,
+    userRole: user.role,
+    userCity: user.city,
+    categories: user.alertCategories,
+    status: 'pending',
+    requestedAt: new Date().toISOString()
+  };
+
+  if (existingReqIndex !== -1) {
+    db.alertActivationRequests[existingReqIndex] = reqObj;
+  } else {
+    db.alertActivationRequests.unshift(reqObj);
+  }
+
+  // إرسال إشعار فوري للسوبر أدمن
+  const timeNow = new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+  db.notifications.unshift({
+    id: Date.now() + 1,
+    userId: 991, // السوبر أدمن
+    title: 'طلب تفعيل تنبيهات جديد 🔔',
+    text: `طلب المستخدم (${user.name} - ${user.role === 'merchant' ? 'تاجر' : 'عميل'}) تفعيل ميزة التنبيهات لـ ${categories.length} أقسام.`,
+    time: timeNow
+  });
+
+  saveDB(db);
+  res.json({ success: true, user });
+});
+
+// جلب طلبات التفعيل للسوبر أدمن
+app.get('/api/admin/alert-activation-requests', (req, res) => {
+  const db = getDB();
+  res.json(db.alertActivationRequests || []);
+});
+
+// السوبر أدمن فقط يفعل الخاصية بالتقويم لمدة محدودة أو يرفضها
+app.post('/api/admin/handle-alert-activation', (req, res) => {
+  const db = getDB();
+  const { adminEmail, targetUserId, action, expiryDate } = req.body;
+
+  if (adminEmail !== 'admin1@souq.jo') {
+    return res.status(403).json({ success: false, message: 'خاص بالسوبر أدمن فقط!' });
+  }
+
+  const user = db.users.find(u => u.id === targetUserId);
+  const reqItem = db.alertActivationRequests.find(r => r.userId === targetUserId);
+  const timeNow = new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+
+  if (action === 'approve') {
+    if (user) {
+      user.alertStatus = 'active';
+      user.alertExpiry = expiryDate;
+    }
+    if (reqItem) {
+      reqItem.status = 'active';
+      reqItem.expiryDate = expiryDate;
+    }
+
+    // إشعار للمستخدم بأن الخدمة فُعلت له
+    db.notifications.unshift({
+      id: Date.now(),
+      userId: targetUserId,
+      title: 'تم تفعيل خدمة التنبيهات بالبريد 🎉',
+      text: `وافق السوبر أدمن على طلبك. ميزة التنبيهات بالبريد الإلكتروني مفعلة لك حتى تاريخ: ${expiryDate}`,
+      time: timeNow
+    });
+  } else {
+    if (user) user.alertStatus = 'rejected';
+    if (reqItem) reqItem.status = 'rejected';
+
+    db.notifications.unshift({
+      id: Date.now(),
+      userId: targetUserId,
+      title: 'تحديث بخصوص طلب التنبيهات',
+      text: 'نعتذر، لم تتم الموافقة على تفعيل ميزة التنبيهات حالياً.',
+      time: timeNow
+    });
+  }
+
+  saveDB(db);
+  res.json({ success: true });
+});
+
+// ---------------- API طلبات الشراء ونظام التنبيهات الفوري ----------------
 app.get('/api/requests', (req, res) => {
   const db = getDB();
   const activeRequests = db.requests.filter(r => !r.isDeleted);
@@ -150,25 +250,92 @@ app.post('/api/requests', (req, res) => {
     id: Date.now(),
     ...req.body,
     isDeleted: 0,
+    status: 'open',
+    acceptedOfferId: null,
+    acceptedMerchantName: null,
+    companyDeliveryRequested: false,
+    deliveryCompany: null,
     createdAt: new Date().toISOString()
   };
   db.requests.unshift(newReq);
+
+  // إرسال تنبيهات الإيميل لأي مستخدم (عميل أو تاجر) وافق له السوبر أدمن والاشتراك سارٍ
+  const now = new Date();
+  const eligibleUsers = db.users.filter(u => 
+    u.id !== newReq.customerId && // لا ننبه صاحب الطلب
+    u.alertStatus === 'active' &&
+    u.alertExpiry &&
+    new Date(u.alertExpiry) >= now &&
+    u.alertCategories &&
+    u.alertCategories.includes(newReq.category)
+  );
+
+  eligibleUsers.forEach(u => {
+    const alertRecord = {
+      id: Date.now() + Math.floor(Math.random() * 1000),
+      toEmail: u.email,
+      toName: u.name,
+      toRole: u.role,
+      category: newReq.category,
+      requestTitle: newReq.title,
+      budget: `${newReq.budgetMin} - ${newReq.budgetMax} د.أ`,
+      image: newReq.image || null,
+      sentAt: new Date().toISOString()
+    };
+    db.emailAlertsLogs.unshift(alertRecord);
+
+    db.notifications.unshift({
+      id: Date.now() + Math.floor(Math.random() * 1000),
+      userId: u.id,
+      title: `تنبيه إيميل جديد في قسم [${newReq.category}] 📧`,
+      text: `طلب جديد: ${newReq.title} بميزانية (${newReq.budgetMin} - ${newReq.budgetMax} د.أ)`,
+      time: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })
+    });
+  });
+
   saveDB(db);
   res.json({ success: true, id: newReq.id });
 });
 
-// حذف وإنهاء الطلب (للعميل أو الأدمن)
-app.post('/api/requests/delete', (req, res) => {
+// اعتماد التاجر مع خيار التوصيل
+app.post('/api/requests/accept-offer', (req, res) => {
   const db = getDB();
-  const { requestId, userId } = req.body;
-  const reqIndex = db.requests.findIndex(r => r.id === requestId);
-  
-  if (reqIndex !== -1) {
-    db.requests[reqIndex].isDeleted = 1;
+  const { requestId, offerId, companyDelivery, deliveryCompany } = req.body;
+
+  const request = db.requests.find(r => r.id === requestId);
+  const offer = db.offers.find(o => o.id === offerId);
+
+  if (request && offer) {
+    request.status = 'accepted';
+    request.acceptedOfferId = offerId;
+    request.acceptedMerchantName = offer.merchantName;
+    request.companyDeliveryRequested = Boolean(companyDelivery);
+    request.deliveryCompany = companyDelivery ? deliveryCompany : null;
+
+    const timeNow = new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+    db.notifications.unshift({
+      id: Date.now(),
+      userId: offer.merchantId,
+      title: 'تهانينا! تم اعتماد عرضك 🎉',
+      text: `قام العميل ${request.customerName} باختيارك واعتماد عرضك على طلبه [${request.title}]${companyDelivery ? ` مع طلب توصيل عبر ${deliveryCompany}` : ''}`,
+      time: timeNow
+    });
+
     saveDB(db);
     return res.json({ success: true });
   }
-  res.status(404).json({ success: false, message: 'الطلب غير موجود' });
+  res.status(404).json({ success: false });
+});
+
+app.post('/api/requests/delete', (req, res) => {
+  const db = getDB();
+  const reqItem = db.requests.find(r => r.id === req.body.requestId);
+  if (reqItem) {
+    reqItem.isDeleted = 1;
+    saveDB(db);
+    return res.json({ success: true });
+  }
+  res.status(404).json({ success: false });
 });
 
 // ---------------- API العروض ----------------
@@ -176,13 +343,10 @@ app.get('/api/my-offers', (req, res) => {
   const db = getDB();
   const { userId } = req.query;
   const userOffers = db.offers.filter(o => o.merchantId == userId);
-  
-  // إرفاق تفاصيل الطلب مع كل عرض
   const detailedOffers = userOffers.map(o => {
     const reqItem = db.requests.find(r => r.id === o.requestId) || {};
-    return { ...o, requestTitle: reqItem.title, requestCity: reqItem.customerCity, requestBudget: `${reqItem.budgetMin} - ${reqItem.budgetMax} د.أ` };
+    return { ...o, requestTitle: reqItem.title, requestCity: reqItem.customerCity, requestStatus: reqItem.status };
   });
-
   res.json(detailedOffers);
 });
 
@@ -208,16 +372,14 @@ app.post('/api/offers', (req, res) => {
 
   db.offers.push(newOffer);
 
-  // إرسال الإشعار لصاحب الطلب فقط
   const request = db.requests.find(r => r.id === requestId);
   if (request) {
-    const timeNow = new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
     db.notifications.unshift({
       id: Date.now() + 1,
       userId: request.customerId,
       title: 'عرض سعر جديد!',
       text: `قدم ${merchantName} عرضاً بقيمة ${price} د.أ على طلبك [${request.title}]`,
-      time: timeNow
+      time: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })
     });
   }
 
@@ -225,7 +387,7 @@ app.post('/api/offers', (req, res) => {
   res.json({ success: true, id: newOffer.id });
 });
 
-// ---------------- API الرسائل والدردشة ----------------
+// ---------------- API المحادثات ----------------
 app.get('/api/messages', (req, res) => {
   const db = getDB();
   const { userName } = req.query;
@@ -251,7 +413,6 @@ app.post('/api/messages', (req, res) => {
 
   db.messages.push(newMsg);
 
-  // إشعار للشخص المستلم فقط
   if (toUserId) {
     db.notifications.unshift({
       id: Date.now() + 2,
@@ -269,80 +430,39 @@ app.post('/api/messages', (req, res) => {
 app.get('/api/notifications', (req, res) => {
   const db = getDB();
   const { userId } = req.query;
-  const notifs = db.notifications.filter(n => n.userId == userId);
-  res.json(notifs);
+  res.json(db.notifications.filter(n => n.userId == userId));
 });
 
-// ---------------- API الإدارة والأرشفة ----------------
+// ---------------- API الإدارة وسلة المحذوفات ----------------
 app.get('/api/admin/deleted-requests', (req, res) => {
-  const db = getDB();
-  const deleted = db.requests.filter(r => r.isDeleted === 1);
-  res.json(deleted);
-});
-
-app.post('/api/admin/soft-delete', (req, res) => {
-  const db = getDB();
-  const { requestId } = req.body;
-  const reqItem = db.requests.find(r => r.id === requestId);
-  if (reqItem) reqItem.isDeleted = 1;
-  saveDB(db);
-  res.json({ success: true });
+  res.json(getDB().requests.filter(r => r.isDeleted === 1));
 });
 
 app.post('/api/admin/restore-request', (req, res) => {
   const db = getDB();
-  const { requestId } = req.body;
-  const reqItem = db.requests.find(r => r.id === requestId);
+  const reqItem = db.requests.find(r => r.id === req.body.requestId);
   if (reqItem) reqItem.isDeleted = 0;
   saveDB(db);
   res.json({ success: true });
 });
 
-app.post('/api/admin/permanent-delete', (req, res) => {
-  const db = getDB();
-  const { requestId } = req.body;
-  db.requests = db.requests.filter(r => r.id !== requestId);
-  db.offers = db.offers.filter(o => o.requestId !== requestId);
-  saveDB(db);
-  res.json({ success: true });
-});
-
 app.get('/api/admin/all-messages', (req, res) => {
-  const db = getDB();
-  res.json(db.messages);
+  res.json(getDB().messages);
 });
 
-app.post('/api/admin/archive-message', (req, res) => {
-  const db = getDB();
-  const { messageId } = req.body;
-  const msgIndex = db.messages.findIndex(m => m.id === messageId);
-  if (msgIndex !== -1) {
-    const [archived] = db.messages.splice(msgIndex, 1);
-    db.archivedMessages.push(archived);
-    saveDB(db);
-  }
-  res.json({ success: true });
-});
-
-app.get('/api/admin/archived-messages', (req, res) => {
-  const db = getDB();
-  res.json(db.archivedMessages || []);
+app.get('/api/admin/email-alerts-logs', (req, res) => {
+  res.json(getDB().emailAlertsLogs || []);
 });
 
 app.get('*', (req, res) => {
   const publicPath = path.join(__dirname, 'public', 'index.html');
   const rootPath = path.join(__dirname, 'index.html');
-
-  if (fs.existsSync(publicPath)) {
-    res.sendFile(publicPath);
-  } else if (fs.existsSync(rootPath)) {
-    res.sendFile(rootPath);
-  } else {
-    res.status(404).send('ملف index.html غير موجود، تأكد من رفعه على GitHub');
-  }
+  if (fs.existsSync(publicPath)) res.sendFile(publicPath);
+  else if (fs.existsSync(rootPath)) res.sendFile(rootPath);
+  else res.status(404).send('ملف index.html غير موجود');
 });
 
 app.listen(PORT, () => {
-  console.log(`\n✓ السيرفر يعمل بنجاح على: http://localhost:${PORT}`);
-  console.log(`✓ تم تفعيل حسابات الأدمن الثلاثة (admin1@souq.jo, admin2@souq.jo, admin3@souq.jo)\n`);
+  console.log(`\n✓ السيرفر يعمل على: http://localhost:${PORT}`);
+  console.log(`✓ السوبر أدمن مفعل: admin1@souq.jo / admin123\n`);
 });
