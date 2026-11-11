@@ -332,7 +332,6 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-app.listen(PORT, () => {
-  console.log(`\n✓ السيرفر يعمل بنجاح على: http://localhost:${PORT}`);
-  console.log(`✓ تم تفعيل حسابات الأدمن الثلاثة (admin1@souq.jo, admin2@souq.jo, admin3@souq.jo)\n`);
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
