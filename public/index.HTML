@@ -1,0 +1,1996 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>سوق الطلب المعكوس - الأردن</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap');
+    body { font-family: 'Tajawal', sans-serif; -webkit-tap-highlight-color: transparent; }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col antialiased selection:bg-indigo-600 selection:text-white">
+
+  <!-- ==================== شريط التنقل العلوي ==================== -->
+  <header class="bg-indigo-950 text-white sticky top-0 z-40 shadow-lg">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 py-2.5 flex justify-between items-center gap-2">
+      
+      <!-- الشعار -->
+      <div class="flex items-center gap-2 sm:gap-3 cursor-pointer shrink-0" onclick="navigateTo('home')">
+        <div class="w-9 h-9 sm:w-10 sm:h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white text-lg sm:text-xl shadow">
+          <i class="fa-solid fa-arrows-split-up-and-left"></i>
+        </div>
+        <div>
+          <h1 class="font-black text-sm sm:text-base leading-tight">سوق الطلب المعكوس</h1>
+          <span class="text-[9px] sm:text-[10px] text-indigo-300">المملكة الأردنية الهاشمية 🇯🇴</span>
+        </div>
+      </div>
+
+      <!-- روابط الديسكتوب -->
+      <nav class="hidden md:flex items-center gap-1.5 text-xs font-bold">
+        <button onclick="navigateTo('home')" id="nav-home" class="px-3 py-1.5 rounded-lg hover:bg-indigo-900 transition">الرئيسية</button>
+        <button onclick="filterCategoryAndNavigate('الكل')" id="nav-merchant-feed" class="px-3 py-1.5 rounded-lg hover:bg-indigo-900 transition flex items-center gap-1">
+          <i class="fa-solid fa-layer-group"></i> سوق الطلبات
+        </button>
+        <button onclick="handleRequestNewProductNav()" id="nav-customer-dashboard" class="px-3 py-1.5 rounded-lg hover:bg-indigo-900 transition flex items-center gap-1">
+          <i class="fa-solid fa-cart-plus"></i> طلب منتج
+        </button>
+        <button onclick="navigateTo('my-requests')" id="nav-my-requests" class="hidden px-3 py-1.5 rounded-lg hover:bg-indigo-900 transition items-center gap-1">
+          <i class="fa-solid fa-boxes-packing"></i> طلباتي
+        </button>
+        <button onclick="navigateTo('my-offers')" id="nav-my-offers" class="hidden px-3 py-1.5 rounded-lg hover:bg-indigo-900 transition items-center gap-1">
+          <i class="fa-solid fa-handshake-simple"></i> عروضي المقدمة
+        </button>
+        <button onclick="navigateTo('chat-center')" id="nav-chat-center" class="hidden px-3 py-1.5 rounded-lg hover:bg-indigo-900 transition items-center gap-1">
+          <i class="fa-regular fa-comment-dots"></i> المحادثات
+        </button>
+        <button onclick="navigateTo('admin')" id="nav-admin" class="hidden px-3 py-1.5 rounded-lg bg-amber-500/20 text-amber-300 hover:bg-amber-500/30 transition items-center gap-1">
+          <i class="fa-solid fa-shield-halved"></i> لوحة الإدارة
+        </button>
+      </nav>
+
+      <!-- زر التنبيهات والدخول وقائمة الهاتف -->
+      <div class="flex items-center gap-2">
+        <!-- جرس التنبيهات (للمسجلين فقط) -->
+        <div id="notif-wrapper" class="relative hidden">
+          <button onclick="toggleNotificationsDropdown()" class="p-2 bg-indigo-900/90 hover:bg-indigo-800 rounded-xl text-indigo-200 hover:text-white transition relative">
+            <i class="fa-solid fa-bell text-sm"></i>
+            <span id="notif-badge" class="absolute -top-1 -right-1 bg-rose-500 text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center hidden">0</span>
+          </button>
+
+          <!-- قائمة التنبيهات -->
+          <div id="notifications-dropdown" class="hidden absolute left-0 mt-2 w-72 sm:w-80 bg-white text-slate-800 rounded-2xl shadow-2xl border border-slate-200 overflow-hidden z-50">
+            <div class="p-3 bg-indigo-950 text-white flex justify-between items-center text-xs">
+              <span class="font-bold flex items-center gap-1"><i class="fa-solid fa-bell text-amber-400"></i> التنبيهات الجديدة</span>
+              <button onclick="navigateTo('chat-center'); toggleNotificationsDropdown()" class="text-[10px] text-indigo-300 hover:underline">المحادثات</button>
+            </div>
+            <div id="notifications-list" class="max-h-64 overflow-y-auto divide-y divide-slate-100 text-xs">
+              <div class="p-4 text-center text-slate-400 text-xs">لا توجد تنبيهات جديدة</div>
+            </div>
+          </div>
+        </div>
+
+        <div id="header-auth" class="flex items-center gap-1.5"></div>
+        
+        <button onclick="toggleMobileMenu()" class="md:hidden p-2 text-indigo-200 hover:text-white text-lg focus:outline-none">
+          <i class="fa-solid fa-bars" id="mobile-menu-icon"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- قائمة الموبايل -->
+    <div id="mobile-nav" class="hidden md:hidden border-t border-indigo-900 bg-indigo-950 px-4 py-3 space-y-2 text-xs font-bold">
+      <button onclick="navigateTo('home'); toggleMobileMenu()" class="w-full text-right p-2 rounded-xl hover:bg-indigo-900 flex items-center gap-2">
+        <i class="fa-solid fa-house w-5 text-indigo-400"></i> الرئيسية
+      </button>
+      <button onclick="filterCategoryAndNavigate('الكل'); toggleMobileMenu()" class="w-full text-right p-2 rounded-xl hover:bg-indigo-900 flex items-center gap-2">
+        <i class="fa-solid fa-layer-group w-5 text-indigo-400"></i> سوق الطلبات
+      </button>
+      <button onclick="handleRequestNewProductNav(); toggleMobileMenu()" class="w-full text-right p-2 rounded-xl hover:bg-indigo-900 flex items-center gap-2">
+        <i class="fa-solid fa-cart-plus w-5 text-indigo-400"></i> طلب شراء منتج جديد
+      </button>
+      <button onclick="navigateTo('my-requests'); toggleMobileMenu()" id="mob-nav-my-requests" class="hidden w-full text-right p-2 rounded-xl hover:bg-indigo-900 items-center gap-2">
+        <i class="fa-solid fa-boxes-packing w-5 text-indigo-400"></i> طلباتي
+      </button>
+      <button onclick="navigateTo('my-offers'); toggleMobileMenu()" id="mob-nav-my-offers" class="hidden w-full text-right p-2 rounded-xl hover:bg-indigo-900 items-center gap-2">
+        <i class="fa-solid fa-handshake-simple w-5 text-indigo-400"></i> عروضي المقدمة
+      </button>
+      <button onclick="navigateTo('chat-center'); toggleMobileMenu()" id="mob-nav-chat" class="hidden w-full text-right p-2 rounded-xl hover:bg-indigo-900 items-center gap-2">
+        <i class="fa-regular fa-comment-dots w-5 text-indigo-400"></i> المحادثات والرسائل
+      </button>
+      <button onclick="navigateTo('admin'); toggleMobileMenu()" id="mob-nav-admin" class="hidden w-full text-right p-2 rounded-xl text-amber-300 hover:bg-indigo-900 items-center gap-2">
+        <i class="fa-solid fa-shield-halved w-5 text-amber-400"></i> لوحة الإدارة
+      </button>
+    </div>
+  </header>
+
+  <!-- ==================== المحتوى الرئيسي ==================== -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-5 md:p-6">
+
+    <!-- 1. الرئيسية (Home) -->
+    <section id="page-home" class="space-y-8">
+      <div class="bg-gradient-to-br from-indigo-900 via-indigo-800 to-indigo-950 text-white rounded-2xl sm:rounded-3xl p-6 sm:p-10 shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
+        <div class="space-y-4 max-w-xl text-center md:text-right">
+          <span class="bg-indigo-600/70 text-indigo-200 text-xs px-3.5 py-1 rounded-full font-bold inline-block">سوق المناقصات والتجارة العكسية 🇯🇴</span>
+          <h2 class="text-2xl sm:text-4xl md:text-5xl font-black leading-tight">اطلب أي سلعة.. ودع المتاجر تتنافس لتقديم أفضل سعر!</h2>
+          <p class="text-xs sm:text-sm text-indigo-200 leading-relaxed">
+            المنصة تتيح للعملاء والتجار نشر طلبات الشراء وتقديم عروض الأسعار التنافسية بحرية كاملة مع التوصيل لكافة المحافظات.
+          </p>
+          <div class="pt-2 flex flex-col sm:flex-row gap-2.5 justify-center md:justify-start">
+            <button onclick="handleRequestNewProductNav()" class="bg-white text-indigo-950 font-black px-6 py-3 rounded-xl hover:bg-indigo-50 shadow-md text-xs transition">
+              أضف طلب شراء جديد 🛒
+            </button>
+            <button onclick="filterCategoryAndNavigate('الكل')" class="bg-indigo-700 border border-indigo-500 text-white font-black px-6 py-3 rounded-xl hover:bg-indigo-600 shadow-md text-xs transition">
+              استعرض طلبات وعروض السوق 📢
+            </button>
+          </div>
+        </div>
+        <div class="hidden md:flex bg-white/10 p-6 rounded-3xl border border-white/20 text-center w-64 shadow-2xl flex-col items-center">
+          <i class="fa-solid fa-handshake-angle text-5xl text-amber-400 mb-3"></i>
+          <h4 class="font-bold text-base">تبادل عروض ذكي</h4>
+          <p class="text-xs text-indigo-200 mt-1">عروض شفافة ومنافسة تضمن لك أفضل سعر دائماً</p>
+        </div>
+      </div>
+
+      <!-- خطوات عمل الموقع -->
+      <div>
+        <div class="text-center max-w-lg mx-auto mb-6">
+          <h3 class="font-black text-xl sm:text-2xl text-slate-900">كيف يعمل سوق الطلب المعكوس؟</h3>
+          <p class="text-xs text-slate-500 mt-1">4 خطوات بسيطة للحصول على أفضل سعر لأي سلعة تبحث عنها</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm text-center space-y-2">
+            <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center text-xl font-black mx-auto">1</div>
+            <h4 class="font-bold text-sm text-slate-800">1. انشر طلبك</h4>
+            <p class="text-xs text-slate-500 leading-relaxed">حدد اسم المنتج، ميزانيتك، خيار التوصيل، وصورة اختيارية.</p>
+          </div>
+          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm text-center space-y-2">
+            <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center text-xl font-black mx-auto">2</div>
+            <h4 class="font-bold text-sm text-slate-800">2. استقبل العروض</h4>
+            <p class="text-xs text-slate-500 leading-relaxed">يقوم التجار والمهتمون بتقديم عروض أسعار تفصيلية وتكلفة التوصيل.</p>
+          </div>
+          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm text-center space-y-2">
+            <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center text-xl font-black mx-auto">3</div>
+            <h4 class="font-bold text-sm text-slate-800">3. قارن العروض</h4>
+            <p class="text-xs text-slate-500 leading-relaxed">اطلع على كافة تفاصيل كل عرض بكل شفافية واختر الأنسب لك.</p>
+          </div>
+          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm text-center space-y-2">
+            <div class="w-12 h-12 bg-purple-50 text-purple-600 rounded-2xl flex items-center justify-center text-xl font-black mx-auto">4</div>
+            <h4 class="font-bold text-sm text-slate-800">4. تواصل وأتمم الصفقة</h4>
+            <p class="text-xs text-slate-500 leading-relaxed">تواصل فورياً عبر المحادثة الداخلية لإنهاء الشراء والتوصيل.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- تصنيفات المنتجات الـ 12 -->
+      <div>
+        <div class="flex justify-between items-center mb-4">
+          <div>
+            <h3 class="font-black text-lg sm:text-xl text-slate-900">جميع أقسام وتصنيفات السوق</h3>
+            <p class="text-xs text-slate-500">اختر القسم لمشاهدة الطلبات والعروض الخاصة به</p>
+          </div>
+          <button onclick="filterCategoryAndNavigate('الكل')" class="text-xs text-indigo-600 font-bold hover:underline">عرض كل الأقسام &larr;</button>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2.5 sm:gap-3">
+          <div onclick="filterCategoryAndNavigate('أجهزة كهربائية ومنزلية')" class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm text-center hover:border-indigo-500 hover:shadow-md cursor-pointer transition active:scale-95">
+            <div class="w-10 h-10 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center text-lg mx-auto mb-2"><i class="fa-solid fa-plug"></i></div>
+            <h4 class="font-bold text-xs text-slate-800">أجهزة كهربائية</h4>
+          </div>
+          <div onclick="filterCategoryAndNavigate('هواتف وإلكترونيات')" class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm text-center hover:border-indigo-500 hover:shadow-md cursor-pointer transition active:scale-95">
+            <div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-lg mx-auto mb-2"><i class="fa-solid fa-mobile-screen"></i></div>
+            <h4 class="font-bold text-xs text-slate-800">موبايلات وإلكترونيات</h4>
+          </div>
+          <div onclick="filterCategoryAndNavigate('كمبيوتر ولابتوب')" class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm text-center hover:border-indigo-500 hover:shadow-md cursor-pointer transition active:scale-95">
+            <div class="w-10 h-10 bg-sky-50 text-sky-600 rounded-xl flex items-center justify-center text-lg mx-auto mb-2"><i class="fa-solid fa-laptop"></i></div>
+            <h4 class="font-bold text-xs text-slate-800">كمبيوتر ولابتوب</h4>
+          </div>
+          <div onclick="filterCategoryAndNavigate('ملابس وأزياء')" class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm text-center hover:border-indigo-500 hover:shadow-md cursor-pointer transition active:scale-95">
+            <div class="w-10 h-10 bg-pink-50 text-pink-600 rounded-xl flex items-center justify-center text-lg mx-auto mb-2"><i class="fa-solid fa-shirt"></i></div>
+            <h4 class="font-bold text-xs text-slate-800">ملابس وأزياء</h4>
+          </div>
+          <div onclick="filterCategoryAndNavigate('قطع سيارات وإكسسوارات')" class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm text-center hover:border-indigo-500 hover:shadow-md cursor-pointer transition active:scale-95">
+            <div class="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center text-lg mx-auto mb-2"><i class="fa-solid fa-car"></i></div>
+            <h4 class="font-bold text-xs text-slate-800">قطع سيارات</h4>
+          </div>
+          <div onclick="filterCategoryAndNavigate('أثاث وديكور')" class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm text-center hover:border-indigo-500 hover:shadow-md cursor-pointer transition active:scale-95">
+            <div class="w-10 h-10 bg-purple-50 text-purple-600 rounded-xl flex items-center justify-center text-lg mx-auto mb-2"><i class="fa-solid fa-couch"></i></div>
+            <h4 class="font-bold text-xs text-slate-800">أثاث وديكور</h4>
+          </div>
+          <div onclick="filterCategoryAndNavigate('مستلزمات أطفال وألعاب')" class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm text-center hover:border-indigo-500 hover:shadow-md cursor-pointer transition active:scale-95">
+            <div class="w-10 h-10 bg-rose-50 text-rose-600 rounded-xl flex items-center justify-center text-lg mx-auto mb-2"><i class="fa-solid fa-baby"></i></div>
+            <h4 class="font-bold text-xs text-slate-800">مستلزمات أطفال</h4>
+          </div>
+          <div onclick="filterCategoryAndNavigate('رياضة ولياقة')" class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm text-center hover:border-indigo-500 hover:shadow-md cursor-pointer transition active:scale-95">
+            <div class="w-10 h-10 bg-teal-50 text-teal-600 rounded-xl flex items-center justify-center text-lg mx-auto mb-2"><i class="fa-solid fa-dumbbell"></i></div>
+            <h4 class="font-bold text-xs text-slate-800">رياضة ولياقة</h4>
+          </div>
+          <div onclick="filterCategoryAndNavigate('عدد وأدوات مهنية')" class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm text-center hover:border-indigo-500 hover:shadow-md cursor-pointer transition active:scale-95">
+            <div class="w-10 h-10 bg-orange-50 text-orange-600 rounded-xl flex items-center justify-center text-lg mx-auto mb-2"><i class="fa-solid fa-screwdriver-wrench"></i></div>
+            <h4 class="font-bold text-xs text-slate-800">عدد وأدوات</h4>
+          </div>
+          <div onclick="filterCategoryAndNavigate('كتب وقرطاسية')" class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm text-center hover:border-indigo-500 hover:shadow-md cursor-pointer transition active:scale-95">
+            <div class="w-10 h-10 bg-yellow-50 text-yellow-600 rounded-xl flex items-center justify-center text-lg mx-auto mb-2"><i class="fa-solid fa-book"></i></div>
+            <h4 class="font-bold text-xs text-slate-800">كتب وقرطاسية</h4>
+          </div>
+          <div onclick="filterCategoryAndNavigate('عقارات ومقاولات')" class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm text-center hover:border-indigo-500 hover:shadow-md cursor-pointer transition active:scale-95">
+            <div class="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center text-lg mx-auto mb-2"><i class="fa-solid fa-building"></i></div>
+            <h4 class="font-bold text-xs text-slate-800">عقارات ومقاولات</h4>
+          </div>
+          <div onclick="filterCategoryAndNavigate('أخرى')" class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm text-center hover:border-indigo-500 hover:shadow-md cursor-pointer transition active:scale-95">
+            <div class="w-10 h-10 bg-slate-50 text-slate-600 rounded-xl flex items-center justify-center text-lg mx-auto mb-2"><i class="fa-solid fa-boxes-stacked"></i></div>
+            <h4 class="font-bold text-xs text-slate-800">أقسام أخرى</h4>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. صفحة التسجيل (Register) -->
+    <section id="page-register" class="hidden max-w-xl mx-auto bg-white p-5 sm:p-8 rounded-2xl sm:rounded-3xl shadow-sm border border-slate-200">
+      <div class="text-center mb-5">
+        <h2 class="text-xl sm:text-2xl font-black text-indigo-950">إنشاء بروفايل جديد</h2>
+        <p class="text-xs text-slate-500 mt-1">سجل عبر جوجل أو فيسبوك أو يدوياً</p>
+      </div>
+
+      <!-- أزرار التسجيل الاجتماعي (جوجل وفيسبوك) بدون طلب كلمة مرور -->
+      <div class="grid grid-cols-2 gap-3 mb-5">
+        <button type="button" onclick="triggerSocialAuth('google', 'register')" class="flex items-center justify-center gap-2 border border-slate-200 hover:bg-slate-50 p-2.5 rounded-xl text-xs font-bold transition">
+          <i class="fa-brands fa-google text-red-500 text-sm"></i> التسجيل بجوجل
+        </button>
+        <button type="button" onclick="triggerSocialAuth('facebook', 'register')" class="flex items-center justify-center gap-2 border border-slate-200 hover:bg-slate-50 p-2.5 rounded-xl text-xs font-bold transition">
+          <i class="fa-brands fa-facebook text-blue-600 text-sm"></i> التسجيل بفيسبوك
+        </button>
+      </div>
+
+      <div class="flex items-center my-4">
+        <div class="flex-1 border-t border-slate-200"></div>
+        <span class="px-3 text-slate-400 text-[11px]">أو التسجيل العادي</span>
+        <div class="flex-1 border-t border-slate-200"></div>
+      </div>
+
+      <form onsubmit="handleRegistration(event)" class="space-y-4">
+        <!-- خيارات عميل أو تاجر فقط دون إضافات أخرى -->
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">نوع البروفايل *</label>
+          <div class="grid grid-cols-2 gap-2.5">
+            <label id="lbl-role-customer" class="flex items-center justify-center gap-2 border-2 border-indigo-600 bg-indigo-50/60 p-2.5 rounded-xl cursor-pointer">
+              <input type="radio" name="reg-account-type" value="customer" checked onchange="toggleRegStyle()" class="text-indigo-600">
+              <span class="font-bold text-xs">عميل</span>
+            </label>
+            <label id="lbl-role-merchant" class="flex items-center justify-center gap-2 border-2 border-slate-200 p-2.5 rounded-xl cursor-pointer">
+              <input type="radio" name="reg-account-type" value="merchant" onchange="toggleRegStyle()" class="text-indigo-600">
+              <span class="font-bold text-xs">تاجر</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3 p-3 bg-slate-50 rounded-2xl border border-slate-200">
+          <img id="reg-avatar-preview" src="https://ui-avatars.com/api/?name=User&background=4f46e5&color=fff&size=128" alt="الصورة" class="w-12 h-12 sm:w-14 sm:h-14 rounded-full object-cover border-2 border-indigo-300 shrink-0">
+          <div class="flex-1 overflow-hidden">
+            <span class="text-xs font-bold block mb-1">صورة البروفايل (اختياري)</span>
+            <input type="file" id="reg-avatar-file" accept="image/*" onchange="handleAvatarUpload(event)" class="text-xs text-slate-500 w-full file:mr-2 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-[11px] file:font-bold file:bg-indigo-100 file:text-indigo-700 cursor-pointer">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">الاسم الكامل *</label>
+          <input type="text" id="reg-name" required placeholder="مثال: يوسف الكردي" class="w-full border rounded-xl p-2.5 text-xs outline-none focus:ring-2 focus:ring-indigo-500">
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">البريد الإلكتروني *</label>
+            <input type="email" id="reg-email" required placeholder="name@gmail.com" class="w-full border rounded-xl p-2.5 text-xs outline-none focus:ring-2 focus:ring-indigo-500">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">رقم الهاتف (الأردن) *</label>
+            <input type="tel" id="reg-phone" required placeholder="07XXXXXXXX" class="w-full border rounded-xl p-2.5 text-xs outline-none focus:ring-2 focus:ring-indigo-500 text-left" dir="ltr">
+            <span class="text-[10px] text-slate-400 block mt-0.5">يبدأ بـ 077 أو 078 أو 079 ويتكون من 10 أرقام</span>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">المحافظة (العنوان) *</label>
+          <select id="reg-governorate" required class="w-full border rounded-xl p-2.5 text-xs outline-none focus:ring-2 focus:ring-indigo-500 bg-white">
+            <option value="" disabled selected>-- اختر محافظتك في الأردن --</option>
+            <option value="عمان">عمان (العاصمة)</option>
+            <option value="إربد">إربد</option>
+            <option value="الزرقاء">الزرقاء</option>
+            <option value="البلقاء">البلقاء (السلط)</option>
+            <option value="العقبة">العقبة</option>
+            <option value="مادبا">مادبا</option>
+            <option value="جرش">جرش</option>
+            <option value="عجلون">عجلون</option>
+            <option value="المفرق">المفرق</option>
+            <option value="الكرك">الكرك</option>
+            <option value="الطفيلة">الطفيلة</option>
+            <option value="معان">معان</option>
+          </select>
+        </div>
+
+        <div id="password-field-container">
+          <label class="block text-xs font-bold text-slate-700 mb-1">كلمة المرور *</label>
+          <input type="password" id="reg-password" required minlength="4" placeholder="••••••••" class="w-full border rounded-xl p-2.5 text-xs outline-none focus:ring-2 focus:ring-indigo-500">
+        </div>
+
+        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition text-xs shadow-md">
+          إنشاء بروفايل جديد 🚀
+        </button>
+
+        <p class="text-center text-xs text-slate-500 pt-1">
+          لديك حساب مسجل؟ 
+          <button type="button" onclick="navigateTo('login')" class="text-indigo-600 font-bold hover:underline">تسجيل الدخول</button>
+        </p>
+      </form>
+    </section>
+
+    <!-- 3. صفحة تسجيل الدخول (Login) -->
+    <section id="page-login" class="hidden max-w-md mx-auto bg-white p-5 sm:p-8 rounded-2xl sm:rounded-3xl shadow-sm border border-slate-200">
+      <div class="text-center mb-5">
+        <h2 class="text-xl sm:text-2xl font-black text-indigo-950">تسجيل الدخول</h2>
+        <p class="text-xs text-slate-500 mt-1">اختر طريقة الدخول المناسبة</p>
+      </div>
+
+      <!-- الدخول السريع بجوجل وفيسبوك -->
+      <div class="grid grid-cols-2 gap-3 mb-5">
+        <button type="button" onclick="triggerSocialAuth('google', 'login')" class="flex items-center justify-center gap-2 border border-slate-200 hover:bg-slate-50 p-2.5 rounded-xl text-xs font-bold transition">
+          <i class="fa-brands fa-google text-red-500 text-sm"></i> الدخول بجوجل
+        </button>
+        <button type="button" onclick="triggerSocialAuth('facebook', 'login')" class="flex items-center justify-center gap-2 border border-slate-200 hover:bg-slate-50 p-2.5 rounded-xl text-xs font-bold transition">
+          <i class="fa-brands fa-facebook text-blue-600 text-sm"></i> الدخول بفيسبوك
+        </button>
+      </div>
+
+      <div class="flex items-center my-4">
+        <div class="flex-1 border-t border-slate-200"></div>
+        <span class="px-3 text-slate-400 text-[11px]">أو عبر البريد وكلمة المرور</span>
+        <div class="flex-1 border-t border-slate-200"></div>
+      </div>
+
+      <div id="login-alert-banner" class="hidden bg-amber-50 border border-amber-300 text-amber-900 text-xs p-3 rounded-xl mb-4 font-bold flex items-center gap-2">
+        <i class="fa-solid fa-circle-exclamation text-amber-600 text-sm"></i>
+        <span>يرجى تسجيل الدخول أو إنشاء حساب جديد لإضافة طلب شراء</span>
+      </div>
+
+      <form onsubmit="handleLoginSubmit(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">البريد الإلكتروني أو الاسم *</label>
+          <input type="text" id="login-user" required placeholder="اسمك أو بريدك المسجل" class="w-full border rounded-xl p-2.5 text-xs outline-none focus:ring-2 focus:ring-indigo-500">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">كلمة المرور *</label>
+          <input type="password" id="login-pass" required placeholder="••••••••" class="w-full border rounded-xl p-2.5 text-xs outline-none focus:ring-2 focus:ring-indigo-500">
+        </div>
+
+        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition text-xs shadow-md">
+          تسجيل الدخول
+        </button>
+
+        <p class="text-center text-xs text-slate-500 pt-1">
+          مستخدم جديد؟ 
+          <button type="button" onclick="navigateTo('register')" class="text-indigo-600 font-bold hover:underline">إنشاء حساب جديد</button>
+        </p>
+      </form>
+    </section>
+
+    <!-- 4. صفحة طلب منتج جديد -->
+    <section id="page-customer-dashboard" class="hidden space-y-6">
+      <div class="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl shadow-sm border border-slate-200">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2.5 border-b border-slate-100 pb-3 mb-4">
+          <div>
+            <h3 class="text-base sm:text-lg font-black text-indigo-950 flex items-center gap-2">
+              <i class="fa-solid fa-cart-plus text-indigo-600"></i> تقديم طلب شراء منتج جديد
+            </h3>
+            <p class="text-[11px] text-slate-500">ضع مواصفات السلعة وسيتنافس الجميع لخدمتك</p>
+          </div>
+
+          <label class="flex items-center gap-2 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-xl text-xs cursor-pointer hover:bg-slate-100 transition">
+            <input type="checkbox" id="req-reveal-phone" class="rounded text-indigo-600">
+            <span class="font-semibold text-slate-700 text-[11px]">إظهار رقم هاتفي في هذا الطلب</span>
+          </label>
+        </div>
+
+        <form onsubmit="handlePostRequest(event)" class="space-y-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">اسم المنتج أو السلعة المطلوبة *</label>
+            <input type="text" id="req-title" required placeholder="مثال: غسالة أوتوماتيك 9 كيلو كفالة وكيل" class="w-full border rounded-xl p-2.5 text-xs outline-none focus:ring-2 focus:ring-indigo-500">
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">نوع وتصنيف المنتج *</label>
+              <select id="req-category" class="w-full border rounded-xl p-2.5 text-xs outline-none focus:ring-2 focus:ring-indigo-500 bg-white">
+                <option value="أجهزة كهربائية ومنزلية">أجهزة كهربائية ومنزلية</option>
+                <option value="هواتف وإلكترونيات">هواتف وإلكترونيات</option>
+                <option value="كمبيوتر ولابتوب">كمبيوتر ولابتوب</option>
+                <option value="ملابس وأزياء">ملابس وأزياء</option>
+                <option value="قطع سيارات وإكسسوارات">قطع سيارات وإكسسوارات</option>
+                <option value="أثاث وديكور">أثاث وديكور</option>
+                <option value="مستلزمات أطفال وألعاب">مستلزمات أطفال وألعاب</option>
+                <option value="رياضة ولياقة">رياضة ولياقة</option>
+                <option value="عدد وأدوات مهنية">عدد وأدوات مهنية</option>
+                <option value="كتب وقرطاسية">كتب وقرطاسية</option>
+                <option value="عقارات ومقاولات">عقارات ومقاولات</option>
+                <option value="أخرى">أخرى</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">الحد الأدنى للميزانية (د.أ) *</label>
+              <input type="number" id="req-budget-min" required placeholder="مثال: 150" class="w-full border rounded-xl p-2.5 text-xs outline-none focus:ring-2 focus:ring-indigo-500">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">الحد الأعلى للميزانية (د.أ) *</label>
+              <input type="number" id="req-budget-max" required placeholder="مثال: 220" class="w-full border rounded-xl p-2.5 text-xs outline-none focus:ring-2 focus:ring-indigo-500">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">حالة المنتج المطلوبة: *</label>
+              <div class="grid grid-cols-3 gap-1.5">
+                <label class="text-center border p-2 rounded-xl text-xs cursor-pointer hover:bg-indigo-50/50 flex items-center justify-center gap-1">
+                  <input type="radio" name="req-condition" value="جديد" checked class="text-indigo-600">
+                  <span class="text-[11px]">جديد</span>
+                </label>
+                <label class="text-center border p-2 rounded-xl text-xs cursor-pointer hover:bg-indigo-50/50 flex items-center justify-center gap-1">
+                  <input type="radio" name="req-condition" value="مستعمل" class="text-indigo-600">
+                  <span class="text-[11px]">مستعمل</span>
+                </label>
+                <label class="text-center border p-2 rounded-xl text-xs cursor-pointer hover:bg-indigo-50/50 flex items-center justify-center gap-1">
+                  <input type="radio" name="req-condition" value="لا يهم" class="text-indigo-600">
+                  <span class="text-[11px]">لا يهم</span>
+                </label>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">خيارات التوصيل: *</label>
+              <div class="grid grid-cols-3 gap-1.5">
+                <label class="text-center border p-2 rounded-xl text-xs cursor-pointer hover:bg-indigo-50/50 flex items-center justify-center gap-1">
+                  <input type="radio" name="req-delivery-pref" value="مع توصيل" checked class="text-indigo-600">
+                  <span class="text-[11px]">مع توصيل</span>
+                </label>
+                <label class="text-center border p-2 rounded-xl text-xs cursor-pointer hover:bg-indigo-50/50 flex items-center justify-center gap-1">
+                  <input type="radio" name="req-delivery-pref" value="بدون توصيل (استلام)" class="text-indigo-600">
+                  <span class="text-[11px]">استلام</span>
+                </label>
+                <label class="text-center border p-2 rounded-xl text-xs cursor-pointer hover:bg-indigo-50/50 flex items-center justify-center gap-1">
+                  <input type="radio" name="req-delivery-pref" value="لا يهم" class="text-indigo-600">
+                  <span class="text-[11px]">لا يهم</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- رفع صورة للمنتج (مع زر لإلغاء الصورة وتصفيرها) -->
+          <div class="p-3 bg-slate-50 border border-slate-200 rounded-2xl flex items-center gap-3">
+            <div id="product-img-preview-box" class="w-14 h-14 bg-slate-200 rounded-xl flex items-center justify-center overflow-hidden border border-slate-300 shrink-0">
+              <i class="fa-solid fa-image text-slate-400 text-lg" id="product-img-icon"></i>
+              <img id="product-img-preview" class="w-full h-full object-cover hidden">
+            </div>
+            <div class="flex-1 overflow-hidden">
+              <div class="flex justify-between items-center mb-0.5">
+                <label class="block text-xs font-bold text-slate-700">صورة توضيحية للمنتج (اختياري)</label>
+                <button type="button" onclick="clearReqProductImage()" id="btn-clear-req-img" class="hidden text-[10px] text-rose-600 font-bold hover:underline">إلغاء الصورة ✕</button>
+              </div>
+              <input type="file" id="req-image-file" accept="image/*" onchange="previewProductImage(event)" class="text-xs text-slate-500 w-full file:mr-2 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-[11px] file:font-bold file:bg-indigo-100 file:text-indigo-700 cursor-pointer">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">تفاصيل ومواصفات إضافية</label>
+            <textarea id="req-notes" rows="2" placeholder="اكتب الملاحظات مثل اللون، الموديل، سرعة التوصيل المطلوبة..." class="w-full border rounded-xl p-2.5 text-xs outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+          </div>
+
+          <button type="submit" class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 px-6 rounded-xl text-xs transition shadow-md">
+            نشر طلب الشراء في السوق 📢
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- 5. صفحة "طلباتي" (مفصولة ومخصصة لطلبات المستخدم) -->
+    <section id="page-my-requests" class="hidden space-y-4">
+      <div class="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-slate-200 shadow-sm">
+        <div class="flex justify-between items-center mb-4 border-b pb-3">
+          <div>
+            <h3 class="text-base font-black text-indigo-950 flex items-center gap-2">
+              <i class="fa-solid fa-boxes-packing text-indigo-600"></i> طلبات الشراء الخاصة بي
+            </h3>
+            <p class="text-[11px] text-slate-500">يمكنك هنا إدارة طلباتك وإنهاؤها أو متابعة العروض الواردة عليها</p>
+          </div>
+          <button onclick="navigateTo('customer-dashboard')" class="bg-indigo-600 text-white font-bold text-xs px-3 py-1.5 rounded-xl hover:bg-indigo-700 transition">
+            + طلب جديد
+          </button>
+        </div>
+        <div id="my-requests-container" class="space-y-4"></div>
+      </div>
+    </section>
+
+    <!-- 6. صفحة "عروضي المقدمة" (مفصولة ومخصصة للعروض التي قدمها المستخدم) -->
+    <section id="page-my-offers" class="hidden space-y-4">
+      <div class="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-slate-200 shadow-sm">
+        <div class="mb-4 border-b pb-3">
+          <h3 class="text-base font-black text-emerald-950 flex items-center gap-2">
+            <i class="fa-solid fa-handshake-simple text-emerald-600"></i> عروض الأسعار التي قدمتها
+          </h3>
+          <p class="text-[11px] text-slate-500">سجل كامل بجميع العروض والتكاليف وصور السلع التي أرسلتها للزبائن</p>
+        </div>
+        <div id="my-offers-container" class="space-y-3"></div>
+      </div>
+    </section>
+
+    <!-- 7. سوق الطلبات العام (مع نظام الصفحات: 5 طلبات في كل صفحة) -->
+    <section id="page-merchant-feed" class="space-y-4 sm:space-y-6">
+      <div class="bg-gradient-to-r from-emerald-900 to-teal-950 text-white p-4 sm:p-5 rounded-2xl sm:rounded-3xl shadow-md flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+        <div>
+          <h2 class="font-black text-base sm:text-lg flex items-center gap-2">
+            <i class="fa-solid fa-store text-emerald-400"></i> سوق الطلبات وعروض الأسعار في الأردن
+          </h2>
+          <p class="text-[11px] sm:text-xs text-emerald-200">
+            تصفح طلبات الشراء واطلع على عروض الأسعار (يتم عرض 5 طلبات بكل صفحة)
+          </p>
+        </div>
+        <div class="flex items-center gap-2 text-xs self-end sm:self-center">
+          <span class="text-emerald-300 text-[11px]">القسم:</span>
+          <span id="active-feed-category" class="bg-emerald-800 border border-emerald-600 text-white font-bold px-3 py-1 rounded-full text-xs">الكل</span>
+        </div>
+      </div>
+
+      <div id="merchant-feed-list" class="space-y-4"></div>
+
+      <!-- عناصر التحكم بالصفحات (Pagination) -->
+      <div id="feed-pagination" class="flex justify-center items-center gap-2 pt-4"></div>
+    </section>
+
+    <!-- 8. مركز المحادثات الخاصة -->
+    <section id="page-chat-center" class="hidden max-w-4xl mx-auto bg-white rounded-2xl sm:rounded-3xl border border-slate-200 shadow-sm overflow-hidden flex flex-col md:flex-row h-[550px] sm:h-[600px]">
+      <div class="w-full md:w-1/3 border-b md:border-b-0 md:border-l border-slate-200 flex flex-col bg-slate-50 max-h-48 md:max-h-full">
+        <div class="p-3 sm:p-4 border-b border-slate-200 font-black text-xs sm:text-sm text-indigo-950 flex items-center gap-2">
+          <i class="fa-solid fa-inbox text-indigo-600"></i> المحادثات الخاصة
+        </div>
+        <!-- قائمة جهات الاتصال (مستثنى منها حسابات الأدمن) -->
+        <div id="chat-threads-list" class="flex-1 overflow-y-auto divide-y divide-slate-100"></div>
+      </div>
+
+      <div class="flex-1 flex flex-col bg-white">
+        <div class="p-3 sm:p-4 border-b border-slate-100 flex items-center justify-between">
+          <div class="flex items-center gap-2.5">
+            <div id="chat-target-avatar-container" class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-indigo-100 flex items-center justify-center font-bold text-indigo-700 text-xs">?</div>
+            <div>
+              <h4 id="chat-target-name" class="font-bold text-xs text-slate-800">اختر محادثة</h4>
+              <span id="chat-target-info" class="text-[10px] text-slate-400">محادثة مباشرة</span>
+            </div>
+          </div>
+        </div>
+
+        <div id="chat-messages-box" class="flex-1 p-3 sm:p-4 overflow-y-auto space-y-2.5 bg-slate-50/50 text-xs">
+          <div class="text-center text-slate-400 py-10">اختر جهة للدردشة معها</div>
+        </div>
+
+        <form onsubmit="handleSendChatMessage(event)" class="p-2.5 sm:p-3 border-t border-slate-200 flex gap-2 bg-white">
+          <input type="text" id="chat-input" placeholder="اكتب رسالتك..." class="flex-1 border rounded-xl px-3 py-2 text-xs outline-none focus:ring-2 focus:ring-indigo-500">
+          <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition shrink-0">
+            إرسال
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- 9. لوحة تحكم المدير العام (مع أرشيف المحادثات وبروفايلات الأدمن الثلاثة) -->
+    <section id="page-admin" class="hidden space-y-5 sm:space-y-6">
+      <div class="bg-slate-900 text-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl shadow-lg space-y-4">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+          <div>
+            <h2 class="text-lg sm:text-xl font-black text-amber-400 flex items-center gap-2">
+              <i class="fa-solid fa-crown"></i> لوحة المدير العام للمنصة 👑
+            </h2>
+            <p class="text-xs text-slate-300">مراقبة مدمجة للطلبات والعروض مع أرشيف المحادثات وسلة المحذوفات</p>
+          </div>
+          <div class="flex gap-2 flex-wrap">
+            <button onclick="toggleAdminView('active')" id="btn-admin-active" class="text-xs bg-indigo-600 px-3 py-1.5 rounded-xl font-bold transition">الطلبات النشطة</button>
+            <button onclick="toggleAdminView('deleted')" id="btn-admin-deleted" class="text-xs bg-slate-800 hover:bg-slate-700 text-rose-300 px-3 py-1.5 rounded-xl font-bold transition flex items-center gap-1">
+              <i class="fa-solid fa-trash-can"></i> سلة المحذوفات
+            </button>
+            <button onclick="toggleAdminView('archive')" id="btn-admin-archive" class="text-xs bg-slate-800 hover:bg-slate-700 text-sky-300 px-3 py-1.5 rounded-xl font-bold transition flex items-center gap-1">
+              <i class="fa-solid fa-box-archive"></i> أرشيف المحادثات
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3">
+          <div class="bg-slate-800 p-2.5 sm:p-3 rounded-2xl border border-slate-700 text-center">
+            <span class="text-xl sm:text-2xl font-black text-indigo-400" id="stat-users">0</span>
+            <p class="text-[10px] sm:text-[11px] text-slate-300 mt-0.5">المستخدمين المسجلين</p>
+          </div>
+          <div class="bg-slate-800 p-2.5 sm:p-3 rounded-2xl border border-slate-700 text-center">
+            <span class="text-xl sm:text-2xl font-black text-emerald-400" id="stat-requests">0</span>
+            <p class="text-[10px] sm:text-[11px] text-slate-300 mt-0.5">الطلبات النشطة</p>
+          </div>
+          <div class="bg-slate-800 p-2.5 sm:p-3 rounded-2xl border border-slate-700 text-center">
+            <span class="text-xl sm:text-2xl font-black text-amber-400" id="stat-offers">0</span>
+            <p class="text-[10px] sm:text-[11px] text-slate-300 mt-0.5">عروض الأسعار</p>
+          </div>
+          <div class="bg-slate-800 p-2.5 sm:p-3 rounded-2xl border border-slate-700 text-center">
+            <span class="text-xl sm:text-2xl font-black text-sky-400" id="stat-messages">0</span>
+            <p class="text-[10px] sm:text-[11px] text-slate-300 mt-0.5">الرسائل المتبادلة</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- تبويب الطلبات النشطة المدمج مع العروض -->
+      <div id="admin-active-section" class="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-slate-200 shadow-sm space-y-4">
+        <div class="flex justify-between items-center border-b pb-3">
+          <div>
+            <h3 class="font-black text-sm sm:text-base text-slate-900 flex items-center gap-2">
+              <i class="fa-solid fa-list-check text-indigo-600"></i> مراقبة الطلبات النشطة والعروض التابعة لها
+            </h3>
+            <p class="text-[11px] text-slate-500">أرقام الهواتف تظهر كاملة للمدير، مع خيار الإيداع بالمحذوفات</p>
+          </div>
+          <span class="text-xs bg-indigo-50 text-indigo-700 font-bold px-3 py-1 rounded-full">الطلبات الحالية</span>
+        </div>
+        <div id="admin-unified-requests-offers" class="space-y-4"></div>
+      </div>
+
+      <!-- صفحة الطلبات المحذوفة والأرشيف -->
+      <div id="admin-deleted-section" class="hidden bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-rose-200 shadow-sm space-y-4">
+        <div class="flex justify-between items-center border-b pb-3">
+          <div>
+            <h3 class="font-black text-sm sm:text-base text-rose-950 flex items-center gap-2">
+              <i class="fa-solid fa-trash-can text-rose-600"></i> سلة المحذوفات للطلبات
+            </h3>
+            <p class="text-[11px] text-slate-500">تم إخفاء هذه الطلبات من السوق. يمكنك استعادتها أو حذفها نهائياً</p>
+          </div>
+          <span class="text-xs bg-rose-50 text-rose-700 font-bold px-3 py-1 rounded-full">سلة المحذوفات</span>
+        </div>
+        <div id="admin-deleted-requests-list" class="space-y-3"></div>
+      </div>
+
+      <!-- صفحة أرشيف المحادثات الخاصة بالإدارة -->
+      <div id="admin-archive-section" class="hidden bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-sky-200 shadow-sm space-y-4">
+        <div class="flex justify-between items-center border-b pb-3">
+          <div>
+            <h3 class="font-black text-sm sm:text-base text-sky-950 flex items-center gap-2">
+              <i class="fa-solid fa-box-archive text-sky-600"></i> أرشيف المحادثات والرسائل المؤرشفة
+            </h3>
+            <p class="text-[11px] text-slate-500">سجل الرسائل المؤرشفة لمراجعتها والتدقيق عليها في أي وقت</p>
+          </div>
+          <span class="text-xs bg-sky-50 text-sky-700 font-bold px-3 py-1 rounded-full">الأرشيف</span>
+        </div>
+        <div id="admin-archived-messages-list" class="space-y-2"></div>
+      </div>
+
+      <!-- مراقبة المحادثات الحية -->
+      <div class="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-slate-200 shadow-sm space-y-3">
+        <div class="flex items-center justify-between border-b pb-2">
+          <div>
+            <h3 class="font-black text-xs sm:text-sm text-slate-900 flex items-center gap-2">
+              <i class="fa-solid fa-eye text-indigo-600"></i> البث المباشر للرسائل والمحادثات
+            </h3>
+            <p class="text-[10px] sm:text-[11px] text-slate-500">يمكنك أرشفة أي رسالة لنقلها لصفحة الأرشيف</p>
+          </div>
+          <span class="bg-indigo-50 text-indigo-700 text-[10px] px-2 py-0.5 rounded font-bold">مراقبة حية</span>
+        </div>
+        <div id="admin-chat-monitor-table" class="space-y-2"></div>
+      </div>
+
+      <!-- سجل المستخدمين مع إبراز حسابات الأدمن الـ 3 -->
+      <div class="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-slate-200 shadow-sm space-y-3">
+        <h3 class="font-black text-xs sm:text-sm text-slate-900">سجل المستخدمين والتجار (يتضمن الأدمن الـ 3)</h3>
+        <div id="admin-users-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==================== الفوتر ==================== -->
+  <footer class="bg-slate-900 text-slate-300 text-xs mt-12 border-t border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-10 grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div class="space-y-3">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white text-base">
+            <i class="fa-solid fa-arrows-split-up-and-left"></i>
+          </div>
+          <h4 class="font-black text-sm text-white">سوق الطلب المعكوس</h4>
+        </div>
+        <p class="text-slate-400 text-xs leading-relaxed">
+          أول منصة أردنية للتجارة العكسية والمناقصات المفتوحة. اطلب ما تحتاج، ودع المتاجر والأفراد يتنافسون لتقديم أفضل الأسعار في جميع محافظات المملكة.
+        </p>
+      </div>
+
+      <div class="space-y-2">
+        <h5 class="font-bold text-white text-sm mb-3">روابط تهمك</h5>
+        <ul class="space-y-1.5 text-slate-400">
+          <li><button onclick="navigateTo('home')" class="hover:text-white transition">الرئيسية</button></li>
+          <li><button onclick="filterCategoryAndNavigate('الكل')" class="hover:text-white transition">سوق الطلبات والعروض</button></li>
+          <li><button onclick="handleRequestNewProductNav()" class="hover:text-white transition">تقديم طلب شراء جديد</button></li>
+          <li><button onclick="navigateTo('register')" class="hover:text-white transition">تسجيل حساب جديد</button></li>
+          <li><button onclick="navigateTo('login')" class="hover:text-white transition">تسجيل الدخول</button></li>
+        </ul>
+      </div>
+
+      <div class="space-y-2">
+        <h5 class="font-bold text-white text-sm mb-3">محافظات المملكة المشمولة</h5>
+        <p class="text-slate-400 leading-relaxed text-[11px]">
+          عمان • إربد • الزرقاء • البلقاء • العقبة • مادبا • جرش • عجلون • المفرق • الكرك • الطفيلة • معان
+        </p>
+        <span class="inline-block mt-2 bg-indigo-950 text-indigo-300 border border-indigo-800 px-2 py-1 rounded text-[10px]">
+          توصيل وتغطية لكافة مدن وقرى الأردن 🇯🇴
+        </span>
+      </div>
+
+      <div class="space-y-2">
+        <h5 class="font-bold text-white text-sm mb-3">الدعم والمساعدة</h5>
+        <p class="text-slate-400 text-xs">حسابات الإدارة الثلاثة متواجدة على مدار الساعة لخدمتكم ومتابعة الطلبات.</p>
+        <div class="pt-2 text-slate-300 space-y-1 text-xs font-mono">
+          <div><i class="fa-solid fa-envelope text-indigo-400 ml-1"></i> admin1@souq.jo</div>
+          <div><i class="fa-solid fa-phone text-emerald-400 ml-1"></i> 079-000-0001 (الأردن)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="border-t border-slate-800 text-center py-4 px-4 text-slate-500 text-[11px]">
+      جميع الحقوق محفوظة © سوق الطلب المعكوس - المملكة الأردنية الهاشمية
+    </div>
+  </footer>
+
+  <!-- ==================== نوافذ المودال (Modals) ==================== -->
+  
+  <!-- مودال تقديم عرض -->
+  <div id="modal-offer" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm hidden flex items-center justify-center p-3 sm:p-4 z-50">
+    <div class="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 max-w-lg w-full shadow-2xl max-h-[92vh] overflow-y-auto space-y-3.5">
+      <div class="flex justify-between items-center border-b pb-2.5">
+        <div>
+          <h4 class="font-black text-sm sm:text-base text-slate-900">تقديم عرض سعر على الطلب</h4>
+          <span id="modal-req-title-display" class="text-[11px] text-indigo-600 font-semibold block"></span>
+        </div>
+        <button onclick="closeOfferModal()" class="text-slate-400 hover:text-slate-600 text-2xl font-bold">&times;</button>
+      </div>
+
+      <form onsubmit="handleSendOffer(event)" class="space-y-3">
+        <input type="hidden" id="modal-offer-req-id">
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">سعر السلعة المعروضة (د.أ) *</label>
+            <input type="number" id="modal-offer-price" required placeholder="مثال: 190" class="w-full border rounded-xl p-2.5 text-xs outline-none focus:ring-2 focus:ring-indigo-500">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">رسوم التوصيل (د.أ) *</label>
+            <input type="number" id="modal-offer-delivery-fee" required value="0" placeholder="0 = توصيل مجاني" class="w-full border rounded-xl p-2.5 text-xs outline-none focus:ring-2 focus:ring-indigo-500">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">رقم هاتفك للتواصل *</label>
+          <input type="tel" id="modal-offer-phone" required class="w-full border rounded-xl p-2.5 text-xs outline-none focus:ring-2 focus:ring-indigo-500 text-left" dir="ltr">
+        </div>
+
+        <div class="space-y-2 py-2 border-y border-slate-100 text-xs">
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" id="modal-offer-shipping" class="rounded text-indigo-600">
+            <span class="font-semibold text-slate-800 text-[11px]">السعر الإجمالي شامل التوصيل 🚚</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" id="modal-offer-negotiable" class="rounded text-indigo-600">
+            <span class="font-semibold text-slate-800 text-[11px]">السعر قابل للتفاوض البسيط 🤝</span>
+          </label>
+        </div>
+
+        <div class="p-3 bg-slate-50 border border-slate-200 rounded-2xl space-y-2">
+          <div class="flex justify-between items-center">
+            <label class="block text-xs font-bold text-slate-700">إضافة صور للمنتج (حتى 3 صور - اختياري)</label>
+            <span class="text-[10px] text-indigo-600 font-bold" id="offer-images-count">0 / 3</span>
+          </div>
+          <input type="file" id="modal-offer-images" accept="image/*" multiple onchange="handleOfferImagesUpload(event)" class="text-xs text-slate-500 w-full file:mr-2 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-[11px] file:font-bold file:bg-indigo-100 file:text-indigo-700 cursor-pointer">
+          <div id="offer-images-preview" class="flex gap-2 flex-wrap pt-1"></div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">تفاصيل ومواصفات العرض *</label>
+          <textarea id="modal-offer-note" rows="3" required placeholder="اكتب وصفاً دقيقاً للسلعة، حالتها، مدة الكفالة، أو أي ميزات..." class="w-full border rounded-xl p-2.5 text-xs outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+        </div>
+
+        <div class="flex gap-2 pt-2">
+          <button type="submit" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl text-xs transition shadow-sm">إرسال العرض</button>
+          <button type="button" onclick="closeOfferModal()" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition">إلغاء</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- مودال تفاصيل الطلب -->
+  <div id="modal-details" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm hidden flex items-center justify-center p-3 sm:p-4 z-50">
+    <div class="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 max-w-xl w-full shadow-2xl max-h-[90vh] overflow-y-auto space-y-3.5">
+      <div class="flex justify-between items-center border-b pb-2.5">
+        <div>
+          <span id="detail-category-badge" class="text-[10px] bg-indigo-100 text-indigo-800 font-bold px-2 py-0.5 rounded-full"></span>
+          <h4 id="detail-title" class="font-black text-base sm:text-lg text-slate-900 mt-1"></h4>
+        </div>
+        <button onclick="closeDetailsModal()" class="text-slate-400 hover:text-slate-600 text-2xl font-bold">&times;</button>
+      </div>
+
+      <div id="detail-image-box" class="hidden w-full h-48 sm:h-56 rounded-2xl overflow-hidden border border-slate-200 bg-slate-50 flex items-center justify-center cursor-pointer" onclick="openLightbox(this.querySelector('img').src)">
+        <img id="detail-image" class="w-full h-full object-contain">
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
+        <div class="bg-slate-50 p-2 rounded-xl border border-slate-100">
+          <span class="text-slate-400 block text-[10px]">الميزانية:</span>
+          <span id="detail-budget" class="font-black text-emerald-700 text-xs sm:text-sm"></span>
+        </div>
+        <div class="bg-slate-50 p-2 rounded-xl border border-slate-100">
+          <span class="text-slate-400 block text-[10px]">حالة السلعة:</span>
+          <span id="detail-condition" class="font-bold text-slate-800"></span>
+        </div>
+        <div class="bg-slate-50 p-2 rounded-xl border border-slate-100">
+          <span class="text-slate-400 block text-[10px]">خيار التوصيل:</span>
+          <span id="detail-delivery" class="font-bold text-slate-800"></span>
+        </div>
+        <div class="bg-slate-50 p-2 rounded-xl border border-slate-100">
+          <span class="text-slate-400 block text-[10px]">المحافظة:</span>
+          <span id="detail-city" class="font-bold text-slate-800"></span>
+        </div>
+        <div class="bg-slate-50 p-2 rounded-xl border border-slate-100">
+          <span class="text-slate-400 block text-[10px]">صاحب الطلب:</span>
+          <span id="detail-customer-name" class="font-bold text-slate-800"></span>
+        </div>
+        <div class="bg-slate-50 p-2 rounded-xl border border-slate-100">
+          <span class="text-slate-400 block text-[10px]">هاتف العميل:</span>
+          <span id="detail-customer-phone" class="font-bold text-slate-800"></span>
+        </div>
+      </div>
+
+      <div>
+        <h5 class="text-xs font-bold text-slate-700 mb-1">ملاحظات ومواصفات الطلب:</h5>
+        <p id="detail-notes" class="text-xs text-slate-600 bg-slate-50 p-2.5 rounded-xl border border-slate-100 leading-relaxed"></p>
+      </div>
+
+      <div class="pt-1 text-left">
+        <button onclick="closeDetailsModal()" class="px-5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold rounded-xl transition">إغلاق</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- مودال تفاصيل العرض -->
+  <div id="modal-offer-details" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm hidden flex items-center justify-center p-3 sm:p-4 z-50">
+    <div class="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 max-w-lg w-full shadow-2xl max-h-[90vh] overflow-y-auto space-y-3.5">
+      <div class="flex justify-between items-center border-b pb-2.5">
+        <div>
+          <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">تفاصيل العرض الكاملة</span>
+          <h4 id="modal-offer-merchant-title" class="font-black text-base text-slate-900 mt-1"></h4>
+        </div>
+        <button onclick="closeOfferDetailsModal()" class="text-slate-400 hover:text-slate-600 text-2xl font-bold">&times;</button>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
+        <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+          <span class="text-slate-400 block text-[10px]">سعر السلعة:</span>
+          <span id="modal-offer-det-price" class="font-black text-emerald-700 text-sm"></span>
+        </div>
+        <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+          <span class="text-slate-400 block text-[10px]">رسوم التوصيل:</span>
+          <span id="modal-offer-det-delivery" class="font-bold text-slate-800"></span>
+        </div>
+        <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+          <span class="text-slate-400 block text-[10px]">المحافظة:</span>
+          <span id="modal-offer-det-city" class="font-bold text-slate-800"></span>
+        </div>
+      </div>
+
+      <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-200 flex justify-between items-center text-xs">
+        <span class="text-slate-600 font-medium">رقم هاتف صاحب العرض:</span>
+        <span id="modal-offer-det-phone" class="font-bold text-slate-800"></span>
+      </div>
+
+      <div>
+        <h5 class="text-xs font-bold text-slate-700 mb-1">الملاحظة والمواصفات الكاملة للعرض:</h5>
+        <p id="modal-offer-det-note" class="text-xs text-slate-700 bg-slate-50 p-3 rounded-xl border border-slate-100 leading-relaxed font-medium whitespace-pre-line"></p>
+      </div>
+
+      <div>
+        <h5 class="text-xs font-bold text-slate-700 mb-1.5">الصور المرفقة مع هذا العرض:</h5>
+        <div id="modal-offer-det-images" class="flex gap-2 flex-wrap"></div>
+      </div>
+
+      <div class="pt-2 flex justify-between items-center border-t border-slate-100">
+        <div id="modal-offer-chat-action-box"></div>
+        <button onclick="closeOfferDetailsModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold rounded-xl transition">إغلاق</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- عارض الصور Lightbox -->
+  <div id="modal-lightbox" class="fixed inset-0 bg-black/90 backdrop-blur-md hidden flex items-center justify-center p-3 z-50 cursor-pointer" onclick="closeLightbox()">
+    <div class="relative max-w-3xl w-full max-h-[90vh] flex flex-col items-center">
+      <img id="lightbox-img" class="max-w-full max-h-[85vh] object-contain rounded-xl shadow-2xl">
+      <span class="text-white text-xs mt-3 bg-black/50 px-3 py-1 rounded-full">انقر في أي مكان للإغلاق</span>
+    </div>
+  </div>
+
+  <!-- ==================== الجافاسكربت ==================== -->
+  <script>
+    const DEFAULT_AVATAR = "https://ui-avatars.com/api/?name=User&background=4f46e5&color=fff&size=128";
+    let regAvatarUploaded = DEFAULT_AVATAR;
+    let reqProductImageUploaded = null;
+    let offerUploadedImages = [];
+    let isSocialRegister = false;
+    let currentFeedPage = 1;
+    const ITEMS_PER_PAGE = 5; // 5 طلبات في كل صفحة
+
+    let app = {
+      currentUser: JSON.parse(localStorage.getItem('jordan_user_session')) || null,
+      requests: [],
+      deletedRequests: [],
+      users: [],
+      messages: [],
+      notifications: [],
+      myOffers: [],
+      selectedCategoryFilter: "الكل",
+      activeChatTarget: null,
+      activeChatTargetId: 0
+    };
+
+    // التزامن مع السيرفر
+    async function syncData() {
+      try {
+        const [resReq, resUsers] = await Promise.all([
+          fetch('/api/requests').then(r => r.json()),
+          fetch('/api/users').then(r => r.json())
+        ]);
+        app.requests = resReq;
+        app.users = resUsers;
+
+        if (app.currentUser) {
+          const [resNotifs, resMsgs, resMyOffers] = await Promise.all([
+            fetch(`/api/notifications?userId=${app.currentUser.id}`).then(r => r.json()),
+            fetch(`/api/messages?userName=${encodeURIComponent(app.currentUser.name)}`).then(r => r.json()),
+            fetch(`/api/my-offers?userId=${app.currentUser.id}`).then(r => r.json())
+          ]);
+          app.notifications = resNotifs;
+          app.messages = resMsgs;
+          app.myOffers = resMyOffers;
+        }
+
+        if (app.currentUser && app.currentUser.role === 'admin') {
+          const [resDel, resAllMsgs, resArchived] = await Promise.all([
+            fetch('/api/admin/deleted-requests').then(r => r.json()),
+            fetch('/api/admin/all-messages').then(r => r.json()),
+            fetch('/api/admin/archived-messages').then(r => r.json())
+          ]);
+          app.deletedRequests = resDel;
+          app.allAdminMessages = resAllMsgs;
+          app.archivedMessages = resArchived;
+        }
+      } catch (err) {
+        console.warn('تحديث البيانات...', err);
+      }
+      render();
+    }
+
+    // تحديث دوري ذكي كل 3 ثوانٍ لمزامنة الرسائل والتنبيهات
+    setInterval(() => {
+      if (app.currentUser) {
+        syncData();
+      }
+    }, 3000);
+
+    // تصفير صورة طلب المنتج
+    function clearReqProductImage() {
+      reqProductImageUploaded = null;
+      document.getElementById('product-img-preview').src = '';
+      document.getElementById('product-img-preview').classList.add('hidden');
+      document.getElementById('product-img-icon').classList.remove('hidden');
+      document.getElementById('req-image-file').value = '';
+      document.getElementById('btn-clear-req-img').classList.add('hidden');
+    }
+
+    function previewProductImage(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          reqProductImageUploaded = evt.target.result;
+          document.getElementById('product-img-preview').src = reqProductImageUploaded;
+          document.getElementById('product-img-preview').classList.remove('hidden');
+          document.getElementById('product-img-icon').classList.add('hidden');
+          document.getElementById('btn-clear-req-img').classList.remove('hidden');
+        };
+        reader.readAsDataURL(file);
+      } else {
+        clearReqProductImage();
+      }
+    }
+
+    // التنقل بين الصفحات
+    function handleRequestNewProductNav() {
+      if (!app.currentUser) {
+        document.getElementById('login-alert-banner').classList.remove('hidden');
+        navigateTo('login');
+      } else {
+        clearReqProductImage(); // تصفير الصورة لتبدأ فارغة دائماً
+        navigateTo('customer-dashboard');
+      }
+    }
+
+    function navigateTo(pageId) {
+      if ((pageId === 'customer-dashboard' || pageId === 'my-requests' || pageId === 'my-offers' || pageId === 'chat-center') && !app.currentUser) {
+        document.getElementById('login-alert-banner').classList.remove('hidden');
+        pageId = 'login';
+      }
+
+      const pages = ['home', 'register', 'login', 'customer-dashboard', 'my-requests', 'my-offers', 'merchant-feed', 'chat-center', 'admin'];
+      pages.forEach(p => {
+        const el = document.getElementById(`page-${p}`);
+        if (el) el.classList.add('hidden');
+      });
+
+      const target = document.getElementById(`page-${pageId}`);
+      if (target) target.classList.remove('hidden');
+
+      // عند الانتقال للتسجيل الجديد، تأكد من تصفير الصورة
+      if (pageId === 'register' && !isSocialRegister) {
+        regAvatarUploaded = DEFAULT_AVATAR;
+        document.getElementById('reg-avatar-preview').src = DEFAULT_AVATAR;
+        document.getElementById('password-field-container').classList.remove('hidden');
+        document.getElementById('reg-password').required = true;
+      }
+
+      ['home', 'merchant-feed', 'customer-dashboard', 'my-requests', 'my-offers', 'chat-center', 'admin'].forEach(nav => {
+        const navEl = document.getElementById(`nav-${nav}`);
+        if (navEl) {
+          if (nav === pageId) navEl.classList.add('bg-indigo-900', 'font-black');
+          else navEl.classList.remove('bg-indigo-900', 'font-black');
+        }
+      });
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      render();
+    }
+
+    function filterCategoryAndNavigate(category) {
+      app.selectedCategoryFilter = category;
+      currentFeedPage = 1;
+      navigateTo('merchant-feed');
+    }
+
+    function toggleMobileMenu() {
+      document.getElementById('mobile-nav').classList.toggle('hidden');
+    }
+
+    function toggleNotificationsDropdown() {
+      document.getElementById('notifications-dropdown').classList.toggle('hidden');
+    }
+
+    document.addEventListener('click', function(e) {
+      const dropdown = document.getElementById('notifications-dropdown');
+      const btn = e.target.closest('button[onclick="toggleNotificationsDropdown()"]');
+      if (dropdown && !dropdown.contains(e.target) && !btn && !dropdown.classList.contains('hidden')) {
+        dropdown.classList.add('hidden');
+      }
+    });
+
+    // تسجيل الدخول والتسجيل عبر جوجل وفيسبوك
+    function triggerSocialAuth(provider, mode) {
+      const providerName = provider === 'google' ? 'Google' : 'Facebook';
+      const dummyEmail = prompt(`محاكاة الدخول عبر ${providerName}:\nيرجى كتابة بريدك الإلكتروني:`, `user@${provider}.com`);
+      if (!dummyEmail) return;
+
+      const dummyName = dummyEmail.split('@')[0];
+      const dummyAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(dummyName)}&background=${provider === 'google' ? 'ea4335' : '1877f2'}&color=fff`;
+
+      if (mode === 'login') {
+        fetch('/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ isSocial: true, socialEmail: dummyEmail, socialName: dummyName, socialAvatar: dummyAvatar })
+        }).then(r => r.json()).then(res => {
+          if (res.success) {
+            app.currentUser = res.user;
+            localStorage.setItem('jordan_user_session', JSON.stringify(res.user));
+            alert(`أهلاً بك يا ${res.user.name}! تم الدخول بنجاح.`);
+            syncData();
+            navigateTo('home');
+          } else {
+            alert('هذا الحساب غير مسجل مسبقاً، سيتم نقلك لإكمال التسجيل بدون الحاجة لكلمة مرور.');
+            isSocialRegister = true;
+            document.getElementById('reg-name').value = dummyName;
+            document.getElementById('reg-email').value = dummyEmail;
+            regAvatarUploaded = dummyAvatar;
+            document.getElementById('reg-avatar-preview').src = dummyAvatar;
+            document.getElementById('password-field-container').classList.add('hidden');
+            document.getElementById('reg-password').required = false;
+            navigateTo('register');
+          }
+        });
+      } else {
+        isSocialRegister = true;
+        document.getElementById('reg-name').value = dummyName;
+        document.getElementById('reg-email').value = dummyEmail;
+        regAvatarUploaded = dummyAvatar;
+        document.getElementById('reg-avatar-preview').src = dummyAvatar;
+        document.getElementById('password-field-container').classList.add('hidden');
+        document.getElementById('reg-password').required = false;
+        alert(`تم استيراد الاسم والصورة من ${providerName}! يرجى اختيار صفتك (عميل أو تاجر) ورقم الهاتف والمحافظة فقط دون طلب باسوورد.`);
+        navigateTo('register');
+      }
+    }
+
+    function toggleRegStyle() {
+      const type = document.querySelector('input[name="reg-account-type"]:checked').value;
+      const cust = document.getElementById('lbl-role-customer');
+      const merch = document.getElementById('lbl-role-merchant');
+      if (type === 'customer') {
+        cust.className = "flex items-center justify-center gap-2 border-2 border-indigo-600 bg-indigo-50/60 p-2.5 rounded-xl cursor-pointer";
+        merch.className = "flex items-center justify-center gap-2 border-2 border-slate-200 p-2.5 rounded-xl cursor-pointer";
+      } else {
+        merch.className = "flex items-center justify-center gap-2 border-2 border-indigo-600 bg-indigo-50/60 p-2.5 rounded-xl cursor-pointer";
+        cust.className = "flex items-center justify-center gap-2 border-2 border-slate-200 p-2.5 rounded-xl cursor-pointer";
+      }
+    }
+
+    function handleAvatarUpload(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          regAvatarUploaded = evt.target.result;
+          document.getElementById('reg-avatar-preview').src = regAvatarUploaded;
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    // التحقق من صحة الهاتف الأردني والإيميل
+    function validateJordanPhone(phone) {
+      const jordanRegex = /^07[789]\d{7}$/;
+      return jordanRegex.test(phone.trim());
+    }
+
+    function validateEmail(email) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(email.trim());
+    }
+
+    async function handleRegistration(e) {
+      e.preventDefault();
+      const phone = document.getElementById('reg-phone').value.trim();
+      const email = document.getElementById('reg-email').value.trim();
+      const role = document.querySelector('input[name="reg-account-type"]:checked').value;
+
+      if (!validateEmail(email)) {
+        return alert('يرجى إدخال بريد إلكتروني صحيح وحقيقي.');
+      }
+
+      if (!validateJordanPhone(phone)) {
+        return alert('رقم الهاتف غير صالح للاستخدام في الأردن!\nيجب أن يبدأ بـ 077 أو 078 أو 079 ويتكون من 10 أرقام تماماً.');
+      }
+
+      const payload = {
+        name: document.getElementById('reg-name').value.trim(),
+        email: email,
+        phone: phone,
+        city: document.getElementById('reg-governorate').value,
+        role: role,
+        password: isSocialRegister ? '' : document.getElementById('reg-password').value,
+        avatar: regAvatarUploaded || DEFAULT_AVATAR,
+        authProvider: isSocialRegister ? 'social' : 'local'
+      };
+
+      try {
+        const res = await fetch('/api/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        }).then(r => r.json());
+
+        if (res.success) {
+          app.currentUser = res.user;
+          localStorage.setItem('jordan_user_session', JSON.stringify(res.user));
+          alert(`أهلاً بك يا ${res.user.name}! تم إنشاء حسابك بنجاح.`);
+          isSocialRegister = false;
+          syncData();
+          
+          // بعد اتمام تسجيل تاجر جديد يجب تحويله الى الصفحة الرئيسية
+          if (role === 'merchant') {
+            navigateTo('home');
+          } else {
+            navigateTo('customer-dashboard');
+          }
+        } else {
+          alert(res.message || 'حدث خطأ أثناء التسجيل');
+        }
+      } catch (err) {
+        alert('تعذر الاتصال بالسيرفر');
+      }
+    }
+
+    async function handleLoginSubmit(e) {
+      e.preventDefault();
+      const payload = {
+        identifier: document.getElementById('login-user').value.trim(),
+        password: document.getElementById('login-pass').value
+      };
+
+      try {
+        const res = await fetch('/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        }).then(r => r.json());
+
+        if (res.success) {
+          app.currentUser = res.user;
+          localStorage.setItem('jordan_user_session', JSON.stringify(res.user));
+          document.getElementById('login-alert-banner').classList.add('hidden');
+          syncData();
+          
+          if (res.user.role === 'admin') navigateTo('admin');
+          else navigateTo('home');
+        } else {
+          alert(res.message || 'بيانات الدخول غير صحيحة');
+        }
+      } catch (err) {
+        alert('تعذر الاتصال بالسيرفر');
+      }
+    }
+
+    function handleLogout() {
+      app.currentUser = null;
+      localStorage.removeItem('jordan_user_session');
+      syncData();
+      navigateTo('home');
+    }
+
+    // إرسال طلب منتج جديد
+    async function handlePostRequest(e) {
+      e.preventDefault();
+      if (!app.currentUser) {
+        handleRequestNewProductNav();
+        return;
+      }
+
+      const budgetMin = parseFloat(document.getElementById('req-budget-min').value);
+      const budgetMax = parseFloat(document.getElementById('req-budget-max').value);
+      if (budgetMin > budgetMax) return alert('الحد الأدنى لا يمكن أن يكون أكبر من الحد الأعلى!');
+
+      const payload = {
+        customerId: app.currentUser.id,
+        customerName: app.currentUser.name,
+        customerCity: app.currentUser.city,
+        customerPhone: app.currentUser.phone,
+        customerRole: app.currentUser.role,
+        showPhone: document.getElementById('req-reveal-phone').checked,
+        title: document.getElementById('req-title').value.trim(),
+        budgetMin: budgetMin,
+        budgetMax: budgetMax,
+        category: document.getElementById('req-category').value,
+        condition: document.querySelector('input[name="req-condition"]:checked').value,
+        deliveryPref: document.querySelector('input[name="req-delivery-pref"]:checked').value,
+        image: reqProductImageUploaded,
+        notes: document.getElementById('req-notes').value.trim()
+      };
+
+      try {
+        const res = await fetch('/api/requests', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        }).then(r => r.json());
+
+        if (res.success) {
+          document.getElementById('req-title').value = '';
+          document.getElementById('req-budget-min').value = '';
+          document.getElementById('req-budget-max').value = '';
+          document.getElementById('req-notes').value = '';
+          clearReqProductImage(); // تصفير الصورة بعد الحفظ
+          alert('تم نشر طلبك بنجاح في سوق المنصة!');
+          syncData();
+          navigateTo('my-requests');
+        }
+      } catch (err) {
+        alert('حدث خطأ أثناء حفظ الطلب');
+      }
+    }
+
+    // كبسة إنهاء وحذف الطلب (تعمل بسلاسة وفورية)
+    async function finishAndDeleteRequest(reqId) {
+      if (!confirm('هل أنت متأكد من رغبتك في إنهاء وحذف هذا الطلب؟')) return;
+      try {
+        const res = await fetch('/api/requests/delete', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ requestId: reqId, userId: app.currentUser.id })
+        }).then(r => r.json());
+
+        if (res.success) {
+          alert('تم إنهاء وحذف الطلب بنجاح من الموقع.');
+          syncData();
+        } else {
+          alert('تعذر حذف الطلب');
+        }
+      } catch (err) {
+        alert('خطأ أثناء الاتصال بالسيرفر');
+      }
+    }
+
+    // عروض الأسعار
+    function handleOfferImagesUpload(e) {
+      const files = Array.from(e.target.files).slice(0, 3);
+      offerUploadedImages = [];
+      const previewBox = document.getElementById('offer-images-preview');
+      previewBox.innerHTML = '';
+      document.getElementById('offer-images-count').innerText = `${files.length} / 3`;
+
+      files.forEach((file) => {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          offerUploadedImages.push(evt.target.result);
+          const thumb = document.createElement('img');
+          thumb.src = evt.target.result;
+          thumb.className = "w-14 h-14 object-cover rounded-xl border-2 border-indigo-300 shadow-sm";
+          previewBox.appendChild(thumb);
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function openOfferModal(reqId) {
+      if (!app.currentUser) {
+        alert('يجب تسجيل الدخول أو إنشاء حساب أولاً لتقديم عرض سعر.');
+        return navigateTo('login');
+      }
+      const req = app.requests.find(r => r.id === reqId);
+      document.getElementById('modal-offer-req-id').value = reqId;
+      document.getElementById('modal-req-title-display').innerText = `${req.title} (الميزانية: ${req.budgetMin} - ${req.budgetMax} د.أ)`;
+      document.getElementById('modal-offer-phone').value = app.currentUser.phone || '';
+      document.getElementById('modal-offer-delivery-fee').value = "0";
+      document.getElementById('offer-images-preview').innerHTML = '';
+      document.getElementById('offer-images-count').innerText = "0 / 3";
+      offerUploadedImages = [];
+      document.getElementById('modal-offer').classList.remove('hidden');
+    }
+
+    function closeOfferModal() {
+      document.getElementById('modal-offer').classList.add('hidden');
+    }
+
+    async function handleSendOffer(e) {
+      e.preventDefault();
+      const reqId = parseInt(document.getElementById('modal-offer-req-id').value);
+      const payload = {
+        requestId: reqId,
+        merchantId: app.currentUser.id,
+        merchantName: app.currentUser.name,
+        merchantCity: app.currentUser.city,
+        phone: document.getElementById('modal-offer-phone').value,
+        price: parseFloat(document.getElementById('modal-offer-price').value),
+        deliveryFee: parseFloat(document.getElementById('modal-offer-delivery-fee').value) || 0,
+        shipping: document.getElementById('modal-offer-shipping').checked,
+        negotiable: document.getElementById('modal-offer-negotiable').checked,
+        note: document.getElementById('modal-offer-note').value.trim(),
+        images: [...offerUploadedImages]
+      };
+
+      try {
+        const res = await fetch('/api/offers', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        }).then(r => r.json());
+
+        if (res.success) {
+          closeOfferModal();
+          alert('تم إرسال عرضك بنجاح! وتم تنبيه صاحب الطلب.');
+          syncData();
+        }
+      } catch (err) {
+        alert('تعذر إرسال العرض');
+      }
+    }
+
+    // إدارة الإدارة والأرشفة
+    function toggleAdminView(view) {
+      document.getElementById('admin-active-section').classList.add('hidden');
+      document.getElementById('admin-deleted-section').classList.add('hidden');
+      document.getElementById('admin-archive-section').classList.add('hidden');
+
+      ['active', 'deleted', 'archive'].forEach(v => {
+        document.getElementById(`btn-admin-${v}`).className = "text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-xl font-bold transition";
+      });
+
+      if (view === 'active') {
+        document.getElementById('admin-active-section').classList.remove('hidden');
+        document.getElementById('btn-admin-active').className = "text-xs bg-indigo-600 px-3 py-1.5 rounded-xl font-bold transition";
+      } else if (view === 'deleted') {
+        document.getElementById('admin-deleted-section').classList.remove('hidden');
+        document.getElementById('btn-admin-deleted').className = "text-xs bg-rose-600 text-white px-3 py-1.5 rounded-xl font-bold transition";
+      } else {
+        document.getElementById('admin-archive-section').classList.remove('hidden');
+        document.getElementById('btn-admin-archive').className = "text-xs bg-sky-600 text-white px-3 py-1.5 rounded-xl font-bold transition";
+      }
+    }
+
+    async function archiveMessage(msgId) {
+      try {
+        await fetch('/api/admin/archive-message', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ messageId: msgId })
+        });
+        syncData();
+      } catch (err) {
+        alert('خطأ أثناء الأرشفة');
+      }
+    }
+
+    // الدردشة المباشرة
+    function setChatTarget(name, targetId) {
+      if (!app.currentUser) return navigateTo('login');
+      app.activeChatTarget = name;
+      app.activeChatTargetId = targetId || 0;
+      navigateTo('chat-center');
+    }
+
+    async function handleSendChatMessage(e) {
+      e.preventDefault();
+      if (!app.currentUser) return navigateTo('login');
+
+      const input = document.getElementById('chat-input');
+      const text = input.value.trim();
+      if (!text) return;
+
+      const payload = {
+        fromUserId: app.currentUser.id,
+        fromName: app.currentUser.name,
+        toUserId: app.activeChatTargetId || 0,
+        toName: app.activeChatTarget || 'الطرف الآخر',
+        text: text
+      };
+
+      try {
+        await fetch('/api/messages', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        input.value = '';
+        syncData();
+      } catch (err) {
+        alert('تعذر إرسال الرسالة');
+      }
+    }
+
+    // مودالات التفاصيل
+    function showRequestDetails(reqId) {
+      const req = app.requests.find(r => r.id === reqId);
+      if (!req) return;
+
+      document.getElementById('detail-title').innerText = req.title;
+      document.getElementById('detail-category-badge').innerText = req.category;
+      document.getElementById('detail-budget').innerText = `من ${req.budgetMin} إلى ${req.budgetMax} د.أ`;
+      document.getElementById('detail-condition').innerText = req.condition;
+      document.getElementById('detail-delivery').innerText = req.deliveryPref;
+      document.getElementById('detail-city').innerText = req.customerCity;
+      document.getElementById('detail-customer-name').innerText = req.customerName;
+
+      if (!app.currentUser) {
+        document.getElementById('detail-customer-phone').innerHTML = `<span class="text-slate-400">079•••••• <button onclick="navigateTo('login')" class="text-indigo-600 underline text-[10px]">دخول</button></span>`;
+      } else {
+        document.getElementById('detail-customer-phone').innerText = req.showPhone ? req.customerPhone : "مخفي برغبة العميل";
+      }
+
+      document.getElementById('detail-notes').innerText = req.notes || 'لا توجد ملاحظات إضافية.';
+
+      const imgBox = document.getElementById('detail-image-box');
+      const imgEl = document.getElementById('detail-image');
+      if (req.image) {
+        imgEl.src = req.image;
+        imgBox.classList.remove('hidden');
+      } else {
+        imgBox.classList.add('hidden');
+      }
+
+      document.getElementById('modal-details').classList.remove('hidden');
+    }
+
+    function closeDetailsModal() {
+      document.getElementById('modal-details').classList.add('hidden');
+    }
+
+    function showOfferDetailsModal(reqId, offerId) {
+      const req = app.requests.find(r => r.id === reqId);
+      if (!req) return;
+      const offer = req.offers.find(o => o.id === offerId);
+      if (!offer) return;
+
+      document.getElementById('modal-offer-merchant-title').innerText = `${offer.merchantName} (على: ${req.title})`;
+      document.getElementById('modal-offer-det-price').innerText = `${offer.price} د.أ`;
+      document.getElementById('modal-offer-det-delivery').innerText = offer.deliveryFee > 0 ? `${offer.deliveryFee} د.أ` : 'مجاني 🚚';
+      document.getElementById('modal-offer-det-city').innerText = offer.merchantCity;
+      document.getElementById('modal-offer-det-note').innerText = offer.note;
+
+      if (!app.currentUser) {
+        document.getElementById('modal-offer-det-phone').innerHTML = `<span class="text-slate-400">078•••••• <button onclick="closeOfferDetailsModal(); navigateTo('login')" class="text-indigo-600 underline font-bold text-xs">سجل دخولك للكشف</button></span>`;
+        document.getElementById('modal-offer-chat-action-box').innerHTML = `
+          <button onclick="closeOfferDetailsModal(); navigateTo('login')" class="bg-indigo-50 text-indigo-700 hover:bg-indigo-100 px-4 py-2 rounded-xl text-xs font-bold transition">
+            سجل الدخول لبدء محادثة
+          </button>
+        `;
+      } else {
+        document.getElementById('modal-offer-det-phone').innerHTML = `<span class="text-slate-500 font-mono">078•••••• <a href="tel:${offer.phone}" class="text-emerald-700 font-bold underline mr-2">اتصال (${offer.phone})</a></span>`;
+        document.getElementById('modal-offer-chat-action-box').innerHTML = `
+          <button onclick="closeOfferDetailsModal(); setChatTarget('${offer.merchantName}', ${offer.merchantId})" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5">
+            <i class="fa-solid fa-comment"></i> بدء محادثة مع صاحب العرض
+          </button>
+        `;
+      }
+
+      const imgContainer = document.getElementById('modal-offer-det-images');
+      imgContainer.innerHTML = '';
+      if (offer.images && offer.images.length > 0) {
+        offer.images.forEach(img => {
+          const el = document.createElement('img');
+          el.src = img;
+          el.className = "w-20 h-20 object-cover rounded-xl border border-slate-300 shadow cursor-pointer hover:opacity-90";
+          el.onclick = () => openLightbox(img);
+          imgContainer.appendChild(el);
+        });
+      } else {
+        imgContainer.innerHTML = `<span class="text-slate-400 text-xs">لا توجد صور مرفقة</span>`;
+      }
+
+      document.getElementById('modal-offer-details').classList.remove('hidden');
+    }
+
+    function closeOfferDetailsModal() {
+      document.getElementById('modal-offer-details').classList.add('hidden');
+    }
+
+    function openLightbox(src) {
+      document.getElementById('lightbox-img').src = src;
+      document.getElementById('modal-lightbox').classList.remove('hidden');
+    }
+
+    function closeLightbox() {
+      document.getElementById('modal-lightbox').classList.add('hidden');
+    }
+
+    // تحديث الواجهات
+    function render() {
+      const authBox = document.getElementById('header-auth');
+      const notifWrapper = document.getElementById('notif-wrapper');
+      const navChat = document.getElementById('nav-chat-center');
+      const navAdmin = document.getElementById('nav-admin');
+      const navMyReq = document.getElementById('nav-my-requests');
+      const navMyOffers = document.getElementById('nav-my-offers');
+      const mobNavChat = document.getElementById('mob-nav-chat');
+      const mobNavAdmin = document.getElementById('mob-nav-admin');
+      const mobNavMyReq = document.getElementById('mob-nav-my-requests');
+      const mobNavMyOffers = document.getElementById('mob-nav-my-offers');
+
+      if (app.currentUser) {
+        authBox.innerHTML = `
+          <div class="flex items-center gap-1.5 sm:gap-2 bg-indigo-900/80 px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-xl border border-indigo-700">
+            <img src="${app.currentUser.avatar}" class="w-6 h-6 sm:w-7 sm:h-7 rounded-full object-cover">
+            <div class="text-right hidden sm:block">
+              <span class="text-xs font-bold block leading-none truncate max-w-[90px]">${app.currentUser.name}</span>
+              <span class="text-[9px] text-indigo-300">${app.currentUser.role === 'customer' ? 'عميل' : (app.currentUser.role === 'admin' ? 'مدير' : 'تاجر')} • ${app.currentUser.city}</span>
+            </div>
+            <button onclick="handleLogout()" title="تسجيل الخروج" class="text-xs text-rose-300 hover:text-rose-100 p-1">
+              <i class="fa fa-arrow-right-from-bracket"></i>
+            </button>
+          </div>
+        `;
+        notifWrapper.classList.remove('hidden');
+        navChat.classList.remove('hidden'); navChat.classList.add('flex');
+        navMyReq.classList.remove('hidden'); navMyReq.classList.add('flex');
+        navMyOffers.classList.remove('hidden'); navMyOffers.classList.add('flex');
+        mobNavChat.classList.remove('hidden'); mobNavChat.classList.add('flex');
+        mobNavMyReq.classList.remove('hidden'); mobNavMyReq.classList.add('flex');
+        mobNavMyOffers.classList.remove('hidden'); mobNavMyOffers.classList.add('flex');
+
+        if (app.currentUser.role === 'admin') {
+          navAdmin.classList.remove('hidden'); navAdmin.classList.add('flex');
+          mobNavAdmin.classList.remove('hidden'); mobNavAdmin.classList.add('flex');
+        } else {
+          navAdmin.classList.add('hidden');
+          mobNavAdmin.classList.add('hidden');
+        }
+      } else {
+        authBox.innerHTML = `
+          <button onclick="navigateTo('login')" class="text-xs font-bold hover:text-indigo-200 px-2 py-1">دخول</button>
+          <button onclick="navigateTo('register')" class="text-xs font-black bg-indigo-600 hover:bg-indigo-500 text-white px-2.5 sm:px-3 py-1.5 rounded-xl shadow transition">إنشاء بروفايل</button>
+        `;
+        notifWrapper.classList.add('hidden');
+        navChat.classList.add('hidden'); navChat.classList.remove('flex');
+        navMyReq.classList.add('hidden'); navMyReq.classList.remove('flex');
+        navMyOffers.classList.add('hidden'); navMyOffers.classList.remove('flex');
+        mobNavChat.classList.add('hidden'); mobNavChat.classList.remove('flex');
+        mobNavMyReq.classList.add('hidden'); mobNavMyReq.classList.remove('flex');
+        mobNavMyOffers.classList.add('hidden'); mobNavMyOffers.classList.remove('flex');
+        navAdmin.classList.add('hidden');
+        mobNavAdmin.classList.add('hidden');
+      }
+
+      // التنبيهات
+      const badge = document.getElementById('notif-badge');
+      const notifList = document.getElementById('notifications-list');
+      if (app.notifications && app.notifications.length > 0) {
+        badge.innerText = app.notifications.length;
+        badge.classList.remove('hidden');
+        notifList.innerHTML = app.notifications.map(n => `
+          <div onclick="navigateTo('my-requests'); toggleNotificationsDropdown()" class="p-3 hover:bg-indigo-50/70 cursor-pointer transition">
+            <div class="flex justify-between items-center mb-0.5">
+              <span class="font-bold text-slate-900">${n.title}</span>
+              <span class="text-[9px] text-slate-400">${n.time}</span>
+            </div>
+            <p class="text-slate-600 text-[11px] leading-relaxed">${n.text}</p>
+          </div>
+        `).join('');
+      } else {
+        badge.classList.add('hidden');
+        notifList.innerHTML = `<div class="p-4 text-center text-slate-400 text-xs">لا توجد تنبيهات جديدة</div>`;
+      }
+
+      // صفحة "طلباتي"
+      const myReqBox = document.getElementById('my-requests-container');
+      if (myReqBox) {
+        const myRequests = app.currentUser ? app.requests.filter(r => r.customerId === app.currentUser.id) : [];
+        if (myRequests.length === 0) {
+          myReqBox.innerHTML = `<div class="text-center py-10 text-slate-400 text-xs">لم تقم بإضافة أي طلبات حتى الآن.</div>`;
+        } else {
+          myReqBox.innerHTML = myRequests.map(req => renderRequestCard(req, true)).join('');
+        }
+      }
+
+      // صفحة "عروضي المقدمة"
+      const myOffersBox = document.getElementById('my-offers-container');
+      if (myOffersBox) {
+        if (!app.myOffers || app.myOffers.length === 0) {
+          myOffersBox.innerHTML = `<div class="text-center py-10 text-slate-400 text-xs">لم تقدم أي عروض أسعار حتى الآن. يمكنك تصفح سوق الطلبات وتقديم عروضك!</div>`;
+        } else {
+          myOffersBox.innerHTML = app.myOffers.map(o => `
+            <div class="p-3.5 bg-white border border-slate-200 rounded-2xl shadow-sm text-xs space-y-2">
+              <div class="flex justify-between items-start">
+                <div>
+                  <span class="text-[10px] bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded font-bold">طلب: ${o.requestTitle || '---'}</span>
+                  <span class="text-[10px] text-slate-400 mr-2">${o.requestCity || ''}</span>
+                  <div class="mt-1 font-black text-emerald-700 text-sm">عرضك: ${o.price} د.أ (التوصيل: ${o.deliveryFee > 0 ? o.deliveryFee + ' د.أ' : 'مجاني'})</div>
+                </div>
+                <span class="text-[10px] text-slate-400 font-mono">${new Date(o.createdAt).toLocaleDateString('ar-EG')}</span>
+              </div>
+              <p class="text-slate-600 bg-slate-50 p-2 rounded-xl text-[11px] leading-relaxed">"${o.note}"</p>
+            </div>
+          `).join('');
+        }
+      }
+
+      // سوق الطلبات العام مع تقسيم الصفحات (5 طلبات لكل صفحة)
+      const feedBox = document.getElementById('merchant-feed-list');
+      const paginationBox = document.getElementById('feed-pagination');
+      document.getElementById('active-feed-category').innerText = app.selectedCategoryFilter;
+
+      let filteredRequests = app.requests;
+      if (app.selectedCategoryFilter !== 'الكل') {
+        filteredRequests = app.requests.filter(r => r.category === app.selectedCategoryFilter);
+      }
+
+      const totalPages = Math.ceil(filteredRequests.length / ITEMS_PER_PAGE) || 1;
+      if (currentFeedPage > totalPages) currentFeedPage = totalPages;
+
+      const startIndex = (currentFeedPage - 1) * ITEMS_PER_PAGE;
+      const paginatedRequests = filteredRequests.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
+      if (feedBox) {
+        if (filteredRequests.length === 0) {
+          feedBox.innerHTML = `
+            <div class="bg-white border rounded-2xl sm:rounded-3xl p-8 sm:p-12 text-center text-slate-400 space-y-2">
+              <i class="fa-solid fa-box-open text-4xl text-slate-300"></i>
+              <p class="text-sm font-bold text-slate-600">لا توجد طلبات شراء منشورة في هذا القسم حالياً.</p>
+              <button onclick="handleRequestNewProductNav()" class="mt-2 bg-indigo-600 text-white text-xs font-bold px-4 py-2 rounded-xl">أضف طلباً جديداً</button>
+            </div>
+          `;
+          paginationBox.innerHTML = '';
+        } else {
+          feedBox.innerHTML = paginatedRequests.map(req => renderRequestCard(req, false)).join('');
+
+          // أزرار الصفحات
+          let pagHtml = `
+            <button onclick="changeFeedPage(${currentFeedPage - 1})" ${currentFeedPage === 1 ? 'disabled class="opacity-40 cursor-not-allowed"' : ''} class="px-3 py-1.5 rounded-lg border bg-white text-xs font-bold hover:bg-slate-50">السابق</button>
+          `;
+
+          for (let i = 1; i <= totalPages; i++) {
+            pagHtml += `
+              <button onclick="changeFeedPage(${i})" class="px-3 py-1.5 rounded-lg border text-xs font-bold ${i === currentFeedPage ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white hover:bg-slate-50'}">${i}</button>
+            `;
+          }
+
+          pagHtml += `
+            <button onclick="changeFeedPage(${currentFeedPage + 1})" ${currentFeedPage === totalPages ? 'disabled class="opacity-40 cursor-not-allowed"' : ''} class="px-3 py-1.5 rounded-lg border bg-white text-xs font-bold hover:bg-slate-50">التالي</button>
+          `;
+          paginationBox.innerHTML = pagHtml;
+        }
+      }
+
+      // الشات والمحادثات (مستثنى منها بروفايلات الأدمن)
+      const activeName = app.activeChatTarget || "";
+      document.getElementById('chat-target-name').innerText = activeName || "اختر محادثة";
+      const chatBox = document.getElementById('chat-messages-box');
+      if (chatBox) {
+        const activeMessages = app.messages.filter(m => 
+          (m.fromName === app.currentUser?.name && m.toName === activeName) ||
+          (m.fromName === activeName && m.toName === app.currentUser?.name)
+        );
+
+        if (activeMessages.length === 0) {
+          chatBox.innerHTML = `<div class="text-center text-slate-400 py-12 text-xs">لا توجد رسائل سابقة. ابدأ المحادثة الآن!</div>`;
+        } else {
+          chatBox.innerHTML = activeMessages.map(m => `
+            <div class="p-2.5 sm:p-3 rounded-2xl max-w-xs sm:max-w-sm ${m.fromName === (app.currentUser?.name) ? 'bg-indigo-600 text-white mr-auto' : 'bg-white border border-slate-200 text-slate-800 ml-auto'} shadow-sm">
+              <span class="text-[9px] block opacity-75 font-bold mb-0.5">${m.fromName}</span>
+              <p class="leading-relaxed text-xs">${m.text}</p>
+              <span class="text-[8px] block text-left opacity-75 mt-1">${m.time}</span>
+            </div>
+          `).join('');
+        }
+      }
+
+      // قائمة جهات الاتصال في الشات: استبعاد أي مستخدم رتبته admin
+      const threadsBox = document.getElementById('chat-threads-list');
+      if (threadsBox) {
+        const nonAdminUsers = app.users.filter(u => u.role !== 'admin' && u.name !== app.currentUser?.name);
+        if (nonAdminUsers.length === 0) {
+          threadsBox.innerHTML = `<div class="p-4 text-center text-slate-400 text-xs">لا توجد جهات اتصال متاحة</div>`;
+        } else {
+          threadsBox.innerHTML = nonAdminUsers.map(u => `
+            <div onclick="setChatTarget('${u.name}', ${u.id})" class="p-2.5 hover:bg-indigo-50/70 cursor-pointer transition flex items-center gap-2 ${app.activeChatTarget === u.name ? 'bg-indigo-50' : ''}">
+              <img src="${u.avatar}" class="w-7 h-7 rounded-full object-cover shrink-0">
+              <div class="flex-1 overflow-hidden">
+                <span class="font-bold text-xs block truncate">${u.name}</span>
+                <span class="text-[9px] text-slate-400 block">${u.role === 'customer' ? 'عميل' : 'تاجر'} • ${u.city}</span>
+              </div>
+            </div>
+          `).join('');
+        }
+      }
+
+      // لوحة الأدمن
+      if (app.currentUser && app.currentUser.role === 'admin') {
+        const totalOffers = app.requests.reduce((sum, r) => sum + r.offers.length, 0);
+        document.getElementById('stat-users').innerText = app.users.length;
+        document.getElementById('stat-requests').innerText = app.requests.length;
+        document.getElementById('stat-offers').innerText = totalOffers;
+        document.getElementById('stat-messages').innerText = app.allAdminMessages?.length || 0;
+
+        // الطلبات النشطة
+        const unifiedContainer = document.getElementById('admin-unified-requests-offers');
+        if (unifiedContainer) {
+          unifiedContainer.innerHTML = app.requests.map(req => `
+            <div class="border border-slate-200 rounded-2xl p-4 bg-slate-50 space-y-3">
+              <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 pb-2 border-b border-slate-200">
+                <div>
+                  <span class="bg-indigo-100 text-indigo-800 text-[10px] font-bold px-2 py-0.5 rounded-full">${req.category}</span>
+                  <h4 class="font-black text-sm text-slate-900 mt-1">${req.title}</h4>
+                  <p class="text-xs text-slate-700 font-semibold mt-0.5">
+                    العميل: <b>${req.customerName}</b> | 
+                    <span class="text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded font-mono font-bold">هاتف: ${req.customerPhone}</span> | 
+                    المحافظة: ${req.customerCity}
+                  </p>
+                </div>
+                <div class="flex gap-2 self-end sm:self-center">
+                  <button onclick="showRequestDetails(${req.id})" class="bg-indigo-600 text-white text-xs px-2.5 py-1.5 rounded-lg font-bold">تفاصيل</button>
+                  <button onclick="finishAndDeleteRequest(${req.id})" class="bg-rose-600 text-white text-xs px-2.5 py-1.5 rounded-lg font-bold flex items-center gap-1">
+                    <i class="fa fa-trash-can"></i> إيداع بالمحذوفات
+                  </button>
+                </div>
+              </div>
+              <div class="space-y-1">
+                <span class="text-xs font-bold text-slate-700 block">العروض (${req.offers.length}):</span>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                  ${req.offers.map(o => `
+                    <div class="bg-white p-2 rounded-xl border border-slate-200 text-xs">
+                      <div class="flex justify-between items-center font-bold">
+                        <span>${o.merchantName}</span>
+                        <span class="text-emerald-700">${o.price} د.أ</span>
+                      </div>
+                      <p class="text-slate-500 font-mono text-[10px]">هاتف: ${o.phone} | توصيل: ${o.deliveryFee} د.أ</p>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            </div>
+          `).join('');
+        }
+
+        // سلة المحذوفات
+        const delContainer = document.getElementById('admin-deleted-requests-list');
+        if (delContainer) {
+          if (!app.deletedRequests || app.deletedRequests.length === 0) {
+            delContainer.innerHTML = `<p class="text-xs text-slate-400 text-center py-6">سلة المحذوفات فارغة.</p>`;
+          } else {
+            delContainer.innerHTML = app.deletedRequests.map(d => `
+              <div class="p-3 bg-rose-50/50 border border-rose-200 rounded-xl flex justify-between items-center text-xs">
+                <div>
+                  <span class="font-black text-rose-950">${d.title}</span>
+                  <p class="text-slate-600 font-mono">صاحب الطلب: ${d.customerName} (${d.customerPhone})</p>
+                </div>
+                <button onclick="restoreDeletedRequest(${d.id})" class="bg-emerald-600 text-white px-3 py-1 rounded-lg font-bold">استعادة</button>
+              </div>
+            `).join('');
+          }
+        }
+
+        // أرشيف المحادثات
+        const archContainer = document.getElementById('admin-archived-messages-list');
+        if (archContainer) {
+          if (!app.archivedMessages || app.archivedMessages.length === 0) {
+            archContainer.innerHTML = `<p class="text-xs text-slate-400 text-center py-6">لا توجد رسائل مؤرشفة.</p>`;
+          } else {
+            archContainer.innerHTML = app.archivedMessages.map(m => `
+              <div class="p-2.5 bg-sky-50 border border-sky-200 rounded-xl text-xs flex justify-between items-center">
+                <div>
+                  <span class="font-bold text-sky-900">${m.fromName} &rarr; ${m.toName}</span>
+                  <p class="text-slate-700 mt-0.5">"${m.text}"</p>
+                </div>
+                <span class="text-[10px] text-slate-400 font-mono">${m.time}</span>
+              </div>
+            `).join('');
+          }
+        }
+
+        // مراقبة المحادثات الحية
+        const monitorBox = document.getElementById('admin-chat-monitor-table');
+        if (monitorBox && app.allAdminMessages) {
+          monitorBox.innerHTML = app.allAdminMessages.map(m => `
+            <div class="bg-slate-50 p-2 rounded-xl border border-slate-200 text-xs flex justify-between items-center">
+              <div>
+                <span class="font-bold text-indigo-700">${m.fromName} &rarr; ${m.toName}</span>
+                <p class="text-slate-800 font-medium bg-white p-1.5 rounded border border-slate-100 mt-1">${m.text}</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-[9px] text-slate-400 font-mono">${m.time}</span>
+                <button onclick="archiveMessage(${m.id})" title="أرشفة" class="text-sky-600 hover:text-sky-800 p-1"><i class="fa-solid fa-box-archive"></i></button>
+              </div>
+            </div>
+          `).join('');
+        }
+
+        // مستخدمو المنصة والمدراء الـ 3
+        const usersBox = document.getElementById('admin-users-list');
+        if (usersBox) {
+          usersBox.innerHTML = app.users.map(u => `
+            <div class="p-2.5 bg-slate-50 border border-slate-200 rounded-xl flex items-center gap-2.5 text-xs">
+              <img src="${u.avatar}" class="w-9 h-9 rounded-full object-cover shrink-0">
+              <div class="overflow-hidden">
+                <h5 class="font-bold text-slate-900 truncate">${u.name}</h5>
+                <p class="text-emerald-800 font-mono font-bold text-[11px]">${u.phone}</p>
+                <span class="text-[9px] font-bold ${u.role === 'admin' ? 'text-amber-600' : (u.role === 'customer' ? 'text-blue-600' : 'text-emerald-600')}">${u.role === 'admin' ? 'أدمن مسؤول' : (u.role === 'customer' ? 'عميل' : 'تاجر')}</span>
+              </div>
+            </div>
+          `).join('');
+        }
+      }
+    }
+
+    function changeFeedPage(page) {
+      currentFeedPage = page;
+      render();
+      window.scrollTo({ top: 300, behavior: 'smooth' });
+    }
+
+    async function restoreDeletedRequest(id) {
+      await fetch('/api/admin/restore-request', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ requestId: id })
+      });
+      syncData();
+    }
+
+    function renderRequestCard(req, isCustomerView) {
+      let customerPhoneHtml = '';
+      if (!app.currentUser) {
+        customerPhoneHtml = `<span class="text-slate-400 text-[11px]"><i class="fa fa-lock text-[10px]"></i> 079•••••• <button onclick="navigateTo('login')" class="text-indigo-600 underline font-bold">دخول للكشف</button></span>`;
+      } else {
+        customerPhoneHtml = req.showPhone ? 
+          `<span class="text-emerald-700 font-bold text-[11px]"><i class="fa fa-phone"></i> ${req.customerPhone}</span>` : 
+          `<span class="text-slate-400 italic text-[11px]"><i class="fa fa-lock"></i> العميل حجب رقمه</span>`;
+      }
+
+      let offersHtml = '';
+      if (!req.offers || req.offers.length === 0) {
+        offersHtml = `<p class="text-[11px] text-slate-400 py-1">لا توجد عروض مقدمة بعد، كن أول من يقدم عرضاً!</p>`;
+      } else {
+        offersHtml = req.offers.map(o => `
+          <div class="p-3 bg-white rounded-2xl border border-slate-200 space-y-2 text-xs">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-1.5">
+              <div>
+                <span class="font-black text-slate-900 text-xs sm:text-sm">${o.merchantName}</span>
+                <span class="text-[10px] text-slate-400">(${o.merchantCity})</span>
+                <div class="mt-0.5 flex items-center gap-1.5 flex-wrap">
+                  <span class="text-emerald-700 font-black text-sm">${o.price} د.أ</span>
+                  <span class="bg-slate-100 text-slate-700 text-[10px] font-bold px-2 py-0.5 rounded">التوصيل: ${o.deliveryFee > 0 ? o.deliveryFee + ' د.أ' : 'مجاني 🚚'}</span>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 self-end sm:self-center">
+                <button onclick="showOfferDetailsModal(${req.id}, ${o.id})" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1">
+                  <i class="fa-solid fa-circle-info"></i> عرض المزيد
+                </button>
+              </div>
+            </div>
+            <p class="text-xs text-slate-700 bg-slate-50 p-2.5 rounded-xl border border-slate-100 leading-relaxed font-medium line-clamp-2">${o.note}</p>
+          </div>
+        `).join('');
+      }
+
+      return `
+        <div class="bg-white border border-slate-200 rounded-2xl sm:rounded-3xl p-4 sm:p-5 shadow-sm space-y-3.5">
+          <div class="flex flex-col sm:flex-row justify-between items-start gap-2">
+            <div class="space-y-1">
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <span class="text-[10px] bg-indigo-100 text-indigo-800 font-bold px-2 py-0.5 rounded-full">${req.category}</span>
+                <span class="text-[10px] bg-slate-100 text-slate-700 font-bold px-2 py-0.5 rounded-full">${req.condition}</span>
+                <span class="text-[10px] bg-sky-100 text-sky-800 font-bold px-2 py-0.5 rounded-full">${req.deliveryPref}</span>
+                <span class="text-[10px] bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded-full"><i class="fa fa-location-dot"></i> ${req.customerCity}</span>
+              </div>
+              <h3 class="text-base sm:text-lg font-black text-slate-900 mt-1">${req.title}</h3>
+              <p class="text-xs text-slate-600">${req.notes || 'لا توجد ملاحظات إضافية'}</p>
+            </div>
+
+            <div class="flex sm:flex-col items-center sm:items-end justify-between w-full sm:w-auto gap-2">
+              <div class="text-left bg-slate-50 p-2 rounded-xl border border-slate-200">
+                <span class="text-[9px] text-slate-400 block">الميزانية:</span>
+                <span class="text-xs sm:text-sm font-black text-emerald-600">${req.budgetMin} - ${req.budgetMax} د.أ</span>
+              </div>
+
+              ${isCustomerView ? `
+                <button onclick="finishAndDeleteRequest(${req.id})" class="bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold px-3 py-1.5 rounded-xl text-xs transition flex items-center gap-1">
+                  <i class="fa fa-trash-can"></i> إنهاء وحذف الطلب
+                </button>
+              ` : `
+                <button onclick="openOfferModal(${req.id})" class="bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold py-2 px-4 rounded-xl text-xs flex items-center gap-1.5 transition shadow">
+                  <i class="fa-solid fa-paper-plane"></i> تقديم عرض سعر
+                </button>
+              `}
+            </div>
+          </div>
+
+          <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200 flex justify-between items-center text-xs">
+            <span class="text-slate-600 font-medium">صاحب الطلب: <b>${req.customerName}</b></span>
+            ${customerPhoneHtml}
+          </div>
+
+          <div class="flex items-center justify-between pt-1">
+            <button onclick="showRequestDetails(${req.id})" class="text-xs text-indigo-600 hover:text-indigo-800 font-bold flex items-center gap-1">
+              <i class="fa-solid fa-circle-info"></i> عرض التفاصيل الكاملة للطلب
+            </button>
+            ${req.image ? `
+              <img src="${req.image}" onclick="openLightbox('${req.image}')" title="اضغط للتكبير" class="w-10 h-10 object-cover rounded-lg border border-slate-300 cursor-pointer">
+            ` : ''}
+          </div>
+
+          <div class="border-t border-slate-100 pt-3 space-y-2">
+            <span class="text-xs font-black text-slate-800 flex items-center gap-1.5">
+              <i class="fa-solid fa-comments-dollar text-emerald-600"></i> عروض الأسعار المقدمة (${req.offers ? req.offers.length : 0})
+            </span>
+            <div class="space-y-2.5">
+              ${offersHtml}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // التشغيل الأولي
+    syncData();
+    navigateTo('home');
+  </script>
+</body>
+</html>
